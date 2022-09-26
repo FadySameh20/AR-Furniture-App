@@ -1,5 +1,5 @@
-import 'package:ar_furniture_app/shared/widgets/category_screen.dart';
-import 'package:ar_furniture_app/shared/widgets/edit_profile.dart';
+
+import 'package:ar_furniture_app/shared/widgets/home_screen.dart';
 import 'package:circular_bottom_navigation/circular_bottom_navigation.dart';
 import 'package:circular_bottom_navigation/tab_item.dart';
 import 'package:flutter/material.dart';
@@ -75,7 +75,8 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xE9E89235),
+      // backgroundColor: Color(0xE9E89235),
+      backgroundColor: Colors.grey[300],
       appBar: AppBar(
           backgroundColor: Color(0xB2E89235),
           leading: FlutterLogo(),
@@ -91,7 +92,7 @@ class _HomeScreenState extends State<HomeScreen> {
         children: <Widget>[
           Padding(
             padding: EdgeInsets.only(bottom: bottomNavBarHeight),
-            child: CategoriesScreen(),
+            child: HomePage(),
           ),
           Align(
               alignment: Alignment.bottomCenter,
