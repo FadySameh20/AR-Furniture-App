@@ -1,4 +1,5 @@
 
+import 'package:ar_furniture_app/shared/widgets/category_screen.dart';
 import 'package:ar_furniture_app/shared/widgets/home_screen.dart';
 import 'package:circular_bottom_navigation/circular_bottom_navigation.dart';
 import 'package:circular_bottom_navigation/tab_item.dart';
@@ -76,9 +77,10 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       // backgroundColor: Color(0xE9E89235),
-      backgroundColor: Colors.grey[300],
+      // backgroundColor: Colors.grey[300],
+      backgroundColor: Color.fromRGBO(242, 246, 249, 1),
       appBar: AppBar(
-          backgroundColor: Color(0xB2E89235),
+          backgroundColor: Color.fromRGBO(191, 122, 47, 1),
           leading: FlutterLogo(),
           actions: [
             IconButton(onPressed: () {}, icon: Icon(Icons.shopping_cart))
@@ -92,7 +94,7 @@ class _HomeScreenState extends State<HomeScreen> {
         children: <Widget>[
           Padding(
             padding: EdgeInsets.only(bottom: bottomNavBarHeight),
-            child: HomePage(),
+            child: CategoriesScreen(),
           ),
           Align(
               alignment: Alignment.bottomCenter,
