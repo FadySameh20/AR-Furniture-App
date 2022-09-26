@@ -8,6 +8,7 @@ class CategoriesScreen extends StatelessWidget {
     return Column(
       children: [
         Expanded(
+          flex: 2,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
             itemCount: categories.length,

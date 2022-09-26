@@ -1,5 +1,7 @@
 import 'package:ar_furniture_app/shared/widgets/category_screen.dart';
 import 'package:ar_furniture_app/shared/widgets/edit_profile.dart';
+import 'package:circular_bottom_navigation/circular_bottom_navigation.dart';
+import 'package:circular_bottom_navigation/tab_item.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -19,23 +21,100 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  int selectedPos = 0;
+
+  double bottomNavBarHeight = 60;
+
+  List<TabItem> tabItems = List.of([
+    TabItem(
+      Icons.home,
+      "Home",
+      Color.fromRGBO(191, 122, 47, 1),
+    ),
+    TabItem(
+      Icons.favorite,
+      "Favorite",
+      Color.fromRGBO(191, 122, 47, 1),
+    ),
+    TabItem(
+      Icons.search,
+      "Search",
+      Color.fromRGBO(191, 122, 47, 1),
+    ),
+    TabItem(
+      Icons.category,
+      "Categories",
+      Color.fromRGBO(191, 122, 47, 1),
+    ),
+    TabItem(
+      Icons.person,
+      "Profile",
+      Color.fromRGBO(191, 122, 47, 1),
+    ),
+  ]);
+
+  late CircularBottomNavigationController _navigationController;
+
+  @override
+  void initState() {
+    super.initState();
+    _navigationController = CircularBottomNavigationController(selectedPos);
+  }
+
+  void dispose() {
+    super.dispose();
+    _navigationController.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Color(0xE9E89235),
       appBar: AppBar(
-        backgroundColor: Color(0xB2E89235),
-        leading: FlutterLogo(),
-        actions:[
-          IconButton(onPressed: (){}, icon: Icon(Icons.shopping_cart))
-        ] ,
+          backgroundColor: Color(0xB2E89235),
+          leading: FlutterLogo(),
+          actions: [
+            IconButton(onPressed: () {}, icon: Icon(Icons.shopping_cart))
+          ],
           centerTitle: true,
-          title:Text("Home",style: TextStyle(),)
+          title: Text(
+            "Home",
+            style: TextStyle(),
+          )),
+      body: Stack(
+        children: <Widget>[
+          Padding(
+            padding: EdgeInsets.only(bottom: bottomNavBarHeight),
+            child: CategoriesScreen(),
+          ),
+          Align(
+              alignment: Alignment.bottomCenter,
+              child: CircularBottomNavigation(
+                tabItems,
+                controller: _navigationController,
+                selectedPos: selectedPos,
+                barHeight: bottomNavBarHeight,
+                barBackgroundColor: Colors.white,
+                backgroundBoxShadow: <BoxShadow>[
+                  BoxShadow(color: Colors.black45, blurRadius: 10.0),
+                ],
+                animationDuration: Duration(milliseconds: 300),
+                selectedCallback: (int? selectedPos) {
+                  setState(() {
+                    this.selectedPos = selectedPos ?? 0;
+                    print(_navigationController.value);
+                  });
+                },
+              ))
+        ],
       ),
-      body: CategoriesScreen(),
+      // bottomNavigationBar: ,
     );
   }
 }
-
