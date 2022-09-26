@@ -39,7 +39,9 @@ class CategoriesScreen extends StatelessWidget {
       children: [
         Container(
           margin: EdgeInsets.only(top: 15.0),
-          height: MediaQuery.of(context).size.height * 0.15,
+          height: MediaQuery.of(context).size.height > 700
+              ? MediaQuery.of(context).size.height * 0.15
+              : MediaQuery.of(context).size.height * 0.175,
           child: ListView.builder(
               scrollDirection: Axis.horizontal,
               itemCount: furniture.length,
@@ -91,7 +93,6 @@ class CategoriesScreen extends StatelessWidget {
               }),
         ),
         Expanded(
-          // flex: 8,
           child: Stack(
             children: [
               Container(
@@ -117,7 +118,9 @@ class CategoriesScreen extends StatelessWidget {
                           Container(
                             margin: EdgeInsets.only(left: 5.0),
                             width: double.infinity,
-                            height: MediaQuery.of(context).size.height * 0.23,
+                            height: MediaQuery.of(context).size.height > 700
+                                ? MediaQuery.of(context).size.height * 0.23
+                                : MediaQuery.of(context).size.height * 0.28,
                             decoration: BoxDecoration(
                               color: colors[index % colors.length],
                               borderRadius: BorderRadius.circular(20),
@@ -126,7 +129,9 @@ class CategoriesScreen extends StatelessWidget {
                           Container(
                             margin: EdgeInsets.only(left: 5.0, right: 7.0),
                             width: double.infinity,
-                            height: MediaQuery.of(context).size.height * 0.23,
+                            height: MediaQuery.of(context).size.height > 700
+                                ? MediaQuery.of(context).size.height * 0.23
+                                : MediaQuery.of(context).size.height * 0.28,
                             decoration: BoxDecoration(
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(20),
@@ -135,7 +140,9 @@ class CategoriesScreen extends StatelessWidget {
                           Positioned(
                             bottom: 0,
                             child: Container(
-                              height: MediaQuery.of(context).size.width * 0.07,
+                              height: MediaQuery.of(context).size.height > 700
+                                  ? MediaQuery.of(context).size.height * 0.035
+                                  : MediaQuery.of(context).size.height * 0.043,
                               padding: EdgeInsets.all(5.0),
                               child: Text(
                                 'EGP 300',
@@ -188,7 +195,8 @@ class CategoriesScreen extends StatelessWidget {
                                   ),
                                 ),
                                 SizedBox(
-                                  height: MediaQuery.of(context).size.height * 0.01,
+                                  height:
+                                      MediaQuery.of(context).size.height * 0.01,
                                 ),
                                 Row(
                                   children: [
