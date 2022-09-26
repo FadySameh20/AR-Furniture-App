@@ -1,5 +1,5 @@
 
-import 'package:ar_furniture_app/shared/widgets/home_screen.dart';
+import 'package:ar_furniture_app/shared/widgets/settings.dart';
 import 'package:circular_bottom_navigation/circular_bottom_navigation.dart';
 import 'package:circular_bottom_navigation/tab_item.dart';
 import 'package:flutter/material.dart';
@@ -92,7 +92,7 @@ class _HomeScreenState extends State<HomeScreen> {
         children: <Widget>[
           Padding(
             padding: EdgeInsets.only(bottom: bottomNavBarHeight),
-            child: HomePage(),
+            child: Settings(),
           ),
           Align(
               alignment: Alignment.bottomCenter,
