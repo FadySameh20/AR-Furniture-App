@@ -147,7 +147,7 @@ class HomePage extends StatelessWidget {
             height: 10,
           ),
           Container(
-            height: MediaQuery.of(context).size.height * 0.25,
+            height: MediaQuery.of(context).size.height * 0.4,
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
               itemBuilder: (context, index) {
@@ -156,6 +156,7 @@ class HomePage extends StatelessWidget {
                   child: Container(
                     width: MediaQuery.of(context).size.width / 1.7,
                     child: Stack(
+                      clipBehavior: Clip.none,
                       children: [
                         Container(
                           clipBehavior: Clip.antiAliasWithSaveLayer,
@@ -163,10 +164,12 @@ class HomePage extends StatelessWidget {
                               borderRadius: BorderRadius.circular(20)),
                           child: Image.asset("assets/recommended_chair.jpg"),
                         ),
-                        Align(
-                          alignment: Alignment.bottomCenter,
+                        Positioned(
+                          // alignment: Alignment.bottomCenter,
+                          top: 80,
+                          left: 5,
                           child: Container(
-                            height: MediaQuery.of(context).size.height / 8,
+                            height: MediaQuery.of(context).size.height / 7,
                             width: MediaQuery.of(context).size.width / 1.8,
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(20),
@@ -188,7 +191,7 @@ class HomePage extends StatelessWidget {
                                   ),
                                 ),
                                 SizedBox(
-                                  height: 25,
+                                  height: 10,
                                 ),
                                 Padding(
                                   padding: const EdgeInsets.only(left: 12.0),
