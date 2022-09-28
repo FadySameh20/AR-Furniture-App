@@ -1,6 +1,6 @@
-
 import 'package:ar_furniture_app/shared/widgets/category_screen.dart';
 import 'package:ar_furniture_app/shared/widgets/home_screen.dart';
+import 'package:ar_furniture_app/shared/widgets/selected_furnitue_screen.dart';
 import 'package:circular_bottom_navigation/circular_bottom_navigation.dart';
 import 'package:circular_bottom_navigation/tab_item.dart';
 import 'package:flutter/material.dart';
@@ -94,7 +94,7 @@ class _HomeScreenState extends State<HomeScreen> {
         children: <Widget>[
           Padding(
             padding: EdgeInsets.only(bottom: bottomNavBarHeight),
-            child: CategoriesScreen(),
+            child: SelectedFurnitureScreen(),
           ),
           Align(
               alignment: Alignment.bottomCenter,
