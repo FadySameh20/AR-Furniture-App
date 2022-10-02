@@ -1,5 +1,6 @@
 
 import 'package:ar_furniture_app/shared/widgets/home_screen.dart';
+import 'package:ar_furniture_app/shared/widgets/splash_welcome_screen.dart';
 import 'package:circular_bottom_navigation/circular_bottom_navigation.dart';
 import 'package:circular_bottom_navigation/tab_item.dart';
 import 'package:flutter/material.dart';
@@ -77,44 +78,45 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       // backgroundColor: Color(0xE9E89235),
       backgroundColor: Colors.grey[300],
-      appBar: AppBar(
-          backgroundColor: Color(0xB2E89235),
-          leading: FlutterLogo(),
-          actions: [
-            IconButton(onPressed: () {}, icon: Icon(Icons.shopping_cart))
-          ],
-          centerTitle: true,
-          title: Text(
-            "Home",
-            style: TextStyle(),
-          )),
-      body: Stack(
-        children: <Widget>[
-          Padding(
-            padding: EdgeInsets.only(bottom: bottomNavBarHeight),
-            child: HomePage(),
-          ),
-          Align(
-              alignment: Alignment.bottomCenter,
-              child: CircularBottomNavigation(
-                tabItems,
-                controller: _navigationController,
-                selectedPos: selectedPos,
-                barHeight: bottomNavBarHeight,
-                barBackgroundColor: Colors.white,
-                backgroundBoxShadow: <BoxShadow>[
-                  BoxShadow(color: Colors.black45, blurRadius: 10.0),
-                ],
-                animationDuration: Duration(milliseconds: 300),
-                selectedCallback: (int? selectedPos) {
-                  setState(() {
-                    this.selectedPos = selectedPos ?? 0;
-                    print(_navigationController.value);
-                  });
-                },
-              ))
-        ],
-      ),
+      // appBar: AppBar(
+      //     backgroundColor: Color(0xB2E89235),
+      //     leading: FlutterLogo(),
+      //     actions: [
+      //       IconButton(onPressed: () {}, icon: Icon(Icons.shopping_cart))
+      //     ],
+      //     centerTitle: true,
+      //     title: Text(
+      //       "Home",
+      //       style: TextStyle(),
+      //     )),
+      body: SplashWelcomeScreen(),
+      // Stack(
+      //   children: <Widget>[
+      //     Padding(
+      //       padding: EdgeInsets.only(bottom: bottomNavBarHeight),
+      //       child: HomePage(),
+      //     ),
+      //     Align(
+      //         alignment: Alignment.bottomCenter,
+      //         child: CircularBottomNavigation(
+      //           tabItems,
+      //           controller: _navigationController,
+      //           selectedPos: selectedPos,
+      //           barHeight: bottomNavBarHeight,
+      //           barBackgroundColor: Colors.white,
+      //           backgroundBoxShadow: <BoxShadow>[
+      //             BoxShadow(color: Colors.black45, blurRadius: 10.0),
+      //           ],
+      //           animationDuration: Duration(milliseconds: 300),
+      //           selectedCallback: (int? selectedPos) {
+      //             setState(() {
+      //               this.selectedPos = selectedPos ?? 0;
+      //               print(_navigationController.value);
+      //             });
+      //           },
+      //         ))
+      //   ],
+      // ),
       // bottomNavigationBar: ,
     );
   }
