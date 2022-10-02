@@ -70,59 +70,61 @@ class Search extends StatelessWidget {
           ),
         ),
         const SizedBox(
-          height: 5,
+          height: 10,
         ),
 
-        Expanded(
-          child: ListView.builder(
-            itemBuilder: (context, index) {
-              return Padding(
-                padding: const EdgeInsets.all(8.0),
+        Container(
+          height: MediaQuery.of(context).size.height > 700
+              ? MediaQuery.of(context).size.height * 0.57
+              : MediaQuery.of(context).size.height * 0.45,
+          child: ListView(
+            scrollDirection: Axis.horizontal,
+            children: [
+              Padding(
+                padding:
+                    const EdgeInsets.only(left: 8.0, right: 8.0, bottom: 25.0),
                 child: Container(
-                  width: double.infinity,
-                  height: MediaQuery.of(context).size.height > 700
-                      ? MediaQuery.of(context).size.height * 0.3
-                      : MediaQuery.of(context).size.height * 0.25,
+                  padding: EdgeInsets.all(12.0),
+                  width: MediaQuery.of(context).size.width > 700
+                      ? MediaQuery.of(context).size.width * 0.53
+                      : MediaQuery.of(context).size.width * 0.4,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(12),
                     color: Colors.white,
                   ),
-                  child: Row(
+                  child: Column(
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.all(12.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            const Text(
-                              "Havan Chair",
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Icon(Icons.favorite_border),
+                        ],
+                      ),
+                      Image.asset('assets/Item_1.png'),
+                      Text(
+                        "Havan Chair",
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Spacer(),
+                      Row(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 8.0),
+                            child: Text(
+                              "EGP 5,000",
                               style: TextStyle(
-                                fontSize: 20,
+                                color: Color.fromRGBO(191, 122, 47, 1),
                                 fontWeight: FontWeight.bold,
+                                fontSize: 16,
                               ),
                             ),
-                            const SizedBox(height: 5),
-                            const Text(
-                              "Comfortable Chair",
-                              style: TextStyle(
-                                fontSize: 18,
-                                color: Colors.grey,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 8.0),
-                              child: Text(
-                                "EGP 5,000",
-                                style: TextStyle(
-                                  color: Color.fromRGBO(191, 122, 47, 1),
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 16,
-                                ),
-                              ),
-                            ),
-                            Material(
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Material(
                               child: const Padding(
                                 padding: EdgeInsets.all(8.0),
                                 child: Icon(
@@ -134,41 +136,140 @@ class Search extends StatelessWidget {
                               borderRadius: BorderRadius.circular(10),
                               color: const Color.fromRGBO(191, 122, 47, 1),
                             ),
-                          ],
-                        ),
-                      ),
-                      Expanded(
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Expanded(
-                              child: Padding(
-                                padding: const EdgeInsets.all(5.0),
-                                child: Container(
-                                  clipBehavior: Clip.antiAliasWithSaveLayer,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(20),
-                                  ),
-                                  child: Image.asset(
-                                    "assets/Item_1.png",
-                                    fit: BoxFit.contain,
-                                  ),
-                                ),
-                              ),
-                            ),
-                            const Padding(
-                              padding: EdgeInsets.all(8.0),
-                              child: Icon(Icons.favorite_border),
-                            ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
                 ),
-              );
-            },
-            itemCount: 3,
+              ),
+              Padding(
+                padding:
+                    const EdgeInsets.only(left: 8.0, right: 8.0, bottom: 25.0),
+                child: Container(
+                  padding: EdgeInsets.all(12.0),
+                  width: MediaQuery.of(context).size.width > 700
+                      ? MediaQuery.of(context).size.width * 0.53
+                      : MediaQuery.of(context).size.width * 0.4,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    color: Colors.white,
+                  ),
+                  child: Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Icon(Icons.favorite_border),
+                        ],
+                      ),
+                      Image.asset('assets/Item_1.png'),
+                      Text(
+                        "Havan Chair",
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Spacer(),
+                      Row(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 8.0),
+                            child: Text(
+                              "EGP 5,000",
+                              style: TextStyle(
+                                color: Color.fromRGBO(191, 122, 47, 1),
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Material(
+                              child: const Padding(
+                                padding: EdgeInsets.all(8.0),
+                                child: Icon(
+                                  Icons.add_shopping_cart,
+                                  color: Colors.white,
+                                  size: 25,
+                                ),
+                              ),
+                              borderRadius: BorderRadius.circular(10),
+                              color: const Color.fromRGBO(191, 122, 47, 1),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              Padding(
+                padding:
+                    const EdgeInsets.only(left: 8.0, right: 8.0, bottom: 25.0),
+                child: Container(
+                  padding: EdgeInsets.all(12.0),
+                  width: MediaQuery.of(context).size.width > 700
+                      ? MediaQuery.of(context).size.width * 0.53
+                      : MediaQuery.of(context).size.width * 0.4,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(12),
+                    color: Colors.white,
+                  ),
+                  child: Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Icon(Icons.favorite_border),
+                        ],
+                      ),
+                      Image.asset('assets/Item_1.png'),
+                      Text(
+                        "Havan Chair",
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Spacer(),
+                      Row(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 8.0),
+                            child: Text(
+                              "EGP 5,000",
+                              style: TextStyle(
+                                color: Color.fromRGBO(191, 122, 47, 1),
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Material(
+                              child: const Padding(
+                                padding: EdgeInsets.all(8.0),
+                                child: Icon(
+                                  Icons.add_shopping_cart,
+                                  color: Colors.white,
+                                  size: 25,
+                                ),
+                              ),
+                              borderRadius: BorderRadius.circular(10),
+                              color: const Color.fromRGBO(191, 122, 47, 1),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       ],
