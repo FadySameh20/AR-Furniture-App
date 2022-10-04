@@ -78,7 +78,7 @@ class HomePage extends StatelessWidget {
             ],
           ),
           Container(
-            height: MediaQuery.of(context).size.height * 0.15,
+            height: MediaQuery.of(context).size.height>700? MediaQuery.of(context).size.height*0.15:MediaQuery.of(context).size.height*0.175,
             child: ListView.builder(
                 scrollDirection: Axis.horizontal,
                 itemCount: furniture.length,
