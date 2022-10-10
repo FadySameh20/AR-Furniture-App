@@ -10,7 +10,7 @@ import 'package:flutter/material.dart';
 void main() async{
   await WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  print(FirebaseAuth.instance.currentUser!.email);
+  // print(FirebaseAuth.instance.currentUser!.email);
   runApp(const MyApp());
 }
 
