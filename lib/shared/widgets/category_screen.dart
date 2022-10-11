@@ -1,12 +1,10 @@
+import 'package:ar_furniture_app/shared/widgets/favorite_icon.dart';
 import 'package:flutter/material.dart';
 
+import '../constants/constants.dart';
+import 'categories_scroller.dart';
+
 class CategoriesScreen extends StatelessWidget {
-  List<String> furniture = ["Chair", "Sofa", "Drawer"];
-  List<String> categoriesImages = [
-    "assets/chair.png",
-    "assets/seater-sofa.png",
-    "assets/drawers.png"
-  ];
 
   List<String> furnitureImages = [
     "assets/Item_1.png",
@@ -37,68 +35,14 @@ class CategoriesScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Container(
-          margin: EdgeInsets.only(top: 15.0),
-          height: MediaQuery.of(context).size.height > 700
-              ? MediaQuery.of(context).size.height * 0.15
-              : MediaQuery.of(context).size.height * 0.175,
-          child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: furniture.length,
-              itemBuilder: (context, index) {
-                return Padding(
-                  padding:
-                      const EdgeInsets.only(bottom: 15.0, left: 15, right: 15),
-                  child: Container(
-                    height: 30,
-                    width: 70,
-                    decoration: BoxDecoration(
-                        color: index == 1
-                            ? const Color.fromRGBO(191, 122, 47, 1)
-                            : Colors.white,
-                        borderRadius: BorderRadius.circular(50)),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Expanded(
-                              child: CircleAvatar(
-                            radius: 25,
-                            backgroundColor: Colors.grey[300],
-                            // radius: 10,
-                            child: Padding(
-                              padding: const EdgeInsets.all(7.0),
-                              child: Image.asset(
-                                categoriesImages[index],
-                                fit: BoxFit.fill,
-                              ),
-                            ),
-                          )),
-                          const SizedBox(
-                            height: 5,
-                          ),
-                          Text(
-                            furniture[index],
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                                color:
-                                    index == 1 ? Colors.white : Colors.black),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                );
-              }),
-        ),
+        CategoriesScroller(),
         Expanded(
           child: Stack(
             children: [
               Container(
                 margin: EdgeInsets.only(top: 90),
                 decoration: BoxDecoration(
-                  color: Color.fromRGBO(191, 122, 47, 0.2),
+                  color: kAppBackgroundColorLowOpacity,
                   borderRadius: BorderRadius.only(
                     topRight: Radius.circular(20.0),
                     topLeft: Radius.circular(20.0),
@@ -151,7 +95,7 @@ class CategoriesScreen extends StatelessWidget {
                                 ),
                               ),
                               decoration: BoxDecoration(
-                                color: Color.fromRGBO(191, 122, 47, 1),
+                                color: kAppBackgroundColor,
                                 borderRadius: BorderRadius.circular(20.0),
                               ),
                             ),
@@ -207,10 +151,7 @@ class CategoriesScreen extends StatelessWidget {
                                       onPressed: () {
                                         print('Add to favorites');
                                       },
-                                      child: Icon(
-                                        Icons.favorite_border_rounded,
-                                        color: Color.fromRGBO(191, 122, 47, 1),
-                                      ),
+                                      child: FavoriteIcon(iconLogo: Icons.favorite_border_rounded, iconColor: kAppBackgroundColor,),
                                       style: TextButton.styleFrom(
                                         padding: EdgeInsets.zero,
                                         tapTargetSize:
@@ -227,7 +168,7 @@ class CategoriesScreen extends StatelessWidget {
                                       },
                                       child: Icon(
                                         Icons.add_shopping_cart,
-                                        color: Color.fromRGBO(191, 122, 47, 1),
+                                        color: kAppBackgroundColor,
                                       ),
                                       style: TextButton.styleFrom(
                                         padding: EdgeInsets.zero,

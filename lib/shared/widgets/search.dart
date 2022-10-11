@@ -1,4 +1,7 @@
+import 'package:ar_furniture_app/shared/widgets/favorite_icon.dart';
 import 'package:flutter/material.dart';
+
+import '../constants/constants.dart';
 
 class Search extends StatelessWidget {
   //const Search({Key? key}) : super(key: key);
@@ -13,7 +16,7 @@ class Search extends StatelessWidget {
               child: Padding(
                 padding: const EdgeInsets.all(10.0),
                 child: TextField(
-                  cursorColor: const Color.fromRGBO(191, 122, 47, 1),
+                  cursorColor: kAppBackgroundColor,
                   decoration: InputDecoration(
                     enabledBorder: OutlineInputBorder(
                       borderSide: const BorderSide(color: Colors.white),
@@ -26,7 +29,7 @@ class Search extends StatelessWidget {
                     hintText: 'What are you looking for?',
                     prefixIcon: const Icon(
                       Icons.search,
-                      color: Color.fromRGBO(191, 122, 47, 1),
+                      color: kAppBackgroundColor,
                       size: 25,
                     ),
                     filled: true,
@@ -47,7 +50,7 @@ class Search extends StatelessWidget {
                 ),
               ),
               borderRadius: BorderRadius.circular(10),
-              color: const Color.fromRGBO(191, 122, 47, 1),
+              color: kAppBackgroundColor,
             ),
             const SizedBox(
               width: 10,
@@ -97,7 +100,7 @@ class Search extends StatelessWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          Icon(Icons.favorite_border),
+                          FavoriteIcon(iconLogo: Icons.favorite_border_rounded),
                         ],
                       ),
                       Image.asset('assets/Item_1.png'),
@@ -116,7 +119,7 @@ class Search extends StatelessWidget {
                             child: Text(
                               "EGP 5,000",
                               style: TextStyle(
-                                color: Color.fromRGBO(191, 122, 47, 1),
+                                color: kAppBackgroundColor,
                                 fontWeight: FontWeight.bold,
                                 fontSize: 16,
                               ),
@@ -134,7 +137,7 @@ class Search extends StatelessWidget {
                                 ),
                               ),
                               borderRadius: BorderRadius.circular(10),
-                              color: const Color.fromRGBO(191, 122, 47, 1),
+                              color: kAppBackgroundColor,
                             ),
                           ),
                         ],
@@ -160,7 +163,7 @@ class Search extends StatelessWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          Icon(Icons.favorite_border),
+                          FavoriteIcon(iconLogo: Icons.favorite_border_rounded),
                         ],
                       ),
                       Image.asset('assets/Item_1.png'),
@@ -179,7 +182,7 @@ class Search extends StatelessWidget {
                             child: Text(
                               "EGP 5,000",
                               style: TextStyle(
-                                color: Color.fromRGBO(191, 122, 47, 1),
+                                color: kAppBackgroundColor,
                                 fontWeight: FontWeight.bold,
                                 fontSize: 16,
                               ),
@@ -197,7 +200,7 @@ class Search extends StatelessWidget {
                                 ),
                               ),
                               borderRadius: BorderRadius.circular(10),
-                              color: const Color.fromRGBO(191, 122, 47, 1),
+                              color: kAppBackgroundColor,
                             ),
                           ),
                         ],
@@ -223,7 +226,7 @@ class Search extends StatelessWidget {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          Icon(Icons.favorite_border),
+                          FavoriteIcon(iconLogo: Icons.favorite_border_rounded),
                         ],
                       ),
                       Image.asset('assets/Item_1.png'),
@@ -242,7 +245,7 @@ class Search extends StatelessWidget {
                             child: Text(
                               "EGP 5,000",
                               style: TextStyle(
-                                color: Color.fromRGBO(191, 122, 47, 1),
+                                color: kAppBackgroundColor,
                                 fontWeight: FontWeight.bold,
                                 fontSize: 16,
                               ),
@@ -260,7 +263,7 @@ class Search extends StatelessWidget {
                                 ),
                               ),
                               borderRadius: BorderRadius.circular(10),
-                              color: const Color.fromRGBO(191, 122, 47, 1),
+                              color: kAppBackgroundColor,
                             ),
                           ),
                         ],
