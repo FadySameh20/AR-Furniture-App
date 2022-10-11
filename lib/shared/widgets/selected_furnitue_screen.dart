@@ -1,5 +1,8 @@
+import 'package:ar_furniture_app/shared/widgets/favorite_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+
+import '../constants/constants.dart';
 
 class SelectedFurnitureScreen extends StatefulWidget {
   @override
@@ -43,7 +46,7 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                     radius: MediaQuery.of(context).size.height > 700
                         ? MediaQuery.of(context).size.width * 0.5
                         : MediaQuery.of(context).size.width * 0.45,
-                    backgroundColor: Color.fromRGBO(191, 122, 47, 0.2),
+                    backgroundColor: kAppBackgroundColorLowOpacity,
                   ),
                 ),
                 Align(
@@ -63,14 +66,8 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                       });
                     },
                     child: addedToFavorites
-                        ? Icon(
-                            Icons.favorite,
-                            color: Color.fromRGBO(191, 122, 47, 1),
-                          )
-                        : Icon(
-                            Icons.favorite_border_rounded,
-                            color: Color.fromRGBO(191, 122, 47, 1),
-                          ),
+                        ? FavoriteIcon(iconLogo: Icons.favorite, iconColor: kAppBackgroundColor,)
+                        : FavoriteIcon(iconLogo: Icons.favorite_border_rounded, iconColor: kAppBackgroundColor,),
                   ),
                 ),
               ],
@@ -119,7 +116,7 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                         style: TextStyle(
                           fontSize: 18.0,
                           fontWeight: FontWeight.w600,
-                          color: Color.fromRGBO(191, 122, 47, 1),
+                          color: kAppBackgroundColor,
                         ),
                       ),
                     ),
@@ -255,7 +252,7 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                                 : 18.0,
                             color: Colors.white,
                           ),
-                          backgroundColor: Color.fromRGBO(191, 122, 47, 1),
+                          backgroundColor: kAppBackgroundColor,
                         ),
                       ),
                       SizedBox(
@@ -290,7 +287,7 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                                 : 18.0,
                             color: Colors.white,
                           ),
-                          backgroundColor: Color.fromRGBO(191, 122, 47, 1),
+                          backgroundColor: kAppBackgroundColor,
                         ),
                       ),
                     ],
@@ -332,7 +329,7 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12.0),
                         ),
-                        backgroundColor: Color.fromRGBO(191, 122, 47, 1),
+                        backgroundColor: kAppBackgroundColor,
                         padding: EdgeInsets.symmetric(
                             horizontal: 20.0, vertical: 10.0),
                       ),
@@ -373,11 +370,12 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                           Positioned(
                             top: 22.0,
                             right: 22.0,
-                            child: Icon(
-                              Icons.favorite_border_rounded,
-                              size: MediaQuery.of(context).size.height > 700
-                                  ? 22.0
-                                  : 18.0,
+                            child: FavoriteIcon(
+                              iconLogo: Icons.favorite_border_rounded,
+                              iconColor: kAppBackgroundColor,
+                              iconSize: MediaQuery.of(context).size.height > 700
+                                        ? 22.0
+                                        : 18.0,
                             ),
                           ),
                         ],

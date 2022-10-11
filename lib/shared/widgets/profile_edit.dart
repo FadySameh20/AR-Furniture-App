@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../constants/constants.dart';
+
 
 class ProfileEdit extends StatefulWidget{
   @override
@@ -58,7 +60,7 @@ class _ProfileEditState extends State<ProfileEdit> {
                                     width: 4,
                                     color: Colors.white
                                 ),
-                                color: Color.fromRGBO(191, 122, 47, 1)
+                                color: kAppBackgroundColor,
                             ),
                             child: Icon(
                               Icons.edit,
@@ -111,7 +113,7 @@ class _ProfileEditState extends State<ProfileEdit> {
                           color: Colors.white
                         )),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Color.fromRGBO(191, 122, 47, 1),
+                        backgroundColor: kAppBackgroundColor,
                         padding: EdgeInsets.symmetric(horizontal: 50),
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20))
                       ),

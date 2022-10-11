@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../constants/constants.dart';
+
 class SplashWelcomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -46,7 +48,7 @@ class SplashWelcomeScreen extends StatelessWidget {
 
                   Color.fromRGBO(239, 169, 93, 1.0),
 
-                  Color.fromRGBO(191, 122, 47, 1),
+                  kAppBackgroundColor,
                 ]),
               ),
               child: Center(

@@ -1,5 +1,9 @@
+import 'package:ar_furniture_app/shared/widgets/favorite_icon.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+
+import '../constants/constants.dart';
+import 'categories_scroller.dart';
 
 class HomePage extends StatelessWidget {
   List<String> furniture = ["Chair", "Sofa", "Drawer"];
@@ -77,58 +81,7 @@ class HomePage extends StatelessWidget {
               )
             ],
           ),
-          Container(
-            height: MediaQuery.of(context).size.height>700? MediaQuery.of(context).size.height*0.15:MediaQuery.of(context).size.height*0.175,
-            child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: furniture.length,
-                itemBuilder: (context, index) {
-                  return Padding(
-                    padding: const EdgeInsets.only(
-                        bottom: 15.0, left: 15, right: 15),
-                    child: Container(
-                      height: 30,
-                      width: 70,
-                      decoration: BoxDecoration(
-                          color: index == 1
-                              ? const Color.fromRGBO(191, 122, 47, 1)
-                              : Colors.white,
-                          borderRadius: BorderRadius.circular(50)),
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Expanded(
-                                child: CircleAvatar(
-                              radius: 25,
-                              backgroundColor: Colors.grey[300],
-                              // radius: 10,
-                              child: Padding(
-                                padding: const EdgeInsets.all(7.0),
-                                child: Image.asset(
-                                  images[index],
-                                  fit: BoxFit.fill,
-                                ),
-                              ),
-                            )),
-                            const SizedBox(
-                              height: 5,
-                            ),
-                            Text(
-                              furniture[index],
-                              overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
-                                  color:
-                                      index == 1 ? Colors.white : Colors.black),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  );
-                }),
-          ),
+          CategoriesScroller(),
           SizedBox(
             height: 10,
           ),
@@ -225,16 +178,16 @@ class HomePage extends StatelessWidget {
                                   padding: const EdgeInsets.symmetric(
                                       horizontal: 12.0),
                                   child: Row(
-                                    children: const [
-                                      Text(
+                                    children: [
+                                      const Text(
                                         "\$75",
                                         style: TextStyle(
                                             fontWeight: FontWeight.bold,
                                             fontSize: 17),
                                       ),
-                                      Spacer(),
-                                      Icon(Icons.favorite_border),
-                                      Text(
+                                      const Spacer(),
+                                      FavoriteIcon(iconLogo: Icons.favorite_border_rounded),
+                                      const Text(
                                         "(123)",
                                         style: TextStyle(
                                             fontWeight: FontWeight.bold,
