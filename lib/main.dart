@@ -1,8 +1,10 @@
+import 'package:ar_furniture_app/models/user_model.dart';
 import 'package:ar_furniture_app/shared/widgets/login_screen.dart';
 import 'package:ar_furniture_app/shared/widgets/search.dart';
 import 'package:circular_bottom_navigation/circular_bottom_navigation.dart';
 import 'package:ar_furniture_app/shared/widgets/profile_edit.dart';
 import 'package:circular_bottom_navigation/tab_item.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +12,15 @@ import 'package:flutter/material.dart';
 void main() async{
   await WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+
+// FirebaseAuth.instance.currentUser!.uid;
+  // FirebaseFirestore.instance.collection("user").doc(FirebaseAuth.instance.currentUser!.uid)
+  // FirebaseFirestore.instance.collection("user").add({"name":"ahmed"});
+  // FirebaseFirestore.instance.collection("user").get().then((value) {
+    // for (var element in value.docs) {
+      // print(element.data());
+    // }
+  // });
   // print(FirebaseAuth.instance.currentUser!.email);
   runApp(const MyApp());
 }

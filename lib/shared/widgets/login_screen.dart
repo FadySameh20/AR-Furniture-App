@@ -1,6 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+
+import '../../models/user_model.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -53,6 +56,22 @@ class _LoginScreenState extends State<LoginScreen> {
                                   obscureText: true,
                                 ),
                                 SizedBox(height: 10,),
+                                // ElevatedButton(onPressed: ()async{
+                                //   //Firebase Authentication register
+                                //   // var resp=await FirebaseAuth.instance.createUserWithEmailAndPassword(email: "a@", password: "123456");
+                                //   // resp.user.uid;
+                                //   // UserModel myUser=UserModel(fName: "Ahmed", lName:"El selmy", phone: "01231321312", address: "Janaklees", uid:"ddqrKl5AZ0dsMYHVP6b3UXm4NOk1" , email: "test@gmail.com");
+                                //   // FirebaseFirestore.instance.collection("user").doc("ddqrKl5AZ0dsMYHVP6b3UXm4NOk1").set(myUser.toMap());
+                                //   UserModel myModel;
+                                //   FirebaseFirestore.instance.collection("user").doc("ddqrKl5AZ0dsMYHVP6b3UXm4NOk1").get().then((value) {
+                                //     myModel=UserModel.fromJson(value.data() as Map<String,dynamic>);
+                                //     print(myModel.uid);
+                                //     print(myModel.address);
+                                //     print(myModel.fName);
+                                //     print(myModel.lName);
+                                //   });
+                                //
+                                // }, child: Text("Add User")),
                                 ElevatedButton(onPressed: ()async{
                                   if(formKey.currentState!.validate()){}
                                   print(emailController.text);
