@@ -1,5 +1,6 @@
 import 'package:ar_furniture_app/shared/widgets/auth_cubit.dart';
 import 'package:ar_furniture_app/shared/widgets/auth_states.dart';
+import 'package:ar_furniture_app/shared/widgets/validations.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -14,6 +15,8 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  Validations validate = Validations();
+  var checkReturn;
   var emailController = TextEditingController();
   var passController = TextEditingController();
   var formKey = GlobalKey<FormState>();
@@ -60,15 +63,33 @@ class _LoginScreenState extends State<LoginScreen> {
                                   decoration:
                                       InputDecoration(hintText: "Email"),
                                   validator: (value) {
-                                    if (value!.isEmpty)
-                                      return "You entered nothing";
+                                    checkReturn = validate.validationEmptyNull(value!);
+                                    if (checkReturn != null){
+                                      return checkReturn;
+                                    }
+                                    checkReturn = validate.validateEmail(value);
+                                    if (checkReturn != null){
+                                      return checkReturn;
+                                    }
+                                    return null;
                                   },
                                 ),
-                                TextField(
+                                TextFormField(
                                   controller: passController,
                                   decoration:
                                       InputDecoration(hintText: "Password"),
                                   obscureText: true,
+                                  validator: (value){
+                                    checkReturn = validate.validationEmptyNull(value!);
+                                    if (checkReturn != null){
+                                      return checkReturn;
+                                    }
+                                    checkReturn = validate.validatePassword(value);
+                                    if (checkReturn != null){
+                                      return checkReturn;
+                                    }
+                                    return null;
+                                  },
                                 ),
                                 SizedBox(
                                   height: 10,
