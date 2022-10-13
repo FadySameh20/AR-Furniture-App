@@ -33,50 +33,11 @@ class BoardingScreen extends StatelessWidget {
         ),
         body: Column(
           children: [
-            Expanded(flex: 2, child: buildBoardingCard(context)),
-            Expanded(flex: 3, child: Column(
-              children: [
-                Text("Welcome to our App",style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
-                SizedBox(height: 10,),
-                Text("Appp gamedddd gdnn")
-              ],
-            )),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 18),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
 
-                children: [
-                  TextButton(onPressed:(){}, child:Text('Previous',
-                style: TextStyle(
-                fontSize: 16, color: Colors.black),
-            )
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 10),
-                    child: SmoothPageIndicator(
-                      controller: controller,
-                      count:  3,
-                      axisDirection: Axis.horizontal,
-                      effect: JumpingDotEffect(
-                        dotHeight: 16,
-                        dotWidth: 16,
-                        jumpScale: .7,
-                        verticalOffset: 15,
-                        activeDotColor: kAppBackgroundColor,
-                      ),
-                    ),
-                  ),
-                  TextButton(onPressed:(){}, child:Text('Next',
-                      style: TextStyle(
-                          fontSize: 16, color: Colors.black)),
+            Expanded(flex:2,child: pages(context)),
+            // Expanded(flex: 2, child: Container()),
+            // Expanded(flex: 3, child: Container())
 
-                  ),
-
-                ],
-
-              ),
-            )
           ],
         ));
   }
@@ -115,6 +76,32 @@ class BoardingScreen extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+  @override
+  Widget pages(BuildContext context) {
+    final PageController controller = PageController();
+    return PageView(
+      /// [PageView.scrollDirection] defaults to [Axis.horizontal].
+      /// Use [Axis.vertical] to scroll vertically.
+      controller: controller,
+      children:  <Widget>[
+        Column(
+          children: [
+            Expanded(flex: 2, child: buildBoardingCard(context)),
+            Expanded(flex: 3, child: Container())
+          ],),
+
+        // Center(
+        //     child: buildBoardingCard(context)
+        // ),
+        Center(
+          child: Text('Second Page'),
+        ),
+        Center(
+          child: Text('Third Page'),
+        ),
+      ],
     );
   }
 }
