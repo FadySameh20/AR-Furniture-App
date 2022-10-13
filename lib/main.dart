@@ -1,4 +1,5 @@
 import 'package:ar_furniture_app/models/user_model.dart';
+import 'package:ar_furniture_app/shared/widgets/boarding_screen.dart';
 import 'package:ar_furniture_app/shared/widgets/login_screen.dart';
 import 'package:ar_furniture_app/shared/widgets/search.dart';
 import 'package:circular_bottom_navigation/circular_bottom_navigation.dart';
@@ -33,7 +34,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: LoginScreen(),
+      home: BoardingScreen(),
     );
   }
 }
