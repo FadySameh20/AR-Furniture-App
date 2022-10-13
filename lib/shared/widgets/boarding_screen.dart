@@ -37,7 +37,42 @@ class BoardingScreen extends StatelessWidget {
             Expanded(flex:2,child: pages(context)),
             // Expanded(flex: 2, child: Container()),
             // Expanded(flex: 3, child: Container())
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 18),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
 
+                children: [
+                  TextButton(onPressed:(){}, child:Text('Previous',
+                style: TextStyle(
+                fontSize: 16, color: Colors.black),
+            )
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 10),
+                    child: SmoothPageIndicator(
+                      controller: controller,
+                      count:  3,
+                      axisDirection: Axis.horizontal,
+                      effect: JumpingDotEffect(
+                        dotHeight: 16,
+                        dotWidth: 16,
+                        jumpScale: .7,
+                        verticalOffset: 15,
+                        activeDotColor: kAppBackgroundColor,
+                      ),
+                    ),
+                  ),
+                  TextButton(onPressed:(){}, child:Text('Next',
+                      style: TextStyle(
+                          fontSize: 16, color: Colors.black)),
+
+                  ),
+
+                ],
+
+              ),
+            )
           ],
         ));
   }
