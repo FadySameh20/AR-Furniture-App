@@ -15,7 +15,7 @@ class BoardingScreen extends StatelessWidget {
             // Status bar brightness (optional)
             statusBarIconBrightness: Brightness.dark,
             // For Android (dark icons)
-            statusBarBrightness: Brightness.dark, // For iOS (dark icons)
+            statusBarBrightness: Brightness.light, // For iOS (dark icons)
           ),
           actions: [
             TextButton(
@@ -29,8 +29,9 @@ class BoardingScreen extends StatelessWidget {
         ),
         body: Column(
           children: [
-            Expanded(flex: 2, child: buildBoardingCard(context)),
-            Expanded(flex: 3, child: Container())
+            Expanded(flex:2,child: pages(context)),
+            // Expanded(flex: 2, child: Container()),
+            // Expanded(flex: 3, child: Container())
           ],
         ));
   }
@@ -69,6 +70,32 @@ class BoardingScreen extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+  @override
+  Widget pages(BuildContext context) {
+    final PageController controller = PageController();
+    return PageView(
+      /// [PageView.scrollDirection] defaults to [Axis.horizontal].
+      /// Use [Axis.vertical] to scroll vertically.
+      controller: controller,
+      children:  <Widget>[
+        Column(
+          children: [
+            Expanded(flex: 2, child: buildBoardingCard(context)),
+            Expanded(flex: 3, child: Container())
+          ],),
+
+        // Center(
+        //     child: buildBoardingCard(context)
+        // ),
+        Center(
+          child: Text('Second Page'),
+        ),
+        Center(
+          child: Text('Third Page'),
+        ),
+      ],
     );
   }
 }
