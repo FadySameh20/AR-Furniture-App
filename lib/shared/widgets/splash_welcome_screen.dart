@@ -26,23 +26,62 @@ class SplashWelcomeScreen extends StatelessWidget {
           Align(
             alignment: Alignment.bottomCenter,
             child: Container(
-              height: MediaQuery.of(context).size.height/1.4,
+              height: MediaQuery.of(context).size.height / 1.4,
               child: Image.asset(
                 "assets/welcome.jpg",
                 fit: BoxFit.cover,
               ),
             ),
           ),
+          Positioned(
+            bottom: 20.0,
+            left: MediaQuery.of(context).size.width/8.5,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                // Spacer(),
+                Padding(
+                  padding: const EdgeInsets.only(right: 20.0),
+                  child: ElevatedButton(
+                    onPressed: () {},
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: Color.fromRGBO(191, 122, 47, 1),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10)),
+                        padding: EdgeInsets.all(10),
+                        minimumSize: Size(150, 50)),
+                    child: Text(
+                      "signup",
+                      style: TextStyle(fontSize: 18),
+                    ),
+                  ),
+                ),
 
+                ElevatedButton(
+                  onPressed: () {},
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Color.fromRGBO(191, 122, 47, 1),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10)),
+                    padding: EdgeInsets.all(10),
+                    minimumSize: Size(150, 50),
+                  ),
+                  child: Text(
+                    "login",
+                    style: TextStyle(fontSize: 18),
+                  ),
+                ),
+              ],
+            ),
+          ),
           ClipPath(
             clipper: WaveClip(),
             child: Container(
-              height: MediaQuery.of(context).size.height/2.1,
+              height: MediaQuery.of(context).size.height / 2.1,
               width: double.infinity,
               // color: const Colors.blue,
               decoration: const BoxDecoration(
                 gradient: LinearGradient(colors: [
-
                   // 234,
                   Color.fromRGBO(248, 197, 142, 1.0),
 
@@ -57,31 +96,43 @@ class SplashWelcomeScreen extends StatelessWidget {
                   children: [
                     Text(
                       "Hello.",
-                      style: const TextStyle(color: Colors.white, fontSize: 30, fontWeight: FontWeight.bold),
-
+                      style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 30,
+                          fontWeight: FontWeight.bold),
                     ),
-                    Text("Welcome to our App!",
-                        style:  const TextStyle(color: Colors.white, fontSize: 15),
-                    ) ],
+                    Text(
+                      "Welcome to our App!",
+                      style: const TextStyle(color: Colors.white, fontSize: 15),
+                    ),
+
+                    // ElevatedButton(onPressed: (){},
+                    //   style: ElevatedButton.styleFrom(
+                    //     backgroundColor:       Color.fromRGBO(191, 122, 47, 1),
+                    //
+                    //   ),
+                    //   child: Text("signup",
+                    //   style:TextStyle(fontSize: 18),
+                    // ),
+                    // ),
+                  ],
                 ),
               ),
             ),
           ),
-
-
-
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.white,
-        child: const Icon(
-          Icons.navigate_next,
-          color: Colors.black,
-        ),
-        onPressed: () {
 
-        },
-      ),
+      // floatingActionButton: FloatingActionButton(
+      //   backgroundColor: Colors.white,
+      //   child: const Icon(
+      //     Icons.navigate_next,
+      //     color: Colors.black,
+      //   ),
+      //   onPressed: () {
+      //
+      //   },
+      // ),
     );
   }
 }
