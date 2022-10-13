@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+
+import '../constants/constants.dart';
 
 class BoardingScreen extends StatelessWidget {
+  final controller = PageController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -15,7 +19,7 @@ class BoardingScreen extends StatelessWidget {
             // Status bar brightness (optional)
             statusBarIconBrightness: Brightness.dark,
             // For Android (dark icons)
-            statusBarBrightness: Brightness.dark, // For iOS (dark icons)
+            statusBarBrightness: Brightness.light, // For iOS (dark icons)
           ),
           actions: [
             TextButton(
@@ -30,7 +34,49 @@ class BoardingScreen extends StatelessWidget {
         body: Column(
           children: [
             Expanded(flex: 2, child: buildBoardingCard(context)),
-            Expanded(flex: 3, child: Container())
+            Expanded(flex: 3, child: Column(
+              children: [
+                Text("Welcome to our App",style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),),
+                SizedBox(height: 10,),
+                Text("Appp gamedddd gdnn")
+              ],
+            )),
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 18),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+
+                children: [
+                  TextButton(onPressed:(){}, child:Text('Previous',
+                style: TextStyle(
+                fontSize: 16, color: Colors.black),
+            )
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 10),
+                    child: SmoothPageIndicator(
+                      controller: controller,
+                      count:  3,
+                      axisDirection: Axis.horizontal,
+                      effect: JumpingDotEffect(
+                        dotHeight: 16,
+                        dotWidth: 16,
+                        jumpScale: .7,
+                        verticalOffset: 15,
+                        activeDotColor: kAppBackgroundColor,
+                      ),
+                    ),
+                  ),
+                  TextButton(onPressed:(){}, child:Text('Next',
+                      style: TextStyle(
+                          fontSize: 16, color: Colors.black)),
+
+                  ),
+
+                ],
+
+              ),
+            )
           ],
         ));
   }
