@@ -1,7 +1,10 @@
 import 'package:ar_furniture_app/models/user_model.dart';
+import 'package:ar_furniture_app/shared/cache/sharedpreferences.dart';
+import 'package:ar_furniture_app/shared/constants/constants.dart';
 import 'package:ar_furniture_app/shared/widgets/boarding_screen.dart';
 import 'package:ar_furniture_app/shared/widgets/login_screen.dart';
 import 'package:ar_furniture_app/shared/widgets/search.dart';
+import 'package:ar_furniture_app/shared/widgets/splash_welcome_screen.dart';
 import 'package:circular_bottom_navigation/circular_bottom_navigation.dart';
 import 'package:ar_furniture_app/shared/widgets/profile_edit.dart';
 import 'package:circular_bottom_navigation/tab_item.dart';
@@ -9,20 +12,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 void main() async{
   await WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-
-// FirebaseAuth.instance.currentUser!.uid;
-  // FirebaseFirestore.instance.collection("user").doc(FirebaseAuth.instance.currentUser!.uid)
-  // FirebaseFirestore.instance.collection("user").add({"name":"ahmed"});
-  // FirebaseFirestore.instance.collection("user").get().then((value) {
-    // for (var element in value.docs) {
-      // print(element.data());
-    // }
-  // });
-  // print(FirebaseAuth.instance.currentUser!.email);
+  await CacheHelper.init();
   runApp(const MyApp());
 }
 
@@ -34,7 +29,18 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: BoardingScreen(),
+      initialRoute: '/',
+      theme: ThemeData(
+        scaffoldBackgroundColor: Color.fromRGBO(242, 246, 249, 1),
+        textTheme: TextTheme(
+          bodyText1: GoogleFonts.crimsonPro()
+        )
+      ),
+      routes: {
+        '/': (context)=>CacheHelper.getData("hasPassedBoardingScreen")!=null?SplashWelcomeScreen():BoardingScreen(),
+        // '/login'
+      },
+      // home: BoardingScreen(),
     );
   }
 }
