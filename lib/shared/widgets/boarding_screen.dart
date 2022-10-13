@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
+
+import '../constants/constants.dart';
 
 class BoardingScreen extends StatelessWidget {
+  final controller = PageController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,9 +33,11 @@ class BoardingScreen extends StatelessWidget {
         ),
         body: Column(
           children: [
+
             Expanded(flex:2,child: pages(context)),
             // Expanded(flex: 2, child: Container()),
             // Expanded(flex: 3, child: Container())
+
           ],
         ));
   }
