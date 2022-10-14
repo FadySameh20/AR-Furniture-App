@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 import '../constants/constants.dart';
+import 'circle_avatar.dart';
 
 class SelectedFurnitureScreen extends StatefulWidget {
   @override
@@ -42,12 +43,20 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                   left: MediaQuery.of(context).size.height > 700
                       ? -MediaQuery.of(context).size.height * 0.182
                       : -MediaQuery.of(context).size.height * 0.155,
-                  child: CircleAvatar(
-                    radius: MediaQuery.of(context).size.height > 700
-                        ? MediaQuery.of(context).size.width * 0.5
-                        : MediaQuery.of(context).size.width * 0.45,
-                    backgroundColor: kAppBackgroundColorLowOpacity,
+                  child: CustomCircleAvatar(
+
+                    radius :  MediaQuery.of(context).size.height > 700
+                          ? MediaQuery.of(context).size.width * 0.5
+                          : MediaQuery.of(context).size.width * 0.45,
+                    CavatarColor:kAppBackgroundColorLowOpacity ,
                   ),
+
+                  // child: CircleAvatar(
+                  //   radius: MediaQuery.of(context).size.height > 700
+                  //       ? MediaQuery.of(context).size.width * 0.5
+                  //       : MediaQuery.of(context).size.width * 0.45,
+                  //   backgroundColor: kAppBackgroundColorLowOpacity,
+                  // ),
                 ),
                 Align(
                   alignment: Alignment.center,
@@ -124,7 +133,7 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                 ),
                 SizedBox(
                   height:
-                      MediaQuery.of(context).size.height > 700 ? 10.0 : 15.0,
+                  MediaQuery.of(context).size.height > 700 ? 10.0 : 15.0,
                 ),
                 Expanded(
                   flex: 2,
@@ -188,25 +197,43 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                               },
                               child: Padding(
                                 padding: const EdgeInsets.only(right: 8.0),
-                                child: CircleAvatar(
-                                  backgroundColor: availableColors[index],
-                                  radius:
-                                      MediaQuery.of(context).size.height > 700
-                                          ? 15.0
-                                          : 12.0,
-                                  child: index == selectedColorIndex
-                                      ? Icon(
-                                          Icons.check,
-                                          color: Colors.white,
-                                          size: MediaQuery.of(context)
-                                                      .size
-                                                      .height >
-                                                  700
-                                              ? 22.0
-                                              : 18.0,
-                                        )
-                                      : null,
+                                child: CustomCircleAvatar(
+                                  radius : MediaQuery.of(context).size.height > 700
+                                            ? 15.0
+                                            : 12.0,
+                                  CavatarColor: availableColors[index],
+                                  icon: index == selectedColorIndex
+                                        ? Icon(
+                                            Icons.check,
+                                            color: Colors.white,
+                                            size: MediaQuery.of(context)
+                                                        .size
+                                                        .height >
+                                                    700
+                                                ? 22.0
+                                                : 18.0,
+                                          )
+                                        : null,
                                 ),
+                                // child:CircleAvatar(
+                                //   backgroundColor: availableColors[index],
+                                //   radius:
+                                //   MediaQuery.of(context).size.height > 700
+                                //       ? 15.0
+                                //       : 12.0,
+                                //   child: index == selectedColorIndex
+                                //       ? Icon(
+                                //     Icons.check,
+                                //     color: Colors.white,
+                                //     size: MediaQuery.of(context)
+                                //         .size
+                                //         .height >
+                                //         700
+                                //         ? 22.0
+                                //         : 18.0,
+                                //   )
+                                //       : null,
+                                // ),
                               ),
                             );
                           },
@@ -217,7 +244,7 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                 ),
                 SizedBox(
                   height:
-                      MediaQuery.of(context).size.height > 700 ? 15.0 : 10.0,
+                  MediaQuery.of(context).size.height > 700 ? 15.0 : 10.0,
                 ),
                 Expanded(
                   flex: 2,
@@ -241,19 +268,32 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                             }
                           });
                         },
-                        child: CircleAvatar(
+                        child: CustomCircleAvatar(
                           radius: MediaQuery.of(context).size.height > 700
-                              ? 15.0
-                              : 12.0,
-                          child: Icon(
-                            Icons.remove,
-                            size: MediaQuery.of(context).size.height > 700
-                                ? 22.0
-                                : 18.0,
-                            color: Colors.white,
-                          ),
-                          backgroundColor: kAppBackgroundColor,
+                                    ? 15.0
+                                    : 12.0,
+                          CavatarColor: kAppBackgroundColor,
+                          icon: Icon(
+                                Icons.remove,
+                                size: MediaQuery.of(context).size.height > 700
+                                    ? 22.0
+                                    : 18.0,
+                                color: Colors.white,
+                              ),
                         ),
+                        // child: CircleAvatar(
+                        //   radius: MediaQuery.of(context).size.height > 700
+                        //       ? 15.0
+                        //       : 12.0,
+                        //   child: Icon(
+                        //     Icons.remove,
+                        //     size: MediaQuery.of(context).size.height > 700
+                        //         ? 22.0
+                        //         : 18.0,
+                        //     color: Colors.white,
+                        //   ),
+                        //   backgroundColor: kAppBackgroundColor,
+                        // ),
                       ),
                       SizedBox(
                         width: 10.0,
@@ -276,26 +316,40 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                             quantity++;
                           });
                         },
-                        child: CircleAvatar(
-                          radius: MediaQuery.of(context).size.height > 700
+                        child: CustomCircleAvatar(
+                          radius : MediaQuery.of(context).size.height > 700
                               ? 15.0
                               : 12.0,
-                          child: Icon(
-                            Icons.add,
-                            size: MediaQuery.of(context).size.height > 700
-                                ? 22.0
-                                : 18.0,
-                            color: Colors.white,
-                          ),
-                          backgroundColor: kAppBackgroundColor,
+                          CavatarColor:kAppBackgroundColor,
+                          icon:Icon(
+                                Icons.add,
+                                size: MediaQuery.of(context).size.height > 700
+                                    ? 22.0
+                                    : 18.0,
+                                color: Colors.white,
+                              ),
                         ),
+
+                        // child: CircleAvatar(
+                        //   radius: MediaQuery.of(context).size.height > 700
+                        //       ? 15.0
+                        //       : 12.0,
+                        //   child: Icon(
+                        //     Icons.add,
+                        //     size: MediaQuery.of(context).size.height > 700
+                        //         ? 22.0
+                        //         : 18.0,
+                        //     color: Colors.white,
+                        //   ),
+                        //   backgroundColor: kAppBackgroundColor,
+                        // ),
                       ),
                     ],
                   ),
                 ),
                 SizedBox(
                   height:
-                      MediaQuery.of(context).size.height > 700 ? 15.0 : 10.0,
+                  MediaQuery.of(context).size.height > 700 ? 15.0 : 10.0,
                 ),
                 Expanded(
                   flex: 3,
@@ -338,7 +392,7 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                 ),
                 SizedBox(
                   height:
-                      MediaQuery.of(context).size.height > 700 ? 20.0 : 10.0,
+                  MediaQuery.of(context).size.height > 700 ? 20.0 : 10.0,
                 ),
                 Text(
                   'Recommendations',
@@ -374,8 +428,8 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                               iconLogo: Icons.favorite_border_rounded,
                               iconColor: kAppBackgroundColor,
                               iconSize: MediaQuery.of(context).size.height > 700
-                                        ? 22.0
-                                        : 18.0,
+                                  ? 22.0
+                                  : 18.0,
                             ),
                           ),
                         ],
