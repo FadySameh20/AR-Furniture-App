@@ -1,5 +1,6 @@
 import 'package:ar_furniture_app/shared/widgets/auth_cubit.dart';
 import 'package:ar_furniture_app/shared/widgets/auth_states.dart';
+import 'package:ar_furniture_app/shared/widgets/validations.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -15,17 +16,18 @@ class RegisterScreen extends StatefulWidget {
 
 class _RegisterScreenState extends State<RegisterScreen> {
   var formKey = GlobalKey<FormState>();
-  var firstNameController = TextEditingController();
-  var lastNameController = TextEditingController();
-  var emailController = TextEditingController();
-  var passController = TextEditingController();
-  var confirmPassController = TextEditingController();
-  var addressController = TextEditingController();
-  var mobileNumberController = TextEditingController();
+  TextEditingController firstNameController = TextEditingController();
+  TextEditingController lastNameController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passController = TextEditingController();
+  TextEditingController confirmPassController = TextEditingController();
+  TextEditingController addressController = TextEditingController();
+  TextEditingController mobileNumberController = TextEditingController();
   bool isPasswordHidden = false;
   bool isLoading = false;
   String initialCountry = 'EG';
   PhoneNumber number = PhoneNumber(isoCode: 'EG');
+  Validations validator = Validations();
 
   @override
   Widget build(BuildContext context) {
@@ -91,6 +93,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                     child: Padding(
                                       padding: const EdgeInsets.all(8.0),
                                       child: Form(
+                                        key: formKey,
                                         child: SingleChildScrollView(
                                           child: Column(
                                             children: [
@@ -99,28 +102,43 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                                     firstNameController,
                                                 hint: "First Name",
                                                 prefixIconData: Icons.person,
+                                                validate: (String? val) {
+                                                  return validator.validateName(val!);
+                                                },
                                               ),
                                               InputTextField(
                                                 textController:
                                                     lastNameController,
                                                 hint: "Last Name",
                                                 prefixIconData: Icons.person,
+                                                validate: (String? val) {
+                                                  return validator.validateName(val!);
+                                                },
                                               ),
                                               InputTextField(
                                                 textController: emailController,
                                                 hint: "Email",
                                                 prefixIconData: Icons.email,
+                                                validate: (String? val) {
+                                                  return validator.validateEmail(val!);
+                                                },
                                               ),
                                               InputTextField(
                                                 textController: passController,
                                                 hint: "Password",
                                                 prefixIconData: Icons.password,
+                                                validate: (String? val) {
+                                                  return validator.validatePassword(val!);
+                                                },
                                               ),
                                               InputTextField(
                                                 textController:
                                                     confirmPassController,
                                                 hint: "Confirm Password",
                                                 prefixIconData: Icons.password,
+                                                validate: (String? val) {
+                                                  return validator.checkPasswordCompatability(passController.text, val!);
+                                                },
                                               ),
                                               InputTextField(
                                                 textController:
@@ -128,6 +146,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                                 hint: "Address",
                                                 prefixIconData:
                                                     Icons.add_location,
+                                                validate: (String? val) {
+                                                  return validator.validateAddress(val!);
+                                                },
                                               ),
                                               Padding(
                                                 padding: const EdgeInsets.only(
@@ -185,16 +206,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               ),
                               ElevatedButton(
                                 onPressed: () {
-                                  setState(() {
-                                    isLoading = true;
-                                  });
-                                  BlocProvider.of<AuthCubit>(context).register(
-                                      firstNameController.text,
-                                      lastNameController.text,
-                                      emailController.text,
-                                      passController.text,
-                                      addressController.text,
-                                      mobileNumberController.text);
+                                  if(formKey.currentState!.validate()) {
+                                    setState(() {
+                                      isLoading = true;
+                                    });
+                                    BlocProvider.of<AuthCubit>(context).register(
+                                        firstNameController.text,
+                                        lastNameController.text,
+                                        emailController.text,
+                                        passController.text,
+                                        addressController.text,
+                                        mobileNumberController.text);
+                                  }
                                 },
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor:

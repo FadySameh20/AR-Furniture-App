@@ -25,8 +25,7 @@ class _LoginScreenState extends State<LoginScreen> {
   TextEditingController mobileNumberController = TextEditingController();
   bool isPasswordHidden = true;
   bool isLoading = false;
-  Validations validate = Validations();
-  var checkReturn;
+  Validations validator = Validations();
 
   @override
   Widget build(BuildContext context) {
@@ -94,11 +93,17 @@ class _LoginScreenState extends State<LoginScreen> {
                                                 textController: emailController,
                                                 hint: "Email",
                                                 prefixIconData: Icons.email,
+                                                validate: (String? val) {
+                                                  return validator.validateEmail(val!);
+                                                },
                                               ),
                                               InputTextField(
                                                 textController: passController,
                                                 hint: "Password",
                                                 prefixIconData: Icons.password,
+                                                validate: (String? val) {
+                                                  return validator.validatePassword(val!);
+                                                },
                                               ),
                                             ],
                                           ),
@@ -113,12 +118,14 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
                               ElevatedButton(
                                 onPressed: () {
-                                  setState(() {
-                                    isLoading = true;
-                                  });
-                                  BlocProvider.of<AuthCubit>(context).login(
-                                      emailController.text,
-                                      passController.text);
+                                  if(formKey.currentState!.validate()) {
+                                    setState(() {
+                                      isLoading = true;
+                                    });
+                                    BlocProvider.of<AuthCubit>(context).login(
+                                        emailController.text,
+                                        passController.text);
+                                  }
                                 },
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor:

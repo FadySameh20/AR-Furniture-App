@@ -1,7 +1,7 @@
 class Validations {
 
   //check on empty input field and null
-  String? validationEmptyNull(String value){
+  String? validationEmptyNull(String? value){
     if (value == null || value.trim().isEmpty) {
       return 'This field is required';
     }
@@ -30,6 +30,13 @@ class Validations {
     }
     if(value.length != value.trim().length) {
       return "Please enter a valid password";
+    }
+    return null;
+  }
+
+  String? checkPasswordCompatability(String password, String confirmPassword) {
+    if (password != confirmPassword) {
+      return "Password and Confirm Password must match !";
     }
     return null;
   }
