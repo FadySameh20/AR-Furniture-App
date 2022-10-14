@@ -35,7 +35,7 @@ class SplashWelcomeScreen extends StatelessWidget {
           ),
           Positioned(
             bottom: 20.0,
-            left: MediaQuery.of(context).size.width/8.5,
+            left: MediaQuery.of(context).size.width / 8.5,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -43,7 +43,9 @@ class SplashWelcomeScreen extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.only(right: 20.0),
                   child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.pushNamedAndRemoveUntil(context, '/register', (route) => false);
+                    },
                     style: ElevatedButton.styleFrom(
                         backgroundColor: kAppBackgroundColor,
                         shape: RoundedRectangleBorder(
@@ -58,7 +60,9 @@ class SplashWelcomeScreen extends StatelessWidget {
                 ),
 
                 ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: kAppBackgroundColor,
                     shape: RoundedRectangleBorder(

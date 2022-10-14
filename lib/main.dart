@@ -2,7 +2,9 @@ import 'package:ar_furniture_app/models/user_model.dart';
 import 'package:ar_furniture_app/shared/cache/sharedpreferences.dart';
 import 'package:ar_furniture_app/shared/constants/constants.dart';
 import 'package:ar_furniture_app/shared/widgets/boarding_screen.dart';
+import 'package:ar_furniture_app/shared/widgets/home_screen.dart';
 import 'package:ar_furniture_app/shared/widgets/login_screen.dart';
+import 'package:ar_furniture_app/shared/widgets/register_screen.dart';
 import 'package:ar_furniture_app/shared/widgets/search.dart';
 import 'package:ar_furniture_app/shared/widgets/splash_welcome_screen.dart';
 import 'package:circular_bottom_navigation/circular_bottom_navigation.dart';
@@ -38,7 +40,9 @@ class MyApp extends StatelessWidget {
       ),
       routes: {
         '/': (context)=>CacheHelper.getData("hasPassedBoardingScreen")!=null?SplashWelcomeScreen():BoardingScreen(),
-        // '/login'
+        '/register': (context) => RegisterScreen(),
+        '/login': (context) => LoginScreen(),
+        '/home': (context) => HomeScreen(),
       },
       // home: BoardingScreen(),
     );
@@ -117,7 +121,7 @@ class _HomeScreenState extends State<HomeScreen> {
         children: <Widget>[
           Padding(
             padding: EdgeInsets.only(bottom: bottomNavBarHeight),
-            child: Search(),
+            child: HomePage(),
           ),
           Align(
               alignment: Alignment.bottomCenter,

@@ -1,13 +1,13 @@
+import 'package:ar_furniture_app/shared/constants/constants.dart';
 import 'package:ar_furniture_app/shared/widgets/auth_cubit.dart';
 import 'package:ar_furniture_app/shared/widgets/auth_states.dart';
 import 'package:ar_furniture_app/shared/widgets/validations.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../models/user_model.dart';
+import 'input_text_field.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -15,181 +15,177 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  Validations validate = Validations();
-  var checkReturn;
+  var formKey = GlobalKey<FormState>();
+  TextEditingController firstNameController = TextEditingController();
+  TextEditingController lastNameController = TextEditingController();
   TextEditingController emailController = TextEditingController();
   TextEditingController passController = TextEditingController();
-  var formKey = GlobalKey<FormState>();
+  TextEditingController confirmPassController = TextEditingController();
+  TextEditingController addressController = TextEditingController();
+  TextEditingController mobileNumberController = TextEditingController();
+  bool isPasswordHidden = true;
+  bool isLoading = false;
+  Validations validate = Validations();
+  var checkReturn;
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider<AuthCubit>(
       create: (context) => AuthCubit(),
-      child: BlocConsumer<AuthCubit, AuthStates>(listener: (context, state) {
-        if (state is AuthSuccessfullyState) {
-          print("Logged In Successfully");
-        } else if (state is AuthErrorState) {
-          print("Error in Login");
-        }
-      }, builder: (context, state) {
-        return Scaffold(
-            body: Stack(
-          children: [
-            Center(
-              child: Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: Container(
-                  height: MediaQuery.of(context).size.height / 2.5,
-                  child: Material(
-                    elevation: 5,
-                    child: Padding(
-                      padding: const EdgeInsets.all(20.0),
-                      child: Center(
+      child: BlocConsumer<AuthCubit, AuthStates>(
+        listener: (context, state) {
+          if (state is AuthSuccessfullyState) {
+            print("Logged In Successfully");
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text('Logged In Successfully !'),
+            ));
+            Navigator.pushNamedAndRemoveUntil(
+                context, '/home', (route) => false);
+          } else if (state is AuthErrorState) {
+            print("Error in login");
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text('Error in login !'),
+            ));
+            setState(() {
+              isLoading = false;
+            });
+          }
+        },
+        builder: (context, state) {
+          return Scaffold(
+            body: isLoading
+                ? Center(
+                    child: CircularProgressIndicator(
+                    color: kAppBackgroundColor,
+                    strokeWidth: 5,
+                  ))
+                : Stack(
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.only(
+                            top: MediaQuery.of(context).size.height / 4.25),
                         child: SingleChildScrollView(
-                          child: Form(
-                            key: formKey,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  "Login",
-                                  style: TextStyle(
-                                    fontSize: 40,
-                                    fontWeight: FontWeight.bold,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                "Login",
+                                style: TextStyle(
+                                  fontSize: 40,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              Center(
+                                child: Container(
+                                  margin: EdgeInsets.all(30.0),
+                                  height:
+                                      MediaQuery.of(context).size.height / 4,
+                                  child: Material(
+                                    borderRadius: BorderRadius.circular(20),
+                                    elevation: 5,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Form(
+                                        key: formKey,
+                                        child: SingleChildScrollView(
+                                          child: Column(
+                                            children: [
+                                              InputTextField(
+                                                textController: emailController,
+                                                hint: "Email",
+                                                prefixIconData: Icons.email,
+                                              ),
+                                              InputTextField(
+                                                textController: passController,
+                                                hint: "Password",
+                                                prefixIconData: Icons.password,
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ),
                                   ),
                                 ),
-                                TextFormField(
-                                  controller: emailController,
-                                  decoration:
-                                      InputDecoration(hintText: "Email"),
-                                  validator: (value) {
-                                    checkReturn = validate.validationEmptyNull(value!);
-                                    if (checkReturn != null){
-                                      return checkReturn;
-                                    }
-                                    checkReturn = validate.validateEmail(value);
-                                    if (checkReturn != null){
-                                      return checkReturn;
-                                    }
-                                    return null;
-                                  },
+                              ),
+                              SizedBox(
+                                height: 30.0,
+                              ),
+                              ElevatedButton(
+                                onPressed: () {
+                                  setState(() {
+                                    isLoading = true;
+                                  });
+                                  BlocProvider.of<AuthCubit>(context).login(
+                                      emailController.text,
+                                      passController.text);
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor:
+                                      Color.fromRGBO(191, 122, 47, 1),
                                 ),
-                                TextFormField(
-                                  controller: passController,
-                                  decoration:
-                                      InputDecoration(hintText: "Password"),
-                                  obscureText: true,
-                                  validator: (value){
-                                    checkReturn = validate.validationEmptyNull(value!);
-                                    if (checkReturn != null){
-                                      return checkReturn;
-                                    }
-                                    checkReturn = validate.validatePassword(value);
-                                    if (checkReturn != null){
-                                      return checkReturn;
-                                    }
-                                    return null;
-                                  },
+                                child: Text(
+                                  "Login",
+                                  style: TextStyle(fontSize: 18),
                                 ),
-                                SizedBox(
-                                  height: 10,
-                                ),
-                                // ElevatedButton(onPressed: ()async{
-                                //   //Firebase Authentication register
-                                //   // var resp=await FirebaseAuth.instance.createUserWithEmailAndPassword(email: "a@", password: "123456");
-                                //   // resp.user.uid;
-                                //   // UserModel myUser=UserModel(fName: "Ahmed", lName:"El selmy", phone: "01231321312", address: "Janaklees", uid:"ddqrKl5AZ0dsMYHVP6b3UXm4NOk1" , email: "test@gmail.com");
-                                //   // FirebaseFirestore.instance.collection("user").doc("ddqrKl5AZ0dsMYHVP6b3UXm4NOk1").set(myUser.toMap());
-                                //   UserModel myModel;
-                                //   FirebaseFirestore.instance.collection("user").doc("ddqrKl5AZ0dsMYHVP6b3UXm4NOk1").get().then((value) {
-                                //     myModel=UserModel.fromJson(value.data() as Map<String,dynamic>);
-                                //     print(myModel.uid);
-                                //     print(myModel.address);
-                                //     print(myModel.fName);
-                                //     print(myModel.lName);
-                                //   });
-                                //
-                                // }, child: Text("Add User")),
-                                ElevatedButton(
-                                    onPressed: () {
-                                      if (formKey.currentState!.validate()) {}
-                                      // print(emailController.text);
-                                      // print(passController.text);
-                                      // await FirebaseAuth.instance
-                                      //     .signInWithEmailAndPassword(
-                                      //     email: emailController.text,
-                                      //     password: passController.text).
-                                      // then((value) {
-                                      //   print("test");
-                                      //   print(value);
-                                      // }).catchError((error) {
-                                      //   print(error);
-                                      // });
-                                      // print("out");
-                                      BlocProvider.of<AuthCubit>(context)
-                                          .login(emailController.text,
-                                              passController.text);
+                              ),
+                              SizedBox(
+                                height: 20.0,
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: <Widget>[
+                                  Text(
+                                    'Create a new account ?',
+                                    style: TextStyle(fontSize: 18),
+                                  ),
+                                  SizedBox(width: 5.0),
+                                  InkWell(
+                                    onTap: () {
+                                      Navigator.pushNamed(context, '/register');
                                     },
-                                    style: ElevatedButton.styleFrom(
-                                        backgroundColor:
-                                            Color.fromRGBO(191, 122, 47, 1),
-                                        textStyle: TextStyle(
-                                            fontSize: 20,
-                                            fontWeight: FontWeight.bold)),
-                                    child: Text("Login")),
-                              ],
+                                    child: Text(
+                                      'Register',
+                                      style: TextStyle(
+                                          color:
+                                              Color.fromRGBO(191, 122, 47, 1),
+                                          fontWeight: FontWeight.bold,
+                                          decoration: TextDecoration.underline,
+                                          fontSize: 18),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      Align(
+                        alignment: Alignment.topRight,
+                        child: ClipPath(
+                          clipper: AuthClip(),
+                          child: Container(
+                            height: MediaQuery.of(context).size.height / 2.1,
+                            width: double.infinity,
+                            // color: const Colors.blue,
+                            decoration: const BoxDecoration(
+                              gradient: LinearGradient(colors: [
+                                // 234,
+                                Color.fromRGBO(248, 197, 142, 1.0),
+
+                                Color.fromRGBO(239, 169, 93, 1.0),
+
+                                Color.fromRGBO(191, 122, 47, 1),
+                              ]),
                             ),
                           ),
                         ),
                       ),
-                    ),
+                    ],
                   ),
-                ),
-              ),
-            ),
-            Align(
-              alignment: Alignment.topRight,
-              child: ClipPath(
-                clipper: AuthClip(),
-                child: Container(
-                  height: MediaQuery.of(context).size.height / 2.1,
-                  width: double.infinity,
-                  // color: const Colors.blue,
-                  decoration: const BoxDecoration(
-                    gradient: LinearGradient(colors: [
-                      // 234,
-                      Color.fromRGBO(248, 197, 142, 1.0),
-
-                      Color.fromRGBO(239, 169, 93, 1.0),
-
-                      Color.fromRGBO(191, 122, 47, 1),
-                    ]),
-                  ),
-                  child: Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          "Hello.",
-                          style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 30,
-                              fontWeight: FontWeight.bold),
-                        ),
-                        Text(
-                          "Welcome to our App!",
-                          style: const TextStyle(
-                              color: Colors.white, fontSize: 15),
-                        )
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ));
-      }),
+          );
+        },
+      ),
     );
   }
 }
