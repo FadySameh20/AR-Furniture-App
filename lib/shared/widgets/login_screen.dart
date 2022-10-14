@@ -17,8 +17,8 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   Validations validate = Validations();
   var checkReturn;
-  var emailController = TextEditingController();
-  var passController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passController = TextEditingController();
   var formKey = GlobalKey<FormState>();
 
   @override
