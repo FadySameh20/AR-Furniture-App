@@ -47,7 +47,7 @@ class SplashWelcomeScreen extends StatelessWidget {
                       Navigator.pushNamedAndRemoveUntil(context, '/register', (route) => false);
                     },
                     style: ElevatedButton.styleFrom(
-                        backgroundColor: Color.fromRGBO(191, 122, 47, 1),
+                        backgroundColor: kAppBackgroundColor,
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10)),
                         padding: EdgeInsets.all(10),
@@ -64,7 +64,7 @@ class SplashWelcomeScreen extends StatelessWidget {
                     Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Color.fromRGBO(191, 122, 47, 1),
+                    backgroundColor: kAppBackgroundColor,
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10)),
                     padding: EdgeInsets.all(10),

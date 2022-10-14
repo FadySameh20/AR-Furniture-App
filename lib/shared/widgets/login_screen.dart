@@ -1,6 +1,7 @@
 import 'package:ar_furniture_app/shared/constants/constants.dart';
 import 'package:ar_furniture_app/shared/widgets/auth_cubit.dart';
 import 'package:ar_furniture_app/shared/widgets/auth_states.dart';
+import 'package:ar_furniture_app/shared/widgets/validations.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -15,15 +16,17 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   var formKey = GlobalKey<FormState>();
-  var firstNameController = TextEditingController();
-  var lastNameController = TextEditingController();
-  var emailController = TextEditingController();
-  var passController = TextEditingController();
-  var confirmPassController = TextEditingController();
-  var addressController = TextEditingController();
-  var mobileNumberController = TextEditingController();
+  TextEditingController firstNameController = TextEditingController();
+  TextEditingController lastNameController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passController = TextEditingController();
+  TextEditingController confirmPassController = TextEditingController();
+  TextEditingController addressController = TextEditingController();
+  TextEditingController mobileNumberController = TextEditingController();
   bool isPasswordHidden = true;
   bool isLoading = false;
+  Validations validate = Validations();
+  var checkReturn;
 
   @override
   Widget build(BuildContext context) {

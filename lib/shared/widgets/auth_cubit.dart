@@ -2,6 +2,7 @@ import 'package:ar_furniture_app/models/user_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+import '../../models/user_model.dart';
 import 'auth_states.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -40,5 +41,6 @@ class AuthCubit extends Cubit<AuthStates> {
     }).catchError((error) {
       emit(AuthErrorState());
     });
+    
   }
 }
