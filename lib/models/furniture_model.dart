@@ -7,7 +7,8 @@ class FurnitureModel {
   late String furnitureId;
   late String name;
   late String model;
-  late List<SharedModel> shared;
+  List<SharedModel> shared=[];
+  bool isFavorite=false;
 
   FurnitureModel({
     this.description,
@@ -22,9 +23,10 @@ class FurnitureModel {
     furnitureId = json["furnitureId"];
     name = json["name"];
     model = json["model"];
-    for (int i = 0; i < shared.length; i++) {
-      shared[i] = SharedModel.fromJson(json["shared"][i]);
-    }
+    json["shared"].forEach((value){
+      print(value);
+     shared.add(SharedModel.fromJson(value));
+    });
   }
   Map<String, dynamic> toMap() {
     return {

@@ -1,4 +1,5 @@
 import 'package:ar_furniture_app/cubits/home_cubit.dart';
+import 'package:ar_furniture_app/shared/cache/sharedpreferences.dart';
 import 'package:ar_furniture_app/shared/widgets/favorite_icon.dart';
 import 'package:ar_furniture_app/shared/widgets/profile_edit.dart';
 import 'package:ar_furniture_app/shared/widgets/search.dart';
@@ -12,6 +13,7 @@ import '../../cubits/home_states.dart';
 import '../constants/constants.dart';
 import 'categories_scroller.dart';
 import 'category_screen.dart';
+import 'favorite_screen.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -28,7 +30,7 @@ class _HomePageState extends State<HomePage> {
   // ];
 
   int selectedPos = 0;
-  List<Widget> NavbarPages = [HomePage(), Search(), Search(), CategoriesScreen(), ProfileEdit()];
+  List<Widget> NavbarPages = [HomePage(),FavoriteScreen(), Search(), CategoriesScreen(), ProfileEdit()];
 
 
   double bottomNavBarHeight = 60;
@@ -216,9 +218,9 @@ class _HomePageState extends State<HomePage> {
                                                 Padding(
                                                   padding: const EdgeInsets.only(left: 12.0),
                                                   child: Row(
-                                                    children: const [
+                                                    children:  [
                                                       Text(
-                                                        "Curtains",
+                                                        BlocProvider.of<HomeCubit>(context).furnitureList[index].name,
                                                         style: TextStyle(
                                                             fontWeight: FontWeight.bold,
                                                             fontSize: 17),
@@ -266,22 +268,41 @@ class _HomePageState extends State<HomePage> {
                                                       horizontal: 12.0),
                                                   child: Row(
                                                     children: [
-                                                      const Text(
-                                                        "\$75",
+                                                       Text(
+                                                        BlocProvider.of<HomeCubit>(context).furnitureList[index].shared.first.price,
                                                         style: TextStyle(
                                                             fontWeight: FontWeight.bold,
                                                             fontSize: 17),
                                                       ),
                                                       const Spacer(),
-                                                      FavoriteIcon(
-                                                          iconLogo:
-                                                          Icons.favorite_border_rounded),
-                                                      const Text(
-                                                        "(123)",
-                                                        style: TextStyle(
-                                                            fontWeight: FontWeight.bold,
-                                                            fontSize: 17),
+                                                      InkWell(
+                                                        onTap: () async{
+                                                          print("haheheh");
+                                                          // BlocProvider.of<HomeCubit>(context).favorites.add(value):
+                                                          print(BlocProvider.of<HomeCubit>(context).furnitureList[index].isFavorite);
+                                                          BlocProvider.of<HomeCubit>(context).furnitureList[index].isFavorite=!BlocProvider.of<HomeCubit>(context).furnitureList[index].isFavorite;
+                                                          BlocProvider.of<HomeCubit>(context).emit(SuccessOffersState());
+                                                        if(BlocProvider.of<HomeCubit>(context).furnitureList[index].isFavorite==true){
+                                                          List<String> favorites= await CacheHelper.getData("favorites")??[];
+                                                            favorites.add(BlocProvider.of<HomeCubit>(context).furnitureList[index].furnitureId);
+                                                          setState(() {
+                                                            CacheHelper.setList(key: "favorites", value: favorites);
+                                                          });
+                                                        }else{
+
+                                                          List<String> favorites=await CacheHelper.getData("favorites")??[];
+                                                          favorites.remove(BlocProvider.of<HomeCubit>(context).furnitureList[index].furnitureId);
+                                                          setState(() {
+                                                            CacheHelper.setList(key: "favorites", value: favorites);
+                                                          });
+
+                                                        }
+                                                          },
+                                                        child: FavoriteIcon(
+                                                            iconLogo:
+                                                            BlocProvider.of<HomeCubit>(context).furnitureList[index].isFavorite==false? Icons.favorite_border_rounded:Icons.favorite),
                                                       ),
+
                                                     ],
                                                   ),
                                                 ),
@@ -294,7 +315,7 @@ class _HomePageState extends State<HomePage> {
                                   ),
                                 );
                               },
-                              itemCount: 2,
+                              itemCount: BlocProvider.of<HomeCubit>(context).furnitureList.length,
                             ),
                           ),
                           SizedBox(
