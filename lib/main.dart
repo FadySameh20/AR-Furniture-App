@@ -2,6 +2,7 @@ import 'package:ar_furniture_app/models/user_model.dart';
 import 'package:ar_furniture_app/shared/cache/sharedpreferences.dart';
 import 'package:ar_furniture_app/shared/constants/constants.dart';
 import 'package:ar_furniture_app/shared/widgets/boarding_screen.dart';
+import 'package:ar_furniture_app/shared/widgets/category_screen.dart';
 import 'package:ar_furniture_app/shared/widgets/home_screen.dart';
 import 'package:ar_furniture_app/shared/widgets/login_screen.dart';
 import 'package:ar_furniture_app/shared/widgets/register_screen.dart';
@@ -43,6 +44,10 @@ class MyApp extends StatelessWidget {
         '/register': (context) => RegisterScreen(),
         '/login': (context) => LoginScreen(),
         '/home': (context) => HomeScreen(),
+        // '/favorites': (context) => FavoritesScreen(),
+        '/search': (context) => Search(),
+        '/categories': (context) => CategoriesScreen(),
+        '/profile': (context) => ProfileEdit(),
       },
       // home: BoardingScreen(),
     );
@@ -58,6 +63,7 @@ class _HomeScreenState extends State<HomeScreen> {
   int selectedPos = 0;
 
   double bottomNavBarHeight = 60;
+  List<Widget> routeNames = [HomePage(), Search(), Search(), CategoriesScreen(), ProfileEdit()];
 
   List<TabItem> tabItems = List.of([
     TabItem(
@@ -121,23 +127,23 @@ class _HomeScreenState extends State<HomeScreen> {
         children: <Widget>[
           Padding(
             padding: EdgeInsets.only(bottom: bottomNavBarHeight),
-            child: HomePage(),
+            child: routeNames[selectedPos],
           ),
           Align(
               alignment: Alignment.bottomCenter,
               child: CircularBottomNavigation(
                 tabItems,
                 controller: _navigationController,
-                selectedPos: selectedPos,
+                selectedPos: selectedPos!,
                 barHeight: bottomNavBarHeight,
                 barBackgroundColor: Colors.white,
                 backgroundBoxShadow: <BoxShadow>[
                   BoxShadow(color: Colors.black45, blurRadius: 10.0),
                 ],
                 animationDuration: Duration(milliseconds: 300),
-                selectedCallback: (int? selectedPos) {
+                selectedCallback: (int? selectedIndex) {
                   setState(() {
-                    this.selectedPos = selectedPos ?? 0;
+                    selectedPos = selectedIndex ?? 0;
                     print(_navigationController.value);
                   });
                 },
