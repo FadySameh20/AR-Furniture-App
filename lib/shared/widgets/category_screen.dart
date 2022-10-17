@@ -185,7 +185,7 @@ class CategoriesScreen extends StatelessWidget {
                           Positioned(
                             top: -32,
                             right: 30.0,
-                            child: Container(
+                          child: Container(
                               //padding: EdgeInsets.only(top: 10.0),
                               height: MediaQuery.of(context).size.height * 0.26,
                               width: MediaQuery.of(context).size.width * 0.45,

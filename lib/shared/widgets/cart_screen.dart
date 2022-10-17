@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-
+import 'package:cloud_firestore/cloud_firestore.dart';
 class CartScreen extends StatelessWidget {
+
+
   List<String> names = <String>['chair1', 'chair2', 'chair3', 'chair4'];
   List<String> images = <String>[
     'assets/Item_1.png',
@@ -10,7 +12,12 @@ class CartScreen extends StatelessWidget {
   ];
   List<int> prices = <int>[100, 200, 300, 400];
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context)  {
+  //  FirebaseFirestore.instance.collection('names').get().then((value) {
+    //  for(var document in value.docs){
+    //    document.data();
+   //   }
+   // });
     return Stack(
       children: [
         Container(

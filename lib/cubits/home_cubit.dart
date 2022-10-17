@@ -1,5 +1,7 @@
 import 'package:ar_furniture_app/cubits/home_states.dart';
+import 'package:ar_furniture_app/models/furniture_model.dart';
 import 'package:ar_furniture_app/models/offers_model.dart';
+import 'package:ar_furniture_app/models/shared_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -10,6 +12,7 @@ class HomeCubit extends Cubit<HomeState>{
 
   List<Offers> offers=[];
   List<CategoryItem> categories=[];
+  List<FurnitureModel> furnitureList=[];
    getAllData() async{
     await getCategoryNames();
     await getOffers();
@@ -22,7 +25,6 @@ class HomeCubit extends Cubit<HomeState>{
        });
        categories=List.from(myCategory.names);
      }).catchError((error){});
-    print("Hahaha");
     print(categories.length);
    }
    getOffers() async {
@@ -34,6 +36,23 @@ class HomeCubit extends Cubit<HomeState>{
           emit(SuccessOffersState());
     }).catchError((error){emit(ErrorOffersState());});
     print(offers.length);
+  }
+  getFurniture(String categoryName)async{
+     FurnitureModel myFurniture=FurnitureModel(furnitureId:'', name: '', model: '', shared: []);
+
+     await FirebaseFirestore.instance.collection('category').doc(categoryName).collection(categoryName).get().then((value) {
+       value.docs.forEach((element) {
+
+         myFurniture = FurnitureModel.fromJson(element.data());
+         furnitureList.add(myFurniture);
+
+       });
+
+
+     });
+
+
+
   }
 
 }
