@@ -1,5 +1,7 @@
 import 'package:ar_furniture_app/cubits/home_cubit.dart';
 import 'package:ar_furniture_app/shared/widgets/favorite_icon.dart';
+import 'package:ar_furniture_app/shared/widgets/profile_edit.dart';
+import 'package:ar_furniture_app/shared/widgets/search.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:circular_bottom_navigation/circular_bottom_navigation.dart';
 import 'package:circular_bottom_navigation/tab_item.dart';
@@ -9,6 +11,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../cubits/home_states.dart';
 import '../constants/constants.dart';
 import 'categories_scroller.dart';
+import 'category_screen.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -25,6 +28,8 @@ class _HomePageState extends State<HomePage> {
   // ];
 
   int selectedPos = 0;
+  List<Widget> NavbarPages = [HomePage(), Search(), Search(), CategoriesScreen(), ProfileEdit()];
+
 
   double bottomNavBarHeight = 60;
 
@@ -95,7 +100,7 @@ class _HomePageState extends State<HomePage> {
                 children: <Widget>[
                   Padding(
                     padding: EdgeInsets.only(bottom: bottomNavBarHeight),
-                    child:state is InitialHomeState?Center(child: CircularProgressIndicator(),): SingleChildScrollView(
+                    child:state is InitialHomeState?Center(child: CircularProgressIndicator(),): selectedPos!=0 ? NavbarPages[selectedPos] : SingleChildScrollView(
                       child: Column(
                         children: [
                           CarouselSlider(
@@ -328,3 +333,5 @@ class _HomePageState extends State<HomePage> {
     );
   }
 }
+
+
