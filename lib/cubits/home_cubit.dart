@@ -8,15 +8,15 @@ class HomeCubit extends Cubit<HomeState>{
 
   List<Offers> offers=[];
 
-  void getoffers() async {
+  void getOffers() async {
     await FirebaseFirestore.instance.collection('offer')
         .get().then((value){
           value.docs.forEach((element) {
             offers.add(Offers.fromJson(element.data()));
           });
-    });
+          emit(SuccessOffersState());
+    }).catchError((error){emit(ErrorOffersState());});
     print(offers.length);
-
   }
 
 }

@@ -1,6 +1,6 @@
 class Offers{
   late String  discount;
-  late List colors;
+  late List colors=[];
   late String img;
   late String salesId;
 
@@ -8,8 +8,10 @@ class Offers{
   Offers({required this.discount, required this.colors,required this.img,required this.salesId});
 
   Offers.fromJson(Map< String,dynamic> json){
-    discount=json[" discount"];
-    colors = json[" colors"];
+    discount=json["discount"];
+    json["colors"].forEach((element){
+      colors.add(element);
+    });
     img = json["img"];
     salesId = json["salesId"];
 
