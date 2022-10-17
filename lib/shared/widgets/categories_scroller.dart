@@ -1,14 +1,16 @@
+import 'package:ar_furniture_app/cubits/home_cubit.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../constants/constants.dart';
 
 class CategoriesScroller extends StatelessWidget {
-  List<String> furniture = ["Chair", "Sofa", "Drawer"];
-  List<String> categoriesImages = [
-    "assets/chair.png",
-    "assets/seater-sofa.png",
-    "assets/drawers.png"
-  ];
+  // List<String> furniture = ["Chair", "Sofa", "Drawer"];
+  // List<String> categoriesImages = [
+  //   "assets/chair.png",
+  //   "assets/seater-sofa.png",
+  //   "assets/drawers.png"
+  // ];
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +21,7 @@ class CategoriesScroller extends StatelessWidget {
           : MediaQuery.of(context).size.height * 0.175,
       child: ListView.builder(
           scrollDirection: Axis.horizontal,
-          itemCount: furniture.length,
+          itemCount: BlocProvider.of<HomeCubit>(context).categories.length,
           itemBuilder: (context, index) {
             return Padding(
               padding:
@@ -44,8 +46,8 @@ class CategoriesScroller extends StatelessWidget {
                             // radius: 10,
                             child: Padding(
                               padding: const EdgeInsets.all(7.0),
-                              child: Image.asset(
-                                categoriesImages[index],
+                              child: Image.network(
+                                BlocProvider.of<HomeCubit>(context).categories[index].image,
                                 fit: BoxFit.fill,
                               ),
                             ),
@@ -54,7 +56,7 @@ class CategoriesScroller extends StatelessWidget {
                         height: 5,
                       ),
                       Text(
-                        furniture[index],
+                        BlocProvider.of<HomeCubit>(context).categories[index].name,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
                             color:
