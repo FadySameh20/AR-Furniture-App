@@ -15,12 +15,16 @@ class HomeCubit extends Cubit<HomeState>{
     await getOffers();
   }
   getCategoryNames()async{
-     FirebaseFirestore.instance.collection("names").get().then((value) {
+     Category myCategory=Category([]);
+    await FirebaseFirestore.instance.collection("names").get().then((value) {
        value.docs.forEach((element) {
-         categories.add(CategoryItem.fromJson(element.data()));
+         myCategory=Category.fromJson(element.data());
        });
+       categories=List.from(myCategory.names);
      }).catchError((error){});
-  }
+    print("Hahaha");
+    print(categories.length);
+   }
    getOffers() async {
     await FirebaseFirestore.instance.collection('offer')
         .get().then((value){

@@ -1,3 +1,15 @@
+class Category{
+  List<CategoryItem> names=[];
+
+  Category(this.names);
+
+  Category.fromJson(Map json){
+    json["names"].forEach((element){
+      names.add(CategoryItem.fromJson(element));
+    });
+
+  }
+}
 
 class CategoryItem{
   late String name;

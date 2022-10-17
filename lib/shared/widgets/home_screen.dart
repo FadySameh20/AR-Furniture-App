@@ -16,13 +16,13 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  List<String> furniture = ["Chair", "Sofa", "Drawer"];
+  // List<String> furniture = ["Chair", "Sofa", "Drawer"];
 
-  List<String> images = [
-    "assets/chair.png",
-    "assets/seater-sofa.png",
-    "assets/drawers.png"
-  ];
+  // List<String> images = [
+  //   "assets/chair.png",
+  //   "assets/seater-sofa.png",
+  //   "assets/drawers.png"
+  // ];
 
   int selectedPos = 0;
 
@@ -72,7 +72,7 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => HomeCubit()..getOffers(),
+      create: (context) => HomeCubit()..getAllData(),
       child: BlocConsumer<HomeCubit,HomeState>(
         listener: (context,state){},
           builder: (context,state) {
@@ -114,11 +114,9 @@ class _HomePageState extends State<HomePage> {
                               onPageChanged: (page, _) {},
                               scrollDirection: Axis.horizontal,
                             ),
-                            items: [
-                              "assets/furniture_sale.png",
-                              "assets/furniture_sale2.jpg",
-                              "assets/furniture_sale3.jpeg"
-                            ].map((i) {
+                            items:
+                          BlocProvider.of<HomeCubit>(context).offers
+                            .map((i) {
                               return Padding(
                                 padding: const EdgeInsets.only(top: 8.0),
                                 child: Builder(
@@ -130,8 +128,8 @@ class _HomePageState extends State<HomePage> {
                                         decoration: BoxDecoration(
                                             borderRadius: BorderRadius.circular(20),
                                             color: Colors.amber),
-                                        child: Image.asset(
-                                          i,
+                                        child: Image.network(
+                                          i.img,
                                           fit: BoxFit.fill,
                                         ));
                                   },
