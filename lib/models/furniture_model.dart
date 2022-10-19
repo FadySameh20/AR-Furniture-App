@@ -7,7 +7,8 @@ class FurnitureModel {
   late String furnitureId;
   late String name;
   late String model;
-  late List<SharedModel> shared;
+  late String category;
+  List<SharedModel> shared = [];
 
   FurnitureModel({
     this.description,
@@ -22,12 +23,18 @@ class FurnitureModel {
     furnitureId = json["furnitureId"];
     name = json["name"];
     model = json["model"];
-    for (int i = 0; i < shared.length; i++) {
-      shared[i] = SharedModel.fromJson(json["shared"][i]);
+    category=json["category"];
+    print("before");
+    print(shared);
+    for (int i = 0; i < json["shared"].length; i++) {
+      shared.add(SharedModel.fromJson(json["shared"][i]));
     }
+    print("after");
+    print(shared);
   }
   Map<String, dynamic> toMap() {
     return {
+      "category":category,
       "description": description,
       "furnitureId": furnitureId,
       "name": name,
