@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:ar_furniture_app/cubits/home_states.dart';
 import 'package:ar_furniture_app/models/furniture_model.dart';
 import 'package:ar_furniture_app/models/offers_model.dart';
@@ -6,6 +8,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../models/name_model.dart';
+import '../shared/cache/sharedpreferences.dart';
 
 class HomeCubit extends Cubit<HomeState> {
   HomeCubit() : super(InitialHomeState());
@@ -14,6 +17,7 @@ class HomeCubit extends Cubit<HomeState> {
   List<CategoryItem> categories = [];
   List<FurnitureModel> furnitureList = [];
   List<String> returnedCategory = [];
+  List<Color?> availableColors = [];
 
   getAllData() async {
     await getCategoryNames();
@@ -46,8 +50,8 @@ class HomeCubit extends Cubit<HomeState> {
 
   getFurniture(String categoryName) async {
     returnedCategory.add(categoryName);
-    FurnitureModel myFurniture =
-        FurnitureModel(furnitureId: '', name: '', model: '', shared: []);
+    FurnitureModel myFurniture = FurnitureModel(
+        furnitureId: '', name: '', model: '', shared: [], ratings: []);
     print("Here");
     await FirebaseFirestore.instance
         .collection('category')
@@ -55,15 +59,62 @@ class HomeCubit extends Cubit<HomeState> {
         .collection(categoryName)
         .get()
         .then((value) {
-          value.docs.forEach((element) {
-            print(element.data());
-            myFurniture = FurnitureModel.fromJson(element.data());
-            furnitureList.add(myFurniture);
-          });
+      value.docs.forEach((element) {
+        print(element.data());
+        myFurniture = FurnitureModel.fromJson(element.data());
+        furnitureList.add(myFurniture);
+      });
 
-          emit(SuccessOffersState());
-          print("Furniture List");
-          print(furnitureList);
-        });
+      emit(SuccessOffersState());
+      print("Furniture List");
+      print(furnitureList);
+    });
   }
+
+  Color? getColorFromHex(String hexColor) {
+    hexColor = hexColor.replaceAll("#", "");
+    if (hexColor.length == 6) {
+      hexColor = "FF" + hexColor;
+    }
+    if (hexColor.length == 8) {
+      return Color(int.parse("0x$hexColor"));
+    }
+    return null;
+  }
+
+  List<Color?> getAvailableColorsOfFurniture(FurnitureModel selectedFurniture) {
+    availableColors.clear();
+    for (int i = 0; i < selectedFurniture.shared.length; i++) {
+      availableColors.add(getColorFromHex(selectedFurniture.shared[i].color));
+    }
+    return availableColors;
+  }
+
+  void addOrRemoveFromFavorites(FurnitureModel furnitureModel) async {
+    furnitureModel.isFavorite = !furnitureModel.isFavorite;
+    List<String> favorites = await CacheHelper.getData("favorites") ?? [];
+    if (furnitureModel.isFavorite == true) {
+      favorites.add(furnitureModel.furnitureId);
+      CacheHelper.setList(key: "favorites", value: favorites);
+    } else {
+      favorites.remove(furnitureModel.furnitureId);
+      CacheHelper.setList(key: "favorites", value: favorites);
+    }
+    emit(AddOrRemoveFavoriteState());
+  }
+
+  void updateCartInFirestore(FurnitureModel selectedFurniture) async {
+    await FirebaseFirestore.instance
+        .collection('category')
+        .doc(selectedFurniture.category)
+        .collection(selectedFurniture.category)
+        .doc(selectedFurniture.furnitureId)
+        .set(selectedFurniture.toMap())
+        .then((value) => print("Updated"))
+        .catchError((error) {
+      print("Error");
+      print(error);
+    });
+  }
+
 }
