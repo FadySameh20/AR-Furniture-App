@@ -1,9 +1,11 @@
+import 'dart:convert';
 import 'dart:ffi';
 
 import 'package:ar_furniture_app/cubits/home_cubit.dart';
 import 'package:ar_furniture_app/models/furniture_model.dart';
 import 'package:ar_furniture_app/shared/constants/constants.dart';
 import 'package:ar_furniture_app/shared/widgets/favorite_icon.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -90,11 +92,18 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
                             // context.read<>;
                             // BlocProvider.of<HomeCubit>(context).furnitureList.where((element) => element.furnitureId==myFavorites[index].furnitureId).first.isFavorite=false;
                             myFavorites[index].isFavorite=false;
-                            List<String> favorites=await CacheHelper.getData("favorites")??[];
-                            favorites.remove(myFavorites[index].furnitureId);
+                            var cachedModel=BlocProvider.of<HomeCubit>(context).cacheModel!.cachedModel.where((element) => element.uid==FirebaseAuth.instance.currentUser!.uid).first;
+                            cachedModel.cachedFavoriteIds.remove(myFavorites[index].furnitureId);
                             setState(() {
-                              CacheHelper.setList(key: "favorites", value: favorites);
+                              CacheHelper.setData( key: 'user', value: jsonEncode(BlocProvider.of<HomeCubit>(context).cacheModel!.toMap()));
+
+
                             });
+                            // List<String> favorites=await CacheHelper.getData("favorites")??[];
+                            // favorites.remove(myFavorites[index].furnitureId);
+                            // setState(() {
+                            //   CacheHelper.setList(key: "favorites", value: favorites);
+                            // });
                         },
                         child: Padding(
                           padding: const EdgeInsets.only(top:15.0,right:15.0),

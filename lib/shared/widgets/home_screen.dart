@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:ar_furniture_app/cubits/home_cubit.dart';
 import 'package:ar_furniture_app/shared/cache/sharedpreferences.dart';
 import 'package:ar_furniture_app/shared/widgets/favorite_icon.dart';
@@ -6,6 +8,7 @@ import 'package:ar_furniture_app/shared/widgets/search.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:circular_bottom_navigation/circular_bottom_navigation.dart';
 import 'package:circular_bottom_navigation/tab_item.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -91,7 +94,7 @@ class _HomePageState extends State<HomePage> {
                   backgroundColor: Color.fromRGBO(191, 122, 47, 1),
                   leading: FlutterLogo(),
                   actions: [
-                    IconButton(onPressed: () {}, icon: Icon(Icons.shopping_cart))
+                    IconButton(onPressed: () {context.read<HomeCubit>().logout(context);}, icon: Icon(Icons.shopping_cart))
                   ],
                   centerTitle: true,
                   title: Text(
@@ -277,25 +280,28 @@ class _HomePageState extends State<HomePage> {
                                                       const Spacer(),
                                                       InkWell(
                                                         onTap: () async{
-                                                          print("haheheh");
-                                                          // BlocProvider.of<HomeCubit>(context).favorites.add(value):
-                                                          print(BlocProvider.of<HomeCubit>(context).furnitureList[index].isFavorite);
                                                           BlocProvider.of<HomeCubit>(context).furnitureList[index].isFavorite=!BlocProvider.of<HomeCubit>(context).furnitureList[index].isFavorite;
                                                           BlocProvider.of<HomeCubit>(context).emit(SuccessOffersState());
                                                         if(BlocProvider.of<HomeCubit>(context).furnitureList[index].isFavorite==true){
-                                                          List<String> favorites= await CacheHelper.getData("favorites")??[];
-                                                            favorites.add(BlocProvider.of<HomeCubit>(context).furnitureList[index].furnitureId);
-                                                          setState(() {
-                                                            CacheHelper.setList(key: "favorites", value: favorites);
-                                                          });
+                                                          if(BlocProvider.of<HomeCubit>(context).cacheModel==null){
+                                                            BlocProvider.of<HomeCubit>(context).createCache();
+                                                          }
+                                                          var cachedtemp=BlocProvider.of<HomeCubit>(context).cacheModel!.cachedModel.where((element) => element.uid==FirebaseAuth.instance.currentUser!.uid);
+                                                          CachedUserModel cachedModel;
+                                                          if(cachedtemp.isEmpty){
+                                                            cachedModel=CachedUserModel(uid: FirebaseAuth.instance.currentUser!.uid, cachedFavoriteIds: []);
+                                                            BlocProvider.of<HomeCubit>(context).cacheModel!.cachedModel.add(cachedModel);
+                                                          }
+                                                          else{
+                                                            cachedModel=cachedtemp.first;
+                                                          }
+                                                          cachedModel.cachedFavoriteIds.add(BlocProvider.of<HomeCubit>(context).furnitureList[index].furnitureId);
+                                                          CacheHelper.setData( key: 'user', value: jsonEncode(BlocProvider.of<HomeCubit>(context).cacheModel!.toMap()));
                                                         }else{
-
-                                                          List<String> favorites=await CacheHelper.getData("favorites")??[];
-                                                          favorites.remove(BlocProvider.of<HomeCubit>(context).furnitureList[index].furnitureId);
-                                                          setState(() {
-                                                            CacheHelper.setList(key: "favorites", value: favorites);
-                                                          });
-
+                                                          var cachedModel=BlocProvider.of<HomeCubit>(context).cacheModel!.cachedModel.where((element) => element.uid==FirebaseAuth.instance.currentUser!.uid).first;
+                                                          cachedModel.cachedFavoriteIds.remove(BlocProvider.of<HomeCubit>(context).furnitureList[index].furnitureId);
+                                                          // print(jsonEncode(BlocProvider.of<HomeCubit>(context).cacheModel!.toMap()));
+                                                          CacheHelper.setData( key: 'user', value: jsonEncode(BlocProvider.of<HomeCubit>(context).cacheModel!.toMap()));
                                                         }
                                                           },
                                                         child: FavoriteIcon(

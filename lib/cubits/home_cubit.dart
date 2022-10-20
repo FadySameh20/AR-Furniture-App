@@ -1,71 +1,143 @@
+import 'dart:convert';
+
 import 'package:ar_furniture_app/cubits/home_states.dart';
 import 'package:ar_furniture_app/models/furniture_model.dart';
 import 'package:ar_furniture_app/models/offers_model.dart';
-import 'package:ar_furniture_app/models/shared_model.dart';
 import 'package:ar_furniture_app/shared/cache/sharedpreferences.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../models/name_model.dart';
 
-class HomeCubit extends Cubit<HomeState>{
-  HomeCubit():super(InitialHomeState());
+class HomeCubit extends Cubit<HomeState> {
+  HomeCubit() : super(InitialHomeState());
 
-  List<Offers> offers=[];
-  List<CategoryItem> categories=[];
-  List<FurnitureModel> furnitureList=[];
-   getAllData() async{
+  List<Offers> offers = [];
+  List<CategoryItem> categories = [];
+  List<FurnitureModel> furnitureList = [];
+
+  getAllData() async {
     await getCategoryNames();
     await getOffers();
   }
-  getCategoryNames()async{
-     Category myCategory=Category([]);
+
+  getCategoryNames() async {
+    Category myCategory = Category([]);
     await FirebaseFirestore.instance.collection("names").get().then((value) {
-       value.docs.forEach((element) {
-         myCategory=Category.fromJson(element.data());
-       });
-       categories=List.from(myCategory.names);
-     }).catchError((error){});
+      value.docs.forEach((element) {
+        myCategory = Category.fromJson(element.data());
+      });
+      categories = List.from(myCategory.names);
+    }).catchError((error) {});
     print(categories.length);
-    for(var i in categories){
-      if(i.name=="beds") {
+    for (var i in categories) {
+      if (i.name == "beds") {
         getFurniture(i.name);
       }
     }
-   }
-   getOffers() async {
-    await FirebaseFirestore.instance.collection('offer')
-        .get().then((value){
-          value.docs.forEach((element) {
-            offers.add(Offers.fromJson(element.data()));
-          });
-          emit(SuccessOffersState());
-    }).catchError((error){emit(ErrorOffersState());});
+  }
+
+  getOffers() async {
+    await FirebaseFirestore.instance.collection('offer').get().then((value) {
+      value.docs.forEach((element) {
+        offers.add(Offers.fromJson(element.data()));
+      });
+      emit(SuccessOffersState());
+    }).catchError((error) {
+      emit(ErrorOffersState());
+    });
     print(offers.length);
   }
 
-  getFurniture(String categoryName)async{
-     // FurnitureModel myFurniture=FurnitureModel(furnitureId:'', name: '', model: '', shared: []);
-    // print(CacheHelper.getData("favorites"));
-    // CacheHelper.removeData("favorites");
-    List favoritesId=await CacheHelper.getData("favorites")??[];
-    print(favoritesId);
-     await FirebaseFirestore.instance.collection('category').doc(categoryName).collection(categoryName).get().then((value) {
-       value.docs.forEach((element) {
-
-        FurnitureModel myFurniture = FurnitureModel.fromJson(element.data());
-         furnitureList.add(myFurniture);
-          if(favoritesId.contains(myFurniture.furnitureId)){
-            furnitureList.last.isFavorite=true;
-            // favorites.add(myFurniture);
-          }
-       });
-
-
-     });
-
-print(furnitureList.length);
-
+  CacheModel? cacheModel;
+  logout(context){
+    FirebaseAuth.instance.signOut();
+    emit(SuccessOffersState());
+    Navigator.pushNamed(context, "/");
   }
 
+  createCache() async{
+    cacheModel=CacheModel(cachedModel: [CachedUserModel(uid: FirebaseAuth.instance.currentUser!.uid, cachedFavoriteIds: [])]);
+  }
+
+  getCache() async {
+    var temp = await CacheHelper.getData("user") ?? "";
+    if (temp != "") {
+      Map cachedMap = jsonDecode(temp);
+      print(cachedMap);
+      cacheModel = CacheModel.fromJson(cachedMap);
+      var isUserCached = cacheModel!.cachedModel.where(
+          (element) => element.uid == FirebaseAuth.instance.currentUser!.uid);
+      // CachedUserModel cache;
+      if(isUserCached.isEmpty) {
+        return "";
+      } else {
+        return isUserCached.first;
+      }
+    }
+    return "";
+  }
+
+  getFurniture(String categoryName) async {
+    var cache=await getCache();
+    List favoritesId;
+    if(cache=="") {
+      favoritesId=[];
+    } else {
+      favoritesId=cache.cachedFavoriteIds;
+    }
+    print(favoritesId);
+    await FirebaseFirestore.instance
+        .collection('category')
+        .doc(categoryName)
+        .collection(categoryName)
+        .get()
+        .then((value) {
+      for (var element in value.docs) {
+        FurnitureModel myFurniture = FurnitureModel.fromJson(element.data());
+        furnitureList.add(myFurniture);
+        if (favoritesId.contains(myFurniture.furnitureId)) {
+          furnitureList.last.isFavorite = true;
+        }
+      }
+    });
+
+    print(furnitureList.length);
+  }
+}
+
+class CacheModel {
+  List<CachedUserModel> cachedModel = [];
+
+  CacheModel({required this.cachedModel});
+
+  CacheModel.fromJson(json) {
+    json["cachedModel"].forEach((element) {
+      cachedModel.add(CachedUserModel.fromJson(element));
+    });
+  }
+
+  Map toMap() {
+    return {"cachedModel": cachedModel.map((e) => e.toMap()).toList()};
+  }
+}
+
+class CachedUserModel {
+  late String uid;
+  List<String> cachedFavoriteIds = [];
+
+  CachedUserModel({required this.uid, required this.cachedFavoriteIds});
+
+  CachedUserModel.fromJson(Map json) {
+    uid = json["uid"];
+    json["cachedIds"].forEach((element){
+      cachedFavoriteIds.add(element);
+    });
+  }
+
+  Map toMap() {
+    return {"uid": uid, "cachedIds": cachedFavoriteIds};
+  }
 }
