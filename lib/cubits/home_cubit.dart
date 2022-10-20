@@ -10,10 +10,12 @@ import '../models/name_model.dart';
 class HomeCubit extends Cubit<HomeState> {
   HomeCubit() : super(InitialHomeState());
 
+
   List<Offers> offers = [];
   List<CategoryItem> categories = [];
   List<FurnitureModel> furnitureList = [];
   List<String> returnedCategory = [];
+  List<FurnitureModel> allFurnitureList = [];
 
   getAllData() async {
     await getCategoryNames();
@@ -66,4 +68,25 @@ class HomeCubit extends Cubit<HomeState> {
           print(furnitureList);
         });
   }
+  getAllFurnitures() async {
+    FurnitureModel myFurniture = FurnitureModel(furnitureId: '', name: '', model: '', shared: []);
+    categories.forEach((categoryName) async {
+      await FirebaseFirestore.instance
+          .collection('category')
+          .doc(categoryName.name)
+          .collection(categoryName.name)
+          .get()
+          .then((value) {
+        value.docs.forEach((element) {
+          print(element.data());
+          myFurniture = FurnitureModel.fromJson(element.data());
+          allFurnitureList.add(myFurniture);
+        });
+        emit(SuccessOffersState());
+        print("All Furniture List");
+        print(allFurnitureList);
+      });
+    });
+  }
+
 }
