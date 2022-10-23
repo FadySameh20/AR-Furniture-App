@@ -280,29 +280,8 @@ class _HomePageState extends State<HomePage> {
                                                       const Spacer(),
                                                       InkWell(
                                                         onTap: () async{
-                                                          BlocProvider.of<HomeCubit>(context).furnitureList[index].isFavorite=!BlocProvider.of<HomeCubit>(context).furnitureList[index].isFavorite;
-                                                          BlocProvider.of<HomeCubit>(context).emit(SuccessOffersState());
-                                                        if(BlocProvider.of<HomeCubit>(context).furnitureList[index].isFavorite==true){
-                                                          if(BlocProvider.of<HomeCubit>(context).cacheModel==null){
-                                                            BlocProvider.of<HomeCubit>(context).createCache();
-                                                          }
-                                                          var cachedtemp=BlocProvider.of<HomeCubit>(context).cacheModel!.cachedModel.where((element) => element.uid==FirebaseAuth.instance.currentUser!.uid);
-                                                          CachedUserModel cachedModel;
-                                                          if(cachedtemp.isEmpty){
-                                                            cachedModel=CachedUserModel(uid: FirebaseAuth.instance.currentUser!.uid, cachedFavoriteIds: []);
-                                                            BlocProvider.of<HomeCubit>(context).cacheModel!.cachedModel.add(cachedModel);
-                                                          }
-                                                          else{
-                                                            cachedModel=cachedtemp.first;
-                                                          }
-                                                          cachedModel.cachedFavoriteIds.add(BlocProvider.of<HomeCubit>(context).furnitureList[index].furnitureId);
-                                                          CacheHelper.setData( key: 'user', value: jsonEncode(BlocProvider.of<HomeCubit>(context).cacheModel!.toMap()));
-                                                        }else{
-                                                          var cachedModel=BlocProvider.of<HomeCubit>(context).cacheModel!.cachedModel.where((element) => element.uid==FirebaseAuth.instance.currentUser!.uid).first;
-                                                          cachedModel.cachedFavoriteIds.remove(BlocProvider.of<HomeCubit>(context).furnitureList[index].furnitureId);
-                                                          // print(jsonEncode(BlocProvider.of<HomeCubit>(context).cacheModel!.toMap()));
-                                                          CacheHelper.setData( key: 'user', value: jsonEncode(BlocProvider.of<HomeCubit>(context).cacheModel!.toMap()));
-                                                        }
+                                                          context.read<HomeCubit>().addOrRemoveFromFavorite(index);
+                                                          context.read<HomeCubit>().emit(SuccessOffersState());
                                                           },
                                                         child: FavoriteIcon(
                                                             iconLogo:

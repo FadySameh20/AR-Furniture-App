@@ -21,6 +21,7 @@ class HomeCubit extends Cubit<HomeState> {
   getAllData() async {
     await getCategoryNames();
     await getOffers();
+    await getFurniture(categories.first.name);
   }
 
   getCategoryNames() async {
@@ -32,11 +33,6 @@ class HomeCubit extends Cubit<HomeState> {
       categories = List.from(myCategory.names);
     }).catchError((error) {});
     print(categories.length);
-    for (var i in categories) {
-      if (i.name == "beds") {
-        getFurniture(i.name);
-      }
-    }
   }
 
   getOffers() async {
@@ -49,35 +45,6 @@ class HomeCubit extends Cubit<HomeState> {
       emit(ErrorOffersState());
     });
     print(offers.length);
-  }
-
-  CacheModel? cacheModel;
-  logout(context){
-    FirebaseAuth.instance.signOut();
-    emit(SuccessOffersState());
-    Navigator.pushNamed(context, "/");
-  }
-
-  createCache() async{
-    cacheModel=CacheModel(cachedModel: [CachedUserModel(uid: FirebaseAuth.instance.currentUser!.uid, cachedFavoriteIds: [])]);
-  }
-
-  getCache() async {
-    var temp = await CacheHelper.getData("user") ?? "";
-    if (temp != "") {
-      Map cachedMap = jsonDecode(temp);
-      print(cachedMap);
-      cacheModel = CacheModel.fromJson(cachedMap);
-      var isUserCached = cacheModel!.cachedModel.where(
-          (element) => element.uid == FirebaseAuth.instance.currentUser!.uid);
-      // CachedUserModel cache;
-      if(isUserCached.isEmpty) {
-        return "";
-      } else {
-        return isUserCached.first;
-      }
-    }
-    return "";
   }
 
   getFurniture(String categoryName) async {
@@ -105,6 +72,106 @@ class HomeCubit extends Cubit<HomeState> {
     });
 
     print(furnitureList.length);
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  CacheModel? cacheModel;
+  logout(context){
+    FirebaseAuth.instance.signOut();
+    emit(SuccessOffersState());
+    Navigator.pushNamed(context, "/");
+  }
+
+  createCache() async{
+    cacheModel=CacheModel(cachedModel: [CachedUserModel(uid: FirebaseAuth.instance.currentUser!.uid, cachedFavoriteIds: [])]);
+  }
+
+  getCache() async {
+    var temp = await CacheHelper.getData("user") ?? "";
+    if (temp != "") {
+      Map cachedMap = jsonDecode(temp);
+      print(cachedMap);
+      cacheModel = CacheModel.fromJson(cachedMap);
+      var isUserCached = cacheModel!.cachedModel.where(
+              (element) => element.uid == FirebaseAuth.instance.currentUser!.uid);
+      // CachedUserModel cache;
+      if(isUserCached.isEmpty) {
+        return "";
+      } else {
+        return isUserCached.first;
+      }
+    }
+    return "";
+  }
+
+  addOrRemoveFromFavorite(index){
+    furnitureList[index].isFavorite=!furnitureList[index].isFavorite;
+    emit(SuccessOffersState());
+    if(furnitureList[index].isFavorite==true){
+      if(cacheModel==null){
+        createCache();
+      }
+      var cachedtemp=cacheModel!.cachedModel.where((element) => element.uid==FirebaseAuth.instance.currentUser!.uid);
+      CachedUserModel cachedModel;
+      if(cachedtemp.isEmpty){
+        cachedModel=CachedUserModel(uid: FirebaseAuth.instance.currentUser!.uid, cachedFavoriteIds: []);
+        cacheModel!.cachedModel.add(cachedModel);
+      }
+      else{
+        cachedModel=cachedtemp.first;
+      }
+      cachedModel.cachedFavoriteIds.add(furnitureList[index].furnitureId);
+      CacheHelper.setData( key: 'user', value: jsonEncode(cacheModel!.toMap()));
+    }else{
+      var cachedModel=cacheModel!.cachedModel.where((element) => element.uid==FirebaseAuth.instance.currentUser!.uid).first;
+      cachedModel.cachedFavoriteIds.remove(furnitureList[index].furnitureId);
+      // print(jsonEncode(BlocProvider.of<HomeCubit>(context).cacheModel!.toMap()));
+      CacheHelper.setData( key: 'user', value: jsonEncode(cacheModel!.toMap()));
+    }
   }
 }
 

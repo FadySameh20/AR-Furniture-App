@@ -20,7 +20,9 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
   @override
   Widget build(BuildContext context) {
     List<FurnitureModel> myFavorites=BlocProvider.of<HomeCubit>(context).furnitureList.where((element) => element.isFavorite==true).toList();
-    return Container(
+    return myFavorites.isEmpty?Center(child: Text("No Favorites Yet",style: Theme.of(context).textTheme.bodyText1?.copyWith(
+      fontSize: 24
+    ),),):Container(
       // height: MediaQuery.of(context).size.height * 0.6,
       // flex: 2,
       child: ListView.builder(
@@ -87,23 +89,9 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
                       alignment: Alignment.topRight,
                       child: InkWell(
                         onTap: ()async{
-
-                            // BlocProvider.of<HomeCubit>(context).furnitureList;
-                            // context.read<>;
-                            // BlocProvider.of<HomeCubit>(context).furnitureList.where((element) => element.furnitureId==myFavorites[index].furnitureId).first.isFavorite=false;
-                            myFavorites[index].isFavorite=false;
-                            var cachedModel=BlocProvider.of<HomeCubit>(context).cacheModel!.cachedModel.where((element) => element.uid==FirebaseAuth.instance.currentUser!.uid).first;
-                            cachedModel.cachedFavoriteIds.remove(myFavorites[index].furnitureId);
                             setState(() {
-                              CacheHelper.setData( key: 'user', value: jsonEncode(BlocProvider.of<HomeCubit>(context).cacheModel!.toMap()));
-
-
+                              BlocProvider.of<HomeCubit>(context).addOrRemoveFromFavorite(index);
                             });
-                            // List<String> favorites=await CacheHelper.getData("favorites")??[];
-                            // favorites.remove(myFavorites[index].furnitureId);
-                            // setState(() {
-                            //   CacheHelper.setList(key: "favorites", value: favorites);
-                            // });
                         },
                         child: Padding(
                           padding: const EdgeInsets.only(top:15.0,right:15.0),
