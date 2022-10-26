@@ -175,6 +175,19 @@ class HomeCubit extends Cubit<HomeState> {
       CacheHelper.setData( key: 'user', value: jsonEncode(cacheModel!.toMap()));
     }
   }
+   void updateCartInFirestore(FurnitureModel selectedFurniture) async {
+    await FirebaseFirestore.instance
+        .collection('category')
+        .doc(selectedFurniture.category)
+        .collection(selectedFurniture.category)
+        .doc(selectedFurniture.furnitureId)
+        .set(selectedFurniture.toMap())
+        .then((value) => print("Updated"))
+        .catchError((error) {
+      print("Error");
+      print(error);
+    });
+  }
 }
 
 class CacheModel {
