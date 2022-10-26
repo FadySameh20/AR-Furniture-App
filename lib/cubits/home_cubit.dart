@@ -16,8 +16,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../models/name_model.dart';
 import '../shared/cache/sharedpreferences.dart';
 
-class HomeCubit extends Cubit<HomeState> {
-  HomeCubit() : super(InitialHomeState());
+
 
 
 class HomeCubit extends Cubit<HomeState> {
