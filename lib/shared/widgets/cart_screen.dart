@@ -1,62 +1,304 @@
+import 'dart:convert';
+
+import 'package:ar_furniture_app/cubits/home_cubit.dart';
+import 'package:ar_furniture_app/cubits/home_states.dart';
+import 'package:ar_furniture_app/shared/cache/sharedpreferences.dart';
+import 'package:ar_furniture_app/shared/constants/constants.dart';
+import 'package:ar_furniture_app/shared/widgets/circle_avatar.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-class CartScreen extends StatelessWidget {
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-
-  List<String> names = <String>['chair1', 'chair2', 'chair3', 'chair4'];
-  List<String> images = <String>[
-    'assets/Item_1.png',
-    'assets/Item_1.png',
-    'assets/Item_1.png',
-    'assets/Item_1.png'
-  ];
-  List<int> prices = <int>[100, 200, 300, 400];
+class CartScreen extends StatefulWidget {
   @override
-  Widget build(BuildContext context)  {
-  //  FirebaseFirestore.instance.collection('names').get().then((value) {
-    //  for(var document in value.docs){
-    //    document.data();
-   //   }
-   // });
-    return Stack(
-      children: [
-        Container(
-          height: double.infinity,
-        ),
-        Container(
-          height: MediaQuery.of(context).size.height / 1.2,
-          width: MediaQuery.of(context).size.width,
-          //color: Colors.white,
-          child: ListView.separated(
-            itemBuilder: (context, index) {
-              return Padding(
-                padding: const EdgeInsets.all(8.8),
-                child: Container(
-                  height: 60,
-                  color: Colors.white,
-                  child: Row(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(3.0),
+  State<CartScreen> createState() => _CartScreenState();
+}
+
+class _CartScreenState extends State<CartScreen> {
+  List<String> furnitureNames = [];
+  List<String> furnitureImages = [];
+  List<String> furniturePrices = [];
+  List<String> furnitureQuantities = [];
+  Map<String, dynamic> cartMap = {};
+  var quantity = 0;
+  int subTotal = 0;
+  var estimatingTax = 0.14;
+  @override
+  void initState() {
+    // TODO: implement initState
+
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await this.setCache();
+      setState(() {});
+    });
+  }
+
+  Future<void> setCache() async {
+    cartMap = await json.decode(CacheHelper.getData('cart')) ?? {};
+    print("Cart Map");
+    print(cartMap);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocConsumer<HomeCubit, HomeState>(
+        listener: (context, state) {},
+        builder: (context, state) {
+          List<String> furnitureNames = [];
+          List<String> furnitureImages = [];
+          List<String> furniturePrices = [];
+          List<String> furnitureQuantities = [];
+          List<String> availableQuantity = [];
+          cartMap.forEach((key, value) {
+            value.forEach((element) {
+              furnitureQuantities.add(BlocProvider.of<HomeCubit>(context)
+                  .furnitureList
+                  .where((element) => element.furnitureId == key)
+                  .first
+                  .shared[element]
+                  .quantityCart);
+              furnitureImages.add(BlocProvider.of<HomeCubit>(context)
+                  .furnitureList
+                  .where((element) => element.furnitureId == key)
+                  .first
+                  .shared[element]
+                  .image);
+              availableQuantity.add(BlocProvider.of<HomeCubit>(context)
+                  .furnitureList
+                  .where((element) => element.furnitureId == key)
+                  .first
+                  .shared[element]
+                  .quantity);
+
+              furnitureNames.add(BlocProvider.of<HomeCubit>(context)
+                  .furnitureList
+                  .where((element) => element.furnitureId == key)
+                  .first
+                  .name);
+              furniturePrices.add(BlocProvider.of<HomeCubit>(context)
+                  .furnitureList
+                  .where((element) => element.furnitureId == key)
+                  .first
+                  .shared[element]
+                  .price);
+            });
+
+          });
+          for(int i=0;i<furniturePrices.length;i++){
+          subTotal+=int.parse(
+              furnitureQuantities[
+              i])*int.parse(
+              furniturePrices[
+              i]);
+          };
+
+
+          return Scaffold(
+            appBar: AppBar(
+              backgroundColor: Color.fromRGBO(191, 122, 47, 1),
+              actions: [
+                IconButton(onPressed: () {}, icon: Icon(Icons.shopping_cart))
+              ],
+              centerTitle: true,
+              title: Text(
+                "Cart",
+                style: TextStyle(),
+              ),
+            ),
+
+            // height: MediaQuery.of(context).size.height * 0.6,
+            // flex: 2,
+            body: Stack(
+              children: [
+                Container(
+                  child: ListView.builder(
+                    itemCount: furnitureNames.length,
+                    itemBuilder: (context, index) {
+                      return Padding(
+                        padding: const EdgeInsets.all(10.0),
                         child: Material(
-                            borderRadius: BorderRadius.circular(50),
-                            child: Image.asset(
-                              images[index],
-                              fit: BoxFit.contain,
-                            )),
-                      ),
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.only(left: 5),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                          borderRadius: BorderRadius.circular(30),
+                          child: Stack(
                             children: [
-                              Text(
-                                names[index],
-                                overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
-                                    fontSize: 16, color: Colors.black),
-                                textAlign: TextAlign.center,
+                              Row(
+                                children: [
+                                  Expanded(
+                                      flex: 1,
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(10.0),
+                                        child: Image.network(
+                                          furnitureImages[index],
+                                          fit: BoxFit.contain,
+                                        ),
+                                      )),
+                                  Expanded(
+                                    flex: 2,
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+
+                                          furnitureNames[index],
+                                          style: TextStyle(fontSize: 15),
+                                        ),
+                                        SizedBox(
+                                          height: 10,
+                                        ),
+                                        Row(
+                                          children: [
+                                            InkWell(
+                                              onTap: () {
+                                                if (int.parse(
+                                                        furnitureQuantities[
+                                                            index]) >
+                                                    1) {
+                                                  quantity = int.parse(
+                                                      furnitureQuantities[
+                                                          index]);
+                                                  quantity--;
+                                                  furnitureQuantities[index] =
+                                                      quantity.toString();
+                                                  print('minus quantity');
+                                                  print(furnitureQuantities[
+                                                      index]);
+                                                }
+                                                setState(() {});
+                                              },
+                                              child: CustomCircleAvatar(
+                                                radius: MediaQuery.of(context)
+                                                            .size
+                                                            .height >
+                                                        700
+                                                    ? 15.0
+                                                    : 12.0,
+                                                CavatarColor:
+                                                    kAppBackgroundColor,
+                                                icon: Icon(
+                                                  Icons.remove,
+                                                  size: MediaQuery.of(context)
+                                                              .size
+                                                              .height >
+                                                          700
+                                                      ? 22.0
+                                                      : 18.0,
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              width: 10.0,
+                                            ),
+                                            Text(
+                                              furnitureQuantities[index],
+                                              style: TextStyle(
+                                                fontSize: MediaQuery.of(context)
+                                                            .size
+                                                            .height >
+                                                        700
+                                                    ? 20.0
+                                                    : 18.0,
+                                                fontWeight: FontWeight.w600,
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              width: 10.0,
+                                            ),
+                                            InkWell(
+                                              onTap: () {
+                                                if (int.parse(
+                                                            furnitureQuantities[
+                                                                index]) +
+                                                        1 <=
+                                                    int.parse(availableQuantity[
+                                                        index])) {
+                                                  quantity = int.parse(
+                                                      furnitureQuantities[
+                                                          index]);
+                                                  setState(() {
+                                                    quantity++;
+                                                    furnitureQuantities[index] =
+                                                        quantity.toString();
+                                                    print('quantity new:');
+                                                    print(furnitureQuantities[
+                                                        index]);
+                                                  });
+                                                }
+                                              },
+                                              child: CustomCircleAvatar(
+                                                radius: MediaQuery.of(context)
+                                                            .size
+                                                            .height >
+                                                        700
+                                                    ? 15.0
+                                                    : 12.0,
+                                                CavatarColor:
+                                                    kAppBackgroundColor,
+                                                icon: Icon(
+                                                  Icons.add,
+                                                  size: MediaQuery.of(context)
+                                                              .size
+                                                              .height >
+                                                          700
+                                                      ? 22.0
+                                                      : 18.0,
+                                                  color: Colors.white,
+                                                ),
+                                              ),
+                                            ),
+                                            Spacer(),
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 10.0),
+                                              child: Text(
+                                                '\EGP ${furniturePrices[index]}',
+                                                style: TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 18),
+                                              ),
+                                            ),
+                                          ],
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Container(
+                      width: double.infinity,
+                      height: MediaQuery.of(context).size.height * 0.35,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.only(
+                            topRight: Radius.circular(30),
+                            topLeft: Radius.circular(30)),
+                      ),
+                      child: SingleChildScrollView(
+                        physics: BouncingScrollPhysics(),
+                        child: Padding(
+                          padding: const EdgeInsets.all(20.0),
+                          child: Column(
+                            children: [
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text("Sub Total            "),
+                                  Text("\EGP ${subTotal}"),
+                                ],
                               ),
                               SizedBox(
                                 height: 10,
@@ -65,87 +307,70 @@ class CartScreen extends StatelessWidget {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Container(
-                                    //width:MediaQuery.of(context).size.width*.4,
-
-                                    color: Colors.grey.shade200,
-                                    height: MediaQuery.of(context).size.height *
-                                        .02,
-                                    child: Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Container(
-                                          padding: EdgeInsets.only(
-                                              bottom: MediaQuery.of(context)
-                                                      .size
-                                                      .width *
-                                                  .02),
-                                          child: Icon(
-                                            Icons.minimize,
-                                            size: 10,
-                                            color: Colors.black,
-                                          ),
-                                        ),
-                                        SizedBox(
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              .06,
-                                        ),
-                                        Text(
-                                          '1',
-                                          overflow: TextOverflow.ellipsis,
-                                          //textAlign:TextAlign.center,
-                                          style: TextStyle(
-                                              fontSize: 8, color: Colors.black),
-                                        ),
-                                        SizedBox(
-                                          width: MediaQuery.of(context)
-                                                  .size
-                                                  .width *
-                                              .06,
-                                        ),
-                                        Icon(
-                                          Icons.add,
-                                          size: 10,
-                                          color: Colors.black,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 10.0),
-                                    child: Text(
-                                      '\EGP ${prices[index].toString()}',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 18),
-                                    ),
-                                  ),
+                                  Text("Shipping fee    "),
+                                  Text('\EGP 300'),
                                 ],
                               ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Row(
+
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text("Estimating Tax"),
+
+                                  Text("\$6.50"),
+                                ],
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Divider(
+                                color: Colors.black,
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text("Total"),
+                                  Text("\$104.50"),
+                                ],
+                              ),
+                              SizedBox(
+                                height: 20,
+                              ),
+                              Row(
+                                children: [
+                                  Expanded(
+                                      child: ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                            padding: EdgeInsets.symmetric(
+                                                vertical: 10),
+                                            backgroundColor:
+                                                Color.fromRGBO(191, 122, 47, 1),
+                                          ),
+                                          onPressed: () {},
+                                          child: Text(
+                                            "Checkout",
+                                            style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 20),
+                                          ))),
+                                ],
+                              )
                             ],
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                ),
-              );
-            },
-            itemCount: names.length,
-            separatorBuilder: (BuildContext context, int index) {
-              return SizedBox(
-                height: 2,
-              );
-            },
-          ),
-        ),
-      ],
-    );
+                      )),
+                )
+              ],
+            ),
+          );
+        });
   }
 }

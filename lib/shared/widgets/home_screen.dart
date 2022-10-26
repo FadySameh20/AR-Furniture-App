@@ -81,9 +81,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => HomeCubit()..getAllData(),
-      child: BlocConsumer<HomeCubit,HomeState>(
+    return BlocConsumer<HomeCubit,HomeState>(
         listener: (context,state){},
           builder: (context,state) {
             return  Scaffold(
@@ -335,8 +333,7 @@ class _HomePageState extends State<HomePage> {
             );
           }
         ,
-      ),
-    );
+      );
   }
 }
 

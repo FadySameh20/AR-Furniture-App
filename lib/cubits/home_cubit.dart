@@ -1,4 +1,8 @@
+
 import 'dart:convert';
+
+import 'dart:ui';
+
 
 import 'package:ar_furniture_app/cubits/home_states.dart';
 import 'package:ar_furniture_app/models/furniture_model.dart';
@@ -10,13 +14,22 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../models/name_model.dart';
+import '../shared/cache/sharedpreferences.dart';
 
 class HomeCubit extends Cubit<HomeState> {
   HomeCubit() : super(InitialHomeState());
 
+
+class HomeCubit extends Cubit<HomeState> {
+  HomeCubit() : super(InitialHomeState());
+
+
   List<Offers> offers = [];
   List<CategoryItem> categories = [];
   List<FurnitureModel> furnitureList = [];
+  List<String> returnedCategory = [];
+  List<Color?> availableColors = [];
+
 
   getAllData() async {
     await getCategoryNames();
@@ -33,6 +46,7 @@ class HomeCubit extends Cubit<HomeState> {
       categories = List.from(myCategory.names);
     }).catchError((error) {});
     print(categories.length);
+
   }
 
   getOffers() async {
@@ -48,6 +62,7 @@ class HomeCubit extends Cubit<HomeState> {
   }
 
   getFurniture(String categoryName) async {
+    returnedCategory.add(categoryName);
     var cache=await getCache();
     List favoritesId;
     if(cache=="") {
@@ -70,54 +85,42 @@ class HomeCubit extends Cubit<HomeState> {
         }
       }
     });
-
+    emit(SuccessOffersState());
     print(furnitureList.length);
   }
 
+  Color? getColorFromHex(String hexColor) {
+    hexColor = hexColor.replaceAll("#", "");
+    if (hexColor.length == 6) {
+      hexColor = "FF" + hexColor;
+    }
+    if (hexColor.length == 8) {
+      return Color(int.parse("0x$hexColor"));
+    }
+    return null;
+  }
 
 
+  List<Color?> getAvailableColorsOfFurniture(FurnitureModel selectedFurniture) {
+    availableColors.clear();
+    for (int i = 0; i < selectedFurniture.shared.length; i++) {
+      availableColors.add(getColorFromHex(selectedFurniture.shared[i].color));
+    }
+    return availableColors;
+  }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  void addOrRemoveFromFavorites(FurnitureModel furnitureModel) async {
+    furnitureModel.isFavorite = !furnitureModel.isFavorite;
+    List<String> favorites = await CacheHelper.getData("favorites") ?? [];
+    if (furnitureModel.isFavorite == true) {
+      favorites.add(furnitureModel.furnitureId);
+      CacheHelper.setList(key: "favorites", value: favorites);
+    } else {
+      favorites.remove(furnitureModel.furnitureId);
+      CacheHelper.setList(key: "favorites", value: favorites);
+    }
+    emit(AddOrRemoveFavoriteState());
+  }
 
   CacheModel? cacheModel;
   logout(context){
@@ -206,5 +209,19 @@ class CachedUserModel {
 
   Map toMap() {
     return {"uid": uid, "cachedIds": cachedFavoriteIds};
+  }
+
+  void updateCartInFirestore(FurnitureModel selectedFurniture) async {
+    await FirebaseFirestore.instance
+        .collection('category')
+        .doc(selectedFurniture.category)
+        .collection(selectedFurniture.category)
+        .doc(selectedFurniture.furnitureId)
+        .set(selectedFurniture.toMap())
+        .then((value) => print("Updated"))
+        .catchError((error) {
+      print("Error");
+      print(error);
+    });
   }
 }
