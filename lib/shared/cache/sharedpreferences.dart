@@ -8,6 +8,10 @@ class CacheHelper {
     sharedPreferences = await SharedPreferences.getInstance();
   }
 
+  static Future<bool?> setList({required String key, required dynamic value}) async{
+    return await sharedPreferences!.setStringList(key, value);
+  }
+
   static Future<bool?> setData(
       {required String key, required dynamic value}) async {
     if (value is int) {

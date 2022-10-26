@@ -39,10 +39,10 @@ class MyApp extends StatelessWidget {
         )
       ),
       routes: {
-        '/': (context)=>CacheHelper.getData("hasPassedBoardingScreen")!=null?SplashWelcomeScreen():BoardingScreen(),
+        '/': (context)=>FirebaseAuth.instance.currentUser!=null?HomePage():CacheHelper.getData("hasPassedBoardingScreen")!=null?SplashWelcomeScreen():BoardingScreen(),
         '/register': (context) => RegisterScreen(),
         '/login': (context) => LoginScreen(),
-        '/home': (context) => HomeScreen(),
+        '/home': (context) => HomePage(),
       },
       // home: BoardingScreen(),
     );
