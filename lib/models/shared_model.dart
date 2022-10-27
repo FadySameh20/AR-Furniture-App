@@ -20,20 +20,20 @@ class SharedModel {
     image = json["image"];
     price = json["price"];
     quantity = json["quantity"];
-    isAddedCart = json["isAddedCart"];
-    quantityCart = json["quantityCart"];
+    // isAddedCart = json["isAddedCart"];
+    // quantityCart = json["quantityCart"];
   }
   Map<String, dynamic> toMap() {
     print("Inside Shared Model");
-    print(isAddedCart);
+    // print(isAddedCart);
     print(quantityCart);
     return {
       "color": color,
       "image": image,
       "price": price,
       "quantity": quantity,
-      "isAddedCart": isAddedCart,
-      "quantityCart": quantityCart,
+      // "isAddedCart": isAddedCart,
+      // "quantityCart": quantityCart,
     };
   }
 }
