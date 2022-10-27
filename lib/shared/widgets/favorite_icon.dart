@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class FavoriteIcon extends StatelessWidget {
+class FavoriteIcon extends StatefulWidget {
 
   IconData iconLogo;
   Color? iconColor;
@@ -9,11 +9,16 @@ class FavoriteIcon extends StatelessWidget {
   FavoriteIcon({required this.iconLogo, this.iconColor, this.iconSize});
 
   @override
+  State<FavoriteIcon> createState() => _FavoriteIconState();
+}
+
+class _FavoriteIconState extends State<FavoriteIcon> {
+  @override
   Widget build(BuildContext context) {
     return Icon(
-      iconLogo,
-      color: iconColor,
-      size: iconSize,
+      widget.iconLogo,
+      color: widget.iconColor,
+      size: widget.iconSize,
     );
   }
 }

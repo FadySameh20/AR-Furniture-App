@@ -1,3 +1,4 @@
+import 'package:ar_furniture_app/cubits/home_cubit.dart';
 import 'package:ar_furniture_app/shared/constants/constants.dart';
 import 'package:ar_furniture_app/shared/widgets/auth_cubit.dart';
 import 'package:ar_furniture_app/shared/widgets/auth_states.dart';
@@ -32,12 +33,13 @@ class _LoginScreenState extends State<LoginScreen> {
     return BlocProvider<AuthCubit>(
       create: (context) => AuthCubit(),
       child: BlocConsumer<AuthCubit, AuthStates>(
-        listener: (context, state) {
+        listener: (context, state) async {
           if (state is AuthSuccessfullyState) {
             print("Logged In Successfully");
             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
               content: Text('Logged In Successfully !'),
             ));
+            await BlocProvider.of<HomeCubit>(context).getCache();
             Navigator.pushNamedAndRemoveUntil(
                 context, '/home', (route) => false);
           } else if (state is AuthErrorState) {
@@ -117,12 +119,12 @@ class _LoginScreenState extends State<LoginScreen> {
                                 height: 30.0,
                               ),
                               ElevatedButton(
-                                onPressed: () {
+                                onPressed: ()async {
                                   if(formKey.currentState!.validate()) {
                                     setState(() {
                                       isLoading = true;
                                     });
-                                    BlocProvider.of<AuthCubit>(context).login(
+                                    await BlocProvider.of<AuthCubit>(context).login(
                                         emailController.text,
                                         passController.text);
                                   }

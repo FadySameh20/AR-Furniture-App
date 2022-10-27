@@ -446,7 +446,7 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => CartScreen()),
+                                    builder: (context) => CartScreen(furnitureList: BlocProvider.of<HomeCubit>(context).furnitureList)),
                               );
                             },
                             child: Row(

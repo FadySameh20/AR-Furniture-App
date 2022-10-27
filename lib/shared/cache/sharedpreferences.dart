@@ -12,9 +12,11 @@ class CacheHelper {
     return await sharedPreferences!.setStringList(key, value);
   }
 
+
   static Future<bool?> setMap({required String key, required dynamic value}) async{
     return await sharedPreferences!.setString(key, value);
   }
+
 
   static Future<bool?> setData(
       {required String key, required dynamic value}) async {
