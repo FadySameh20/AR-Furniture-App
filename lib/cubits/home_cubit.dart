@@ -14,6 +14,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../models/name_model.dart';
+import '../models/user_model.dart';
 import '../shared/cache/sharedpreferences.dart';
 
 
@@ -29,10 +30,19 @@ class HomeCubit extends Cubit<HomeState> {
   List<String> returnedCategory = [];
   List<Color?> availableColors = [];
 
-
+  var cache;
   getAllData() async {
+    // await createCache();
     await getCategoryNames();
     await getOffers();
+    if(FirebaseAuth.instance.currentUser!=null) {
+      cache=await getCache();
+    }
+    else{
+      cache="";
+    }
+    print(FirebaseAuth.instance.currentUser!.uid);
+    // print(cacheModel.cachedModel.where((element) => ))
     await getFurniture(categories.first.name);
   }
 
@@ -62,7 +72,7 @@ class HomeCubit extends Cubit<HomeState> {
 
   getFurniture(String categoryName) async {
     returnedCategory.add(categoryName);
-    var cache=await getCache();
+
     List favoritesId;
     if(cache=="") {
       favoritesId=[];
@@ -122,14 +132,17 @@ class HomeCubit extends Cubit<HomeState> {
   }
 
   CacheModel? cacheModel;
-  logout(context){
-    FirebaseAuth.instance.signOut();
-    emit(SuccessOffersState());
-    Navigator.pushNamed(context, "/");
+  logout(context)async{
+   await FirebaseAuth.instance.signOut();
+   // emit(SuccessOffersState());
+   Navigator.pushReplacementNamed(context, "/");
   }
 
   createCache() async{
-    cacheModel=CacheModel(cachedModel: [CachedUserModel(uid: FirebaseAuth.instance.currentUser!.uid, cachedFavoriteIds: [])]);
+    var temp=await FirebaseFirestore.instance.collection("user").doc(FirebaseAuth.instance.currentUser!.uid).get();
+
+    cacheModel=CacheModel(cachedModel: [CachedUserModel(uid: FirebaseAuth.instance.currentUser!.uid, cachedFavoriteIds: [], cachedUser: UserModel.fromJson(temp.data()!) )]);
+    // CacheHelper.setData( key: 'user', value: jsonEncode(cacheModel!.toMap()));
   }
 
   getCache() async {
@@ -142,30 +155,36 @@ class HomeCubit extends Cubit<HomeState> {
               (element) => element.uid == FirebaseAuth.instance.currentUser!.uid);
       // CachedUserModel cache;
       if(isUserCached.isEmpty) {
+        var temp=await FirebaseFirestore.instance.collection("user").doc(FirebaseAuth.instance.currentUser!.uid).get();
+        print(temp.data()!["fName"]);
+        cacheModel!.cachedModel.add(CachedUserModel(uid: FirebaseAuth.instance.currentUser!.uid, cachedFavoriteIds: [], cachedUser: UserModel.fromJson(temp.data()!) ));
+        print(cacheModel!.cachedModel.last.cachedUser.fName);
+        // var cachedModel=cacheModel!.cachedModel.where((element) => element.uid==FirebaseAuth.instance.currentUser!.uid).first;
+        // cachedModel.cachedFavoriteIds.remove(furnitureList[index].furnitureId);
+        // print(jsonEncode(BlocProvider.of<HomeCubit>(context).cacheModel!.toMap()));
+        CacheHelper.setData( key: 'user', value: jsonEncode(cacheModel!.toMap()));
         return "";
       } else {
         return isUserCached.first;
       }
     }
+    else{
+      createCache();
+    }
     return "";
   }
 
-  addOrRemoveFromFavorite(index){
+  addOrRemoveFromFavorite(index)async{
     furnitureList[index].isFavorite=!furnitureList[index].isFavorite;
     emit(SuccessOffersState());
     if(furnitureList[index].isFavorite==true){
-      if(cacheModel==null){
-        createCache();
-      }
+      // if(cacheModel==null){
+      //   createCache();
+      // }
       var cachedtemp=cacheModel!.cachedModel.where((element) => element.uid==FirebaseAuth.instance.currentUser!.uid);
       CachedUserModel cachedModel;
-      if(cachedtemp.isEmpty){
-        cachedModel=CachedUserModel(uid: FirebaseAuth.instance.currentUser!.uid, cachedFavoriteIds: []);
-        cacheModel!.cachedModel.add(cachedModel);
-      }
-      else{
-        cachedModel=cachedtemp.first;
-      }
+      cachedModel=cachedtemp.first;
+      print(cachedModel.cachedUser.fName);
       cachedModel.cachedFavoriteIds.add(furnitureList[index].furnitureId);
       CacheHelper.setData( key: 'user', value: jsonEncode(cacheModel!.toMap()));
     }else{
@@ -209,18 +228,24 @@ class CacheModel {
 class CachedUserModel {
   late String uid;
   List<String> cachedFavoriteIds = [];
-
-  CachedUserModel({required this.uid, required this.cachedFavoriteIds});
+  late UserModel cachedUser;
+  CachedUserModel({required this.uid, required this.cachedFavoriteIds, required this.cachedUser});
 
   CachedUserModel.fromJson(Map json) {
     uid = json["uid"];
-    json["cachedIds"].forEach((element){
+    print(json["cachedFavoriteIds"]);
+    if(json["cachedFavoriteIds"]!=null){
+    json["cachedFavoriteIds"].forEach((element){
       cachedFavoriteIds.add(element);
-    });
+    });}
+    else{
+      cachedFavoriteIds=[];
+    }
+    cachedUser = UserModel.fromJson(json["userData"]);
   }
 
   Map toMap() {
-    return {"uid": uid, "cachedIds": cachedFavoriteIds};
+    return {"uid": uid, "cachedFavoriteIds": cachedFavoriteIds, "userData": cachedUser.toMap()};
   }
 
   void updateCartInFirestore(FurnitureModel selectedFurniture) async {

@@ -6,6 +6,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
+import '../../cubits/home_cubit.dart';
 import '../constants/constants.dart';
 import 'input_text_field.dart';
 
@@ -34,12 +35,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
     return BlocProvider<AuthCubit>(
       create: (context) => AuthCubit(),
       child: BlocConsumer<AuthCubit, AuthStates>(
-        listener: (context, state) {
+        listener: (context, state) async{
           if (state is AuthSuccessfullyState) {
             print("Registered Successfully");
             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
               content: Text('Regiseterd Successfully !'),
             ));
+            await BlocProvider.of<HomeCubit>(context).getCache();
             Navigator.pushNamedAndRemoveUntil(
                 context, '/home', (route) => false);
           } else if (state is AuthErrorState) {
@@ -205,12 +207,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 height: 2.0,
                               ),
                               ElevatedButton(
-                                onPressed: () {
+                                onPressed: () async{
                                   if(formKey.currentState!.validate()) {
                                     setState(() {
                                       isLoading = true;
                                     });
-                                    BlocProvider.of<AuthCubit>(context).register(
+                                   await BlocProvider.of<AuthCubit>(context).register(
                                         firstNameController.text,
                                         lastNameController.text,
                                         emailController.text,

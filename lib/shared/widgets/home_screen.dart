@@ -84,6 +84,7 @@ class _HomePageState extends State<HomePage> {
     return BlocConsumer<HomeCubit,HomeState>(
         listener: (context,state){},
           builder: (context,state) {
+            print(FirebaseAuth.instance.currentUser!.uid);
             return  Scaffold(
               // backgroundColor: Color(0xE9E89235),
               // backgroundColor: Colors.grey[300],
