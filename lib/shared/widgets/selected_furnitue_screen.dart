@@ -100,7 +100,7 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                         return GestureDetector(
                           onTap: () {
                             BlocProvider.of<HomeCubit>(context)
-                                .addOrRemoveFromFavorites(
+                                .addOrRemoveFromFavorite(
                                     widget.selectedFurniture);
                           },
                           child: widget.selectedFurniture.isFavorite
