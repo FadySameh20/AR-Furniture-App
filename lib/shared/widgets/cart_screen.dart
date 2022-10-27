@@ -10,7 +10,12 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../models/furniture_model.dart';
+
 class CartScreen extends StatefulWidget {
+  List<FurnitureModel> furnitureList;
+  CartScreen({required this.furnitureList});
+
   @override
   State<CartScreen> createState() => _CartScreenState();
 }
@@ -20,9 +25,11 @@ class _CartScreenState extends State<CartScreen> {
   List<String> furnitureImages = [];
   List<String> furniturePrices = [];
   List<String> furnitureQuantities = [];
+  List<String> availableQuantity = [];
   Map<String, dynamic> cartMap = {};
   var quantity = 0;
   int subTotal = 0;
+  bool flag=false;
   var estimatingTax = 0.14;
   @override
   void initState() {
@@ -30,6 +37,7 @@ class _CartScreenState extends State<CartScreen> {
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await this.setCache();
+      setCartData();
       setState(() {});
     });
   }
@@ -40,60 +48,51 @@ class _CartScreenState extends State<CartScreen> {
     print(cartMap);
   }
 
+  void setCartData() {
+    cartMap.forEach((key, value) {
+      value.forEach((element) {
+        furnitureQuantities.add(widget.furnitureList
+            .where((element) => element.furnitureId == key)
+            .first
+            .shared[element]
+            .quantityCart);
+        furnitureImages.add(widget.furnitureList
+            .where((element) => element.furnitureId == key)
+            .first
+            .shared[element]
+            .image);
+        availableQuantity.add(widget.furnitureList
+            .where((element) => element.furnitureId == key)
+            .first
+            .shared[element]
+            .quantity);
+
+        furnitureNames.add(widget.furnitureList
+            .where((element) => element.furnitureId == key)
+            .first
+            .name);
+        furniturePrices.add(widget.furnitureList
+            .where((element) => element.furnitureId == key)
+            .first
+            .shared[element]
+            .price);
+      });
+
+    });
+    for(int i=0;i<furniturePrices.length;i++) {
+      subTotal += int.parse(
+          furnitureQuantities[
+          i]) * int.parse(
+          furniturePrices[
+          i]);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<HomeCubit, HomeState>(
         listener: (context, state) {},
         builder: (context, state) {
-          List<String> furnitureNames = [];
-          List<String> furnitureImages = [];
-          List<String> furniturePrices = [];
-          List<String> furnitureQuantities = [];
-          List<String> availableQuantity = [];
-          cartMap.forEach((key, value) {
-            value.forEach((element) {
-              furnitureQuantities.add(BlocProvider.of<HomeCubit>(context)
-                  .furnitureList
-                  .where((element) => element.furnitureId == key)
-                  .first
-                  .shared[element]
-                  .quantityCart);
-              furnitureImages.add(BlocProvider.of<HomeCubit>(context)
-                  .furnitureList
-                  .where((element) => element.furnitureId == key)
-                  .first
-                  .shared[element]
-                  .image);
-              availableQuantity.add(BlocProvider.of<HomeCubit>(context)
-                  .furnitureList
-                  .where((element) => element.furnitureId == key)
-                  .first
-                  .shared[element]
-                  .quantity);
-
-              furnitureNames.add(BlocProvider.of<HomeCubit>(context)
-                  .furnitureList
-                  .where((element) => element.furnitureId == key)
-                  .first
-                  .name);
-              furniturePrices.add(BlocProvider.of<HomeCubit>(context)
-                  .furnitureList
-                  .where((element) => element.furnitureId == key)
-                  .first
-                  .shared[element]
-                  .price);
-            });
-
-          });
-          for(int i=0;i<furniturePrices.length;i++){
-          subTotal+=int.parse(
-              furnitureQuantities[
-              i])*int.parse(
-              furniturePrices[
-              i]);
-          };
-
-
           return Scaffold(
             appBar: AppBar(
               backgroundColor: Color.fromRGBO(191, 122, 47, 1),
@@ -152,21 +151,30 @@ class _CartScreenState extends State<CartScreen> {
                                           children: [
                                             InkWell(
                                               onTap: () {
-                                                if (int.parse(
-                                                        furnitureQuantities[
-                                                            index]) >
+                                                print(int.parse(
+                                                    furnitureQuantities[
+                                                    index]));
+                                                setState(() {if (int.parse(
+                                                    furnitureQuantities[
+                                                    index]) >
                                                     1) {
+
                                                   quantity = int.parse(
                                                       furnitureQuantities[
-                                                          index]);
+                                                      index]);
                                                   quantity--;
+
+                                                  print("Quantityyyy");
+                                                  print(furnitureQuantities[index]);
                                                   furnitureQuantities[index] =
                                                       quantity.toString();
+                                                  subTotal -=  int.parse(
+                                                      furniturePrices[
+                                                      index]);
                                                   print('minus quantity');
                                                   print(furnitureQuantities[
-                                                      index]);
-                                                }
-                                                setState(() {});
+                                                  index]);
+                                                }});
                                               },
                                               child: CustomCircleAvatar(
                                                 radius: MediaQuery.of(context)
@@ -222,6 +230,9 @@ class _CartScreenState extends State<CartScreen> {
                                                     quantity++;
                                                     furnitureQuantities[index] =
                                                         quantity.toString();
+                                                    subTotal += int.parse(
+                                                        furniturePrices[
+                                                        index]);
                                                     print('quantity new:');
                                                     print(furnitureQuantities[
                                                         index]);
