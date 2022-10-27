@@ -42,6 +42,23 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
   //   // Colors.blue,
   // ];
 
+  // @override
+  // void initState() {
+  //   WidgetsBinding.instance.addPostFrameCallback((_) async {
+  //     await this.isFavorite();
+  //     setState(() { });
+  //   });
+  // }
+  //
+  // Future<void> isFavorite() async {
+  //   List<String> favorites = await CacheHelper.getData("favorites") ?? [];
+  //   print("Favorites");
+  //   print(favorites);
+  //   if(favorites.contains(widget.selectedFurniture.furnitureId)) {
+  //     widget.selectedFurniture.isFavorite = true;
+  //   }
+  // }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -102,6 +119,7 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                             BlocProvider.of<HomeCubit>(context)
                                 .addOrRemoveFromFavorites(
                                     widget.selectedFurniture);
+                            BlocProvider.of<HomeCubit>(context).emit(AddOrRemoveFavoriteState());
                           },
                           child: widget.selectedFurniture.isFavorite
                               ? FavoriteIcon(
