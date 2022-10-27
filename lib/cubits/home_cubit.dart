@@ -128,7 +128,7 @@ class HomeCubit extends Cubit<HomeState> {
   }
 
   updateFavoriteList() {
-    if (cache.cachedFavoriteIds.isNotEmpty) {
+    if (cache!="") {
       List favoritesId = cache.cachedFavoriteIds;
       for (int i = 0; i < furnitureList.length; i++) {
         if (favoritesId.contains(furnitureList[i].furnitureId)) {
