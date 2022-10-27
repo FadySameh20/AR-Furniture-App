@@ -9,7 +9,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class AuthCubit extends Cubit<AuthStates> {
   AuthCubit() : super(AuthInitialState());
 
-  void login(String email, String password) async {
+  Future<void> login(String email, String password) async {
     await FirebaseAuth.instance
         .signInWithEmailAndPassword(email: email, password: password)
         .then((value) {
@@ -19,7 +19,7 @@ class AuthCubit extends Cubit<AuthStates> {
     });
   }
 
-  void register(String firstName, String lastName, String email,
+  register(String firstName, String lastName, String email,
       String password, String address, String mobileNumber) async {
     await FirebaseAuth.instance
         .createUserWithEmailAndPassword(email: email, password: password)
