@@ -395,10 +395,10 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                         builder: (context, state) {
                           return ElevatedButton(
                             onPressed: () async {
-                              widget
-                                  .selectedFurniture
-                                  .shared[selectedColorIndex]
-                                  .isAddedCart = true;
+                              // widget
+                              //     .selectedFurniture
+                              //     .shared[selectedColorIndex]
+                              //     .isAddedCart = true;
                               widget
                                   .selectedFurniture
                                   .shared[selectedColorIndex]
