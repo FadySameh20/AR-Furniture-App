@@ -188,6 +188,24 @@ class HomeCubit extends Cubit<HomeState> {
     }
     return "";
   }
+  updateCache( fName,lName,address,phone) async {
+    var temp =cacheModel!.cachedModel.where((element) => element.uid == FirebaseAuth.instance.currentUser!.uid);
+    if (temp.first.cachedUser.fName != fName){
+      temp.first.cachedUser.fName =fName;
+    }
+    if (temp.first.cachedUser.lName != lName){
+      temp.first.cachedUser.lName =lName;
+    }
+    if (temp.first.cachedUser.address != address){
+      temp.first.cachedUser.address =address;
+    }
+    if (temp.first.cachedUser.phone != phone){
+      temp.first.cachedUser.phone =phone;
+    }
+    CacheHelper.setData(key: "user", value: jsonEncode(cacheModel!.toMap()));
+   await FirebaseFirestore.instance.collection("user").doc(FirebaseAuth.instance.currentUser!.uid).update(temp.first.cachedUser.toMap());
+
+  }
 
   addOrRemoveFromFavorite(index)async{
     furnitureList[index].isFavorite=!furnitureList[index].isFavorite;
