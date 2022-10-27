@@ -39,7 +39,8 @@ class _LoginScreenState extends State<LoginScreen> {
             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
               content: Text('Logged In Successfully !'),
             ));
-            await BlocProvider.of<HomeCubit>(context).getCache();
+            await BlocProvider.of<HomeCubit>(context).setCache();
+            await BlocProvider.of<HomeCubit>(context).updateFavoriteList();
             Navigator.pushNamedAndRemoveUntil(
                 context, '/home', (route) => false);
           } else if (state is AuthErrorState) {
@@ -96,7 +97,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                                 hint: "Email",
                                                 prefixIconData: Icons.email,
                                                 validate: (String? val) {
-                                                  return validator.validateEmail(val!);
+                                                  return validator
+                                                      .validateEmail(val!);
                                                 },
                                               ),
                                               InputTextField(
@@ -104,7 +106,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                                 hint: "Password",
                                                 prefixIconData: Icons.password,
                                                 validate: (String? val) {
-                                                  return validator.validatePassword(val!);
+                                                  return validator
+                                                      .validatePassword(val!);
                                                 },
                                               ),
                                             ],
@@ -119,14 +122,14 @@ class _LoginScreenState extends State<LoginScreen> {
                                 height: 30.0,
                               ),
                               ElevatedButton(
-                                onPressed: ()async {
-                                  if(formKey.currentState!.validate()) {
+                                onPressed: () async {
+                                  if (formKey.currentState!.validate()) {
                                     setState(() {
                                       isLoading = true;
                                     });
-                                    await BlocProvider.of<AuthCubit>(context).login(
-                                        emailController.text,
-                                        passController.text);
+                                    await BlocProvider.of<AuthCubit>(context)
+                                        .login(emailController.text,
+                                            passController.text);
                                   }
                                 },
                                 style: ElevatedButton.styleFrom(
