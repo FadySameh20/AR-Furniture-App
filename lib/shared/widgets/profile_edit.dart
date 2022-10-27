@@ -178,6 +178,7 @@ class _ProfileEditState extends State<ProfileEdit> {
                     ElevatedButton(
                         onPressed: () {
                           if(formKey.currentState!.validate()){
+                            BlocProvider.of<HomeCubit>(context).updateCache(fNameController.text, lNameController.text, addressController.text, mobileNumberController.text);
 
                           }
                         },
