@@ -13,8 +13,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../models/furniture_model.dart';
 
 class CartScreen extends StatefulWidget {
+  // List<FurnitureModel> furnitureList;
+  // CartScreen({required this.furnitureList});
+
   List<FurnitureModel> furnitureList;
-  CartScreen({required this.furnitureList});
+  Map<String, dynamic> cartMap;
+  CartScreen({required this.furnitureList ,required this.cartMap});
 
   @override
   State<CartScreen> createState() => _CartScreenState();
@@ -26,7 +30,7 @@ class _CartScreenState extends State<CartScreen> {
   List<String> furniturePrices = [];
   List<String> furnitureQuantities = [];
   List<String> availableQuantity = [];
-  Map<String, dynamic> cartMap = {};
+  // Map<String, dynamic> cartMap = {};
   var quantity = 0;
   int subTotal = 0;
   bool flag=false;
@@ -35,47 +39,34 @@ class _CartScreenState extends State<CartScreen> {
   void initState() {
     // TODO: implement initState
 
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await this.setCache();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      // await this.setCache();
       setCartData();
       setState(() {});
     });
   }
 
-  Future<void> setCache() async {
-    cartMap = await json.decode(CacheHelper.getData('cart')) ?? {};
-    print("Cart Map");
-    print(cartMap);
-  }
+  // Future<void> setCache() async {
+  //   cartMap = await json.decode(CacheHelper.getData('cart')) ?? {};
+  //   print("Cart Map");
+  //   print(cartMap);
+  // }
 
   void setCartData() {
-    cartMap.forEach((key, value) {
+    print("Cart");
+    print(widget.cartMap);
+    widget.cartMap.forEach((key, value) {
       value.forEach((element) {
-        furnitureQuantities.add(widget.furnitureList
-            .where((element) => element.furnitureId == key)
-            .first
-            .shared[element]
-            .quantityCart);
-        furnitureImages.add(widget.furnitureList
-            .where((element) => element.furnitureId == key)
-            .first
-            .shared[element]
-            .image);
-        availableQuantity.add(widget.furnitureList
-            .where((element) => element.furnitureId == key)
-            .first
-            .shared[element]
-            .quantity);
-
-        furnitureNames.add(widget.furnitureList
-            .where((element) => element.furnitureId == key)
-            .first
-            .name);
-        furniturePrices.add(widget.furnitureList
-            .where((element) => element.furnitureId == key)
-            .first
-            .shared[element]
-            .price);
+        if(int.parse(element.quantityCart) > 0) {
+          furnitureQuantities.add(element.quantityCart);
+          furnitureImages.add(element.image);
+          availableQuantity.add(element.quantity);
+          furnitureNames.add(widget.furnitureList
+              .where((element) => element.furnitureId == key)
+              .first
+              .name);
+          furniturePrices.add(element.price);
+        }
       });
 
     });
@@ -86,6 +77,7 @@ class _CartScreenState extends State<CartScreen> {
           furniturePrices[
           i]);
     }
+    print(furnitureQuantities);
   }
 
   @override
