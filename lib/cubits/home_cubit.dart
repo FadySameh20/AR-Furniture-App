@@ -161,10 +161,19 @@ class HomeCubit extends Cubit<HomeState> {
 
     emit(SuccessOffersState());
     if(furnitureList[index].shared.length>1){
-
       cache.cartMap[furnitureId][selectedIndex].quantityCart = '0';
-      print('quantity cart');
-      print(cache.cartMap[furnitureId][selectedIndex].quantityCart );
+       cache.cartMap.forEach((key, value) {
+         int x=0;
+        value.forEach((element) {
+          if (int.parse(element.quantityCart) == 0) {
+            x+=1;
+          }
+        });
+         if (x==cache.cartMap[furnitureId].length){
+           print ('cart item no shared');
+           cache.cartMap.removeWhere((key, value) => key == furnitureList[index].furnitureId);
+         }
+      });
     }
     else{
       cache.cartMap.removeWhere((key, value) => key == furnitureList[index].furnitureId);
