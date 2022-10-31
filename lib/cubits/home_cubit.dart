@@ -118,6 +118,9 @@ class HomeCubit extends Cubit<HomeState> {
   logout(context) async {
     for (int i = 0; i < furnitureList.length; i++) {
       furnitureList[i].isFavorite = false;
+      for(int j = 0; j < furnitureList.length; j++) {
+        furnitureList[i].shared[j].quantityCart = "0";
+      }
     }
     await FirebaseAuth.instance.signOut();
     // emit(SuccessOffersState());
@@ -125,7 +128,7 @@ class HomeCubit extends Cubit<HomeState> {
   }
 
   updateFavoriteList() {
-    if (cache!="") {
+    if (cache.cachedFavoriteIds.isNotEmpty) {
       List favoritesId = cache.cachedFavoriteIds;
 
       for (int i = 0; i < furnitureList.length; i++) {
@@ -137,19 +140,14 @@ class HomeCubit extends Cubit<HomeState> {
   }
 
   updateCart() {
-    if (cache!="") {
-      Map<String, dynamic> cart = cacheModel!.cachedModel[0].cartMap;
-      // List<SharedModel> shared = [];
+    if (cache.cartMap.isNotEmpty) {
       for (int i = 0; i < furnitureList.length; i++) {
-        if (cart.keys.contains(furnitureList[i].furnitureId)) {
-          // for (int j = 0; j < furnitureList[i].shared.length; j++) {
-          //   shared.add(cart[furnitureList[i].furnitureId][j]);
-          // }
+        if (cache.cartMap.keys.contains(furnitureList[i].furnitureId)) {
           for (int j = 0; j < furnitureList[i].shared.length; j++) {
-            if (int.parse(cart[furnitureList[i].furnitureId][j].quantityCart) >
+            if (int.parse(cache.cartMap[furnitureList[i].furnitureId][j].quantityCart) >
                 0) {
               furnitureList[i].shared[j].quantityCart =
-                  cart[furnitureList[i].furnitureId][j].quantityCart;
+                  cache.cartMap[furnitureList[i].furnitureId][j].quantityCart;
             }
           }
         }
@@ -163,21 +161,21 @@ class HomeCubit extends Cubit<HomeState> {
     furnitureList[index].shared[selectedIndex].quantityCart =
         cartQuantity.toString();
     emit(SuccessOffersState());
-    var cachedtemp = cacheModel!.cachedModel.where(
-        (element) => element.uid == FirebaseAuth.instance.currentUser!.uid);
-    CachedUserModel cachedModel;
-    cachedModel = cachedtemp.first;
+    // var cachedtemp = cacheModel!.cachedModel.where(
+    //     (element) => element.uid == FirebaseAuth.instance.currentUser!.uid);
+    // CachedUserModel cachedModel;
+    // cachedModel = cachedtemp.first;
     print("Before");
-    print(cacheModel!.cachedModel[0].cartMap);
-    if (!cacheModel!.cachedModel[0].cartMap.keys.contains(furnitureId)) {
-      cachedModel.cartMap[furnitureId] = furnitureList[index].shared;
+    print(cache.cartMap);
+    if (!cache.cartMap.keys.contains(furnitureId)) {
+      cache.cartMap[furnitureId] = furnitureList[index].shared;
     } else {
-      cacheModel!.cachedModel[0].cartMap[furnitureId][selectedIndex]
+      cache.cartMap[furnitureId][selectedIndex]
           .quantityCart = cartQuantity.toString();
     }
     CacheHelper.setData(key: 'user', value: jsonEncode(cacheModel!.toMap()));
     print("After");
-    print(cacheModel!.cachedModel[0].cartMap);
+    print(cache.cartMap);
   }
 
   createCache() async {
@@ -186,7 +184,7 @@ class HomeCubit extends Cubit<HomeState> {
         .doc(FirebaseAuth.instance.currentUser!.uid)
         .get();
 
-    cacheModel = CacheModel(cachedModel: [
+    cacheModel = CacheModel(usersCachedModel: [
       CachedUserModel(
           uid: FirebaseAuth.instance.currentUser!.uid,
           cachedFavoriteIds: [],
@@ -202,7 +200,7 @@ class HomeCubit extends Cubit<HomeState> {
       Map cachedMap = jsonDecode(temp);
       print(cachedMap);
       cacheModel = CacheModel.fromJson(cachedMap);
-      var isUserCached = cacheModel!.cachedModel.where(
+      var isUserCached = cacheModel!.usersCachedModel.where(
           (element) => element.uid == FirebaseAuth.instance.currentUser!.uid);
       // CachedUserModel cache;
       if (isUserCached.isEmpty) {
@@ -211,25 +209,27 @@ class HomeCubit extends Cubit<HomeState> {
             .doc(FirebaseAuth.instance.currentUser!.uid)
             .get();
         print(temp.data()!["fName"]);
-        cacheModel!.cachedModel.add(CachedUserModel(
+        cacheModel!.usersCachedModel.add(CachedUserModel(
             uid: FirebaseAuth.instance.currentUser!.uid,
             cachedFavoriteIds: [],
             cachedUser: UserModel.fromJson(temp.data()!),
             cartMap: {}));
-        print(cacheModel!.cachedModel.last.cachedUser.fName);
+        print(cacheModel!.usersCachedModel.last.cachedUser.fName);
         // var cachedModel=cacheModel!.cachedModel.where((element) => element.uid==FirebaseAuth.instance.currentUser!.uid).first;
         // cachedModel.cachedFavoriteIds.remove(furnitureList[index].furnitureId);
         // print(jsonEncode(BlocProvider.of<HomeCubit>(context).cacheModel!.toMap()));
         CacheHelper.setData(
             key: 'user', value: jsonEncode(cacheModel!.toMap()));
-        return "";
+        // return "";
       } else {
         return isUserCached.first;
       }
     } else {
-      createCache();
+      await createCache();
     }
-    return "";
+    return cacheModel!.usersCachedModel.where(
+            (element) => element.uid == FirebaseAuth.instance.currentUser!.uid).first;
+    // return "";
   }
   updateCache( fName,lName,address,phone) async {
     var temp =cacheModel!.cachedModel.where((element) => element.uid == FirebaseAuth.instance.currentUser!.uid);
@@ -257,7 +257,7 @@ class HomeCubit extends Cubit<HomeState> {
       // if(cacheModel==null){
       //   createCache();
       // }
-      var cachedtemp = cacheModel!.cachedModel.where(
+      var cachedtemp = cacheModel!.usersCachedModel.where(
           (element) => element.uid == FirebaseAuth.instance.currentUser!.uid);
       CachedUserModel cachedModel;
       cachedModel = cachedtemp.first;
@@ -265,7 +265,7 @@ class HomeCubit extends Cubit<HomeState> {
       cachedModel.cachedFavoriteIds.add(furnitureList[index].furnitureId);
       CacheHelper.setData(key: 'user', value: jsonEncode(cacheModel!.toMap()));
     } else {
-      var cachedModel = cacheModel!.cachedModel
+      var cachedModel = cacheModel!.usersCachedModel
           .where((element) =>
               element.uid == FirebaseAuth.instance.currentUser!.uid)
           .first;
@@ -275,34 +275,21 @@ class HomeCubit extends Cubit<HomeState> {
     }
   }
 
-  void updateCartInFirestore(FurnitureModel selectedFurniture) async {
-    await FirebaseFirestore.instance
-        .collection('category')
-        .doc(selectedFurniture.category)
-        .collection(selectedFurniture.category)
-        .doc(selectedFurniture.furnitureId)
-        .set(selectedFurniture.toMap())
-        .then((value) => print("Updated"))
-        .catchError((error) {
-      print("Error");
-      print(error);
-    });
-  }
 }
 
 class CacheModel {
-  List<CachedUserModel> cachedModel = [];
+  List<CachedUserModel> usersCachedModel = [];
 
-  CacheModel({required this.cachedModel});
+  CacheModel({required this.usersCachedModel});
 
   CacheModel.fromJson(json) {
     json["cachedModel"].forEach((element) {
-      cachedModel.add(CachedUserModel.fromJson(element));
+      usersCachedModel.add(CachedUserModel.fromJson(element));
     });
   }
 
   Map toMap() {
-    return {"cachedModel": cachedModel.map((e) => e.toMap()).toList()};
+    return {"cachedModel": usersCachedModel.map((e) => e.toMap()).toList()};
   }
 }
 
@@ -367,17 +354,4 @@ class CachedUserModel {
     };
   }
 
-  void updateCartInFirestore(FurnitureModel selectedFurniture) async {
-    await FirebaseFirestore.instance
-        .collection('category')
-        .doc(selectedFurniture.category)
-        .collection(selectedFurniture.category)
-        .doc(selectedFurniture.furnitureId)
-        .set(selectedFurniture.toMap())
-        .then((value) => print("Updated"))
-        .catchError((error) {
-      print("Error");
-      print(error);
-    });
-  }
 }
