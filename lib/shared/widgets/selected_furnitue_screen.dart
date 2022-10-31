@@ -19,10 +19,11 @@ import 'circle_avatar.dart';
 
 class SelectedFurnitureScreen extends StatefulWidget {
   FurnitureModel selectedFurniture;
+  int index;
   List<Color?> availableColors;
 
   SelectedFurnitureScreen(
-      {required this.selectedFurniture, required this.availableColors});
+      {required this.selectedFurniture, required this.index, required this.availableColors});
 
   @override
   State<SelectedFurnitureScreen> createState() =>
@@ -75,8 +76,7 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                         .of<HomeCubit>(context)
                         .furnitureList, cartMap: BlocProvider
                         .of<HomeCubit>(context)
-                        .cacheModel!
-                        .cachedModel[0].cartMap)));
+                        .cache.cartMap)));
               }, icon: Icon(Icons.shopping_cart))
             ],
             centerTitle: true,
@@ -157,8 +157,7 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                         child: GestureDetector(
                               onTap: () {
                                 BlocProvider.of<HomeCubit>(context)
-                                    .addOrRemoveFromFavorite(
-                                    widget.selectedFurniture);
+                                    .addOrRemoveFromFavorite(widget.index);
                                 BlocProvider.of<HomeCubit>(context).emit(
                                     AddOrRemoveFavoriteState());
                               },
@@ -538,8 +537,7 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                                                 .furnitureList,
                                             cartMap: BlocProvider
                                                 .of<HomeCubit>(context)
-                                                .cacheModel!
-                                                .cachedModel[0].cartMap)),
+                                                .cache.cartMap)),
                                   );
                                 },
                                 child: Row(
