@@ -155,9 +155,13 @@ class HomeCubit extends Cubit<HomeState> {
     }
   }
 
-  addToCart(String furnitureId, int selectedIndex, int cartQuantity) async {
+  addToCart(String furnitureId, String selectedColor, int cartQuantity) async {
     int index = furnitureList
         .indexWhere((element) => element.furnitureId == furnitureId);
+    //SharedModel chosenFurnitureColor = furnitureList[index].shared.where((element) => element.color == selectedColor).first;
+    int selectedIndex = furnitureList[index].shared.indexWhere((element) => element.color == selectedColor);
+    print("Selected Index = " + selectedIndex.toString());
+    // chosenFurnitureColor.quantityCart = cartQuantity.toString();
     furnitureList[index].shared[selectedIndex].quantityCart =
         cartQuantity.toString();
     emit(SuccessOffersState());
@@ -176,6 +180,20 @@ class HomeCubit extends Cubit<HomeState> {
     CacheHelper.setData(key: 'user', value: jsonEncode(cacheModel!.toMap()));
     print("After");
     print(cache.cartMap);
+  }
+
+  void checkAvailableFurnitureQuantity() {
+    // for(int i = 0; i < furnitureList.length; i++) {
+    //   if()
+    //   for(int j = 0; j < furnitureList[i].shared.length; j++) {
+    //
+    //   }
+    // }
+    cache.cartMap.forEach((key, value) {
+      value.forEach((element) {
+
+      });
+    });
   }
 
   createCache() async {

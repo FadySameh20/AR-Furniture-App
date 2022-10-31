@@ -33,6 +33,7 @@ class SelectedFurnitureScreen extends StatefulWidget {
 class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
   int quantity = 1;
   int selectedColorIndex = 0;
+  Color? selectedColor;
 
   // Map<String, dynamic> cartMap = {};
 
@@ -44,13 +45,10 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
   //   // Colors.blue,
   // ];
 
-  // @override
-  // void initState() {
-  //   WidgetsBinding.instance.addPostFrameCallback((_) async {
-  //     await this.isFavorite();
-  //     setState(() { });
-  //   });
-  // }
+  @override
+  void initState() {
+    selectedColor = widget.availableColors[0];
+  }
   //
   // Future<void> isFavorite() async {
   //   List<String> favorites = await CacheHelper.getData("favorites") ?? [];
@@ -310,6 +308,7 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                                     onTap: () {
                                       setState(() {
                                         selectedColorIndex = index;
+                                        selectedColor = widget.availableColors[index];
                                         //   chosenColor = availableColors[index];
                                       });
                                     },
@@ -495,9 +494,16 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                         child: Center(
                           child: ElevatedButton(
                                 onPressed: () async {
+                                  print("Selected Color");
+                                  print('#${selectedColor!.value.toRadixString(16)}');
+                                  print("Red: " + selectedColor!.red.toRadixString(16).padLeft(2, '0').toString().toUpperCase());
+                                  print("Green: " + selectedColor!.green.toRadixString(16).padLeft(2, '0').toString().toUpperCase());
+                                  print("Blue: " + selectedColor!.blue.toRadixString(16).padLeft(2, '0').toString().toUpperCase());
+                                  String color = "#" + selectedColor!.red.toRadixString(16).padLeft(2, '0').toString().toUpperCase() + selectedColor!.green.toRadixString(16).padLeft(2, '0').toString().toUpperCase() + selectedColor!.blue.toRadixString(16).padLeft(2, '0').toString().toUpperCase();
+                                  print(color);
                                   BlocProvider.of<HomeCubit>(context).addToCart(
                                       widget.selectedFurniture.furnitureId,
-                                      selectedColorIndex, quantity);
+                                      color, quantity);
                                   // widget
                                   //     .selectedFurniture
                                   //     .shared[selectedColorIndex]
