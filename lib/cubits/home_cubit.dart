@@ -118,7 +118,7 @@ class HomeCubit extends Cubit<HomeState> {
   logout(context) async {
     for (int i = 0; i < furnitureList.length; i++) {
       furnitureList[i].isFavorite = false;
-      for(int j = 0; j < furnitureList.length; j++) {
+      for(int j = 0; j < furnitureList[i].shared.length; j++) {
         furnitureList[i].shared[j].quantityCart = "0";
       }
     }
@@ -154,8 +154,27 @@ class HomeCubit extends Cubit<HomeState> {
       }
     }
   }
+  removeFromCart(String furnitureId, String selectedColor)async{
+    int index = furnitureList.indexWhere((element) => element.furnitureId == furnitureId);
+    int selectedIndex = furnitureList[index].shared.indexWhere((element) => element.color == selectedColor);
+    furnitureList[index].shared[selectedIndex].quantityCart = '0';
+
+    emit(SuccessOffersState());
+    if(furnitureList[index].shared.length>1){
+
+      cache.cartMap[furnitureId][selectedIndex].quantityCart = '0';
+      print('quantity cart');
+      print(cache.cartMap[furnitureId][selectedIndex].quantityCart );
+    }
+    else{
+      cache.cartMap.removeWhere((key, value) => key == furnitureList[index].furnitureId);
+    }
+    CacheHelper.setData(key: 'user', value: jsonEncode(cacheModel!.toMap()));
+
+  }
 
   addToCart(String furnitureId, String selectedColor, int cartQuantity) async {
+    print("Co;orr " + selectedColor);
     int index = furnitureList
         .indexWhere((element) => element.furnitureId == furnitureId);
     //SharedModel chosenFurnitureColor = furnitureList[index].shared.where((element) => element.color == selectedColor).first;
@@ -250,7 +269,7 @@ class HomeCubit extends Cubit<HomeState> {
     // return "";
   }
   updateCache( fName,lName,address,phone) async {
-    var temp =cacheModel!.cachedModel.where((element) => element.uid == FirebaseAuth.instance.currentUser!.uid);
+    var temp =cacheModel!.usersCachedModel.where((element) => element.uid == FirebaseAuth.instance.currentUser!.uid);
     if (temp.first.cachedUser.fName != fName){
       temp.first.cachedUser.fName =fName;
     }
