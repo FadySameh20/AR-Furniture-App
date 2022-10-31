@@ -10,6 +10,7 @@ import 'package:ar_furniture_app/shared/cache/sharedpreferences.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../models/name_model.dart';
@@ -40,6 +41,7 @@ class HomeCubit extends Cubit<HomeState> {
     // print(cacheModel.cachedModel.where((element) => ))
     await getFurniture(categories.first.name);
   }
+
 
   setCache() async {
     cache = await getCache();
@@ -177,7 +179,67 @@ class HomeCubit extends Cubit<HomeState> {
     print("After");
     print(cache.cartMap);
   }
+  updateUserData(context,fName, lName, address, phone, {email,password,newPassword=""}) async {
+    emit(UpdateLoadingState());
+    int flag = 0;
+    var temp = cacheModel!.usersCachedModel.where(
+            (element) => element.uid == FirebaseAuth.instance.currentUser!.uid);
+    if(newPassword!=""){
+      flag=2;
+      AuthCredential credential = EmailAuthProvider.credential(
+          email: temp.first.cachedUser.email, password: password);
+      await FirebaseAuth.instance.currentUser?.reauthenticateWithCredential( credential).then((value)async {
+        await FirebaseAuth.instance.currentUser?.updatePassword(newPassword);
+        emit(UpdatePasswordSuccessState());
+      }).catchError((error){emit(UpdatePasswordErrorState("Incorrect email or password"));});
+    }
+    print(temp.first.cachedUser.email);
+    print(email);
+    if(temp.first.cachedUser.email!=email){
+      flag=1;
+      AuthCredential credential = EmailAuthProvider.credential(
+          email: temp.first.cachedUser.email, password: password);
+      await FirebaseAuth.instance.currentUser?.reauthenticateWithCredential( credential).then((value)async {
+        await FirebaseAuth.instance.currentUser?.updateEmail(email);
+        temp.first.cachedUser.email=email;
+        emit(UpdateEmailSuccessState());
+      }).catchError((error){emit(UpdateEmailErrorState("Incorrect email or password"));});
+    }
 
+
+
+    if (temp.first.cachedUser.fName != fName) {
+      temp.first.cachedUser.fName = fName;
+      flag = 1;
+    }
+    if (temp.first.cachedUser.lName != lName) {
+      temp.first.cachedUser.lName = lName;
+      flag = 1;
+    }
+    if (temp.first.cachedUser.address != address) {
+      temp.first.cachedUser.address = address;
+      flag = 1;
+    }
+    if (temp.first.cachedUser.phone != phone) {
+      temp.first.cachedUser.phone = phone;
+      flag = 1;
+    }
+    if (flag == 1) {
+      CacheHelper.setData(key: "user", value: jsonEncode(cacheModel!.toMap()));
+      await FirebaseFirestore.instance
+          .collection("user")
+          .doc(FirebaseAuth.instance.currentUser!.uid)
+          .update(temp.first.cachedUser.toMap()).then((value)
+      {
+        emit(UpdateUserDataSuccessData());
+      }).catchError((error){
+
+      });
+    }
+    else{
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Nothing to update")));
+    }
+  }
   createCache() async {
     var temp = await FirebaseFirestore.instance
         .collection("user")
@@ -304,7 +366,7 @@ class CachedUserModel {
     cachedUser = UserModel.fromJson(json["userData"]);
 
     // cartMap = json["cartData"];
-
+if(json["cartData"]!=null)
     json["cartData"].forEach((key, value) {
       List<SharedModel> shared = [];
       value.forEach((element) {

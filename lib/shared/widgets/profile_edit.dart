@@ -31,7 +31,7 @@ class _ProfileEditState extends State<ProfileEdit> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    var temp=BlocProvider.of<HomeCubit>(context).cacheModel!.cachedModel.where((element) => element.uid==FirebaseAuth.instance.currentUser!.uid);
+    var temp=BlocProvider.of<HomeCubit>(context).cacheModel!.usersCachedModel.where((element) => element.uid==FirebaseAuth.instance.currentUser!.uid);
     UserModel userModel=temp.first.cachedUser;
     fNameController.text= userModel.fName;
     lNameController.text = userModel.lName;
