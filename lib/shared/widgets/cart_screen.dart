@@ -18,7 +18,7 @@ class CartScreen extends StatefulWidget {
 
   List<FurnitureModel> furnitureList;
   Map<String, dynamic> cartMap;
-  CartScreen({required this.furnitureList ,required this.cartMap});
+  CartScreen({required this.furnitureList, required this.cartMap});
 
   @override
   State<CartScreen> createState() => _CartScreenState();
@@ -32,9 +32,13 @@ class _CartScreenState extends State<CartScreen> {
   List<String> availableQuantity = [];
   // Map<String, dynamic> cartMap = {};
   var quantity = 0;
-  int subTotal = 0;
-  bool flag=false;
-  var estimatingTax = 0.14;
+  double subTotal = 0;
+  double tax=0;
+  double totalPrice =0;
+  bool flag = false;
+  double estimatingTax = 0.14;
+
+
   @override
   void initState() {
     // TODO: implement initState
@@ -57,7 +61,7 @@ class _CartScreenState extends State<CartScreen> {
     print(widget.cartMap);
     widget.cartMap.forEach((key, value) {
       value.forEach((element) {
-        if(int.parse(element.quantityCart) > 0) {
+        if (int.parse(element.quantityCart) > 0) {
           furnitureQuantities.add(element.quantityCart);
           furnitureImages.add(element.image);
           availableQuantity.add(element.quantity);
@@ -68,16 +72,14 @@ class _CartScreenState extends State<CartScreen> {
           furniturePrices.add(element.price);
         }
       });
-
     });
-    for(int i=0;i<furniturePrices.length;i++) {
-      subTotal += int.parse(
-          furnitureQuantities[
-          i]) * int.parse(
-          furniturePrices[
-          i]);
+    for (int i = 0; i < furniturePrices.length; i++) {
+      subTotal +=
+          int.parse(furnitureQuantities[i]) * int.parse(furniturePrices[i]);
     }
-    print(furnitureQuantities);
+    tax=subTotal*estimatingTax;
+    totalPrice=subTotal+tax ;
+        print(furnitureQuantities);
   }
 
   @override
@@ -132,7 +134,6 @@ class _CartScreenState extends State<CartScreen> {
                                           CrossAxisAlignment.start,
                                       children: [
                                         Text(
-
                                           furnitureNames[index],
                                           style: TextStyle(fontSize: 15),
                                         ),
@@ -145,28 +146,31 @@ class _CartScreenState extends State<CartScreen> {
                                               onTap: () {
                                                 print(int.parse(
                                                     furnitureQuantities[
-                                                    index]));
-                                                setState(() {if (int.parse(
-                                                    furnitureQuantities[
-                                                    index]) >
-                                                    1) {
+                                                        index]));
+                                                setState(() {
+                                                  if (int.parse(
+                                                          furnitureQuantities[
+                                                              index]) >
+                                                      1) {
+                                                    quantity = int.parse(
+                                                        furnitureQuantities[
+                                                            index]);
+                                                    quantity--;
 
-                                                  quantity = int.parse(
-                                                      furnitureQuantities[
-                                                      index]);
-                                                  quantity--;
-
-                                                  print("Quantityyyy");
-                                                  print(furnitureQuantities[index]);
-                                                  furnitureQuantities[index] =
-                                                      quantity.toString();
-                                                  subTotal -=  int.parse(
-                                                      furniturePrices[
-                                                      index]);
-                                                  print('minus quantity');
-                                                  print(furnitureQuantities[
-                                                  index]);
-                                                }});
+                                                    print("Quantityyyy");
+                                                    print(furnitureQuantities[
+                                                        index]);
+                                                    furnitureQuantities[index] =
+                                                        quantity.toString();
+                                                    subTotal -= int.parse(
+                                                        furniturePrices[index]);
+                                                    tax=subTotal*estimatingTax;
+                                                    totalPrice=(subTotal+tax);
+                                                    print('minus quantity');
+                                                    print(furnitureQuantities[
+                                                        index]);
+                                                  }
+                                                });
                                               },
                                               child: CustomCircleAvatar(
                                                 radius: MediaQuery.of(context)
@@ -223,8 +227,9 @@ class _CartScreenState extends State<CartScreen> {
                                                     furnitureQuantities[index] =
                                                         quantity.toString();
                                                     subTotal += int.parse(
-                                                        furniturePrices[
-                                                        index]);
+                                                        furniturePrices[index]);
+                                                    tax=subTotal*estimatingTax;
+                                                    totalPrice=subTotal+tax;
                                                     print('quantity new:');
                                                     print(furnitureQuantities[
                                                         index]);
@@ -300,31 +305,30 @@ class _CartScreenState extends State<CartScreen> {
                                     MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text("Sub Total            "),
-                                  Text("\EGP ${subTotal}"),
+                                  Text("\EGP ${subTotal.toStringAsFixed(2)}"),
                                 ],
                               ),
                               SizedBox(
                                 height: 10,
                               ),
+                              // Row(
+                              //   mainAxisAlignment:
+                              //       MainAxisAlignment.spaceBetween,
+                              //   children: [
+                              //     Text("Shipping fee    "),
+                              //     Text('\EGP 300'),
+                              //   ],
+                              // ),
+                              // SizedBox(
+                              //   height: 10,
+                              // ),
                               Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Text("Shipping fee    "),
-                                  Text('\EGP 300'),
-                                ],
-                              ),
-                              SizedBox(
-                                height: 10,
-                              ),
-                              Row(
 
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text("Estimating Tax"),
-
-                                  Text("\$6.50"),
+                                  Text("Estimating Tax(14%)            "),
+                                  Text("\EGP ${tax.toStringAsFixed(2)}"),
                                 ],
                               ),
                               SizedBox(
@@ -341,7 +345,7 @@ class _CartScreenState extends State<CartScreen> {
                                     MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text("Total"),
-                                  Text("\$104.50"),
+                                  Text("\EGP ${totalPrice.toStringAsFixed(2)}"),
                                 ],
                               ),
                               SizedBox(
