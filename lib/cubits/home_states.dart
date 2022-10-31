@@ -9,3 +9,5 @@ class SuccessOffersState extends HomeState{}
 class ErrorOffersState extends HomeState{}
 
 class AddOrRemoveFavoriteState extends HomeState{}
+
+class AddedToCartSuccessfully extends HomeState{}

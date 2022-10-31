@@ -11,18 +11,6 @@ import 'categories_scroller.dart';
 
 class CategoriesScreen extends StatelessWidget {
 
-  List<String> furnitureImages = [
-    "assets/Item_1.png",
-    "assets/Item_2.png",
-    "assets/Item_3.png",
-    "assets/Item_1.png",
-    "assets/Item_2.png",
-    "assets/Item_3.png",
-    "assets/Item_1.png",
-    "assets/Item_2.png",
-    "assets/Item_3.png",
-  ];
-
   List<Color?> colors = [
     Colors.teal[300],
     Colors.orange[300],

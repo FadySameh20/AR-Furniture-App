@@ -357,7 +357,9 @@ class _CartScreenState extends State<CartScreen> {
                                             backgroundColor:
                                                 Color.fromRGBO(191, 122, 47, 1),
                                           ),
-                                          onPressed: () {},
+                                          onPressed: () async {
+                                            await BlocProvider.of<HomeCubit>(context).checkAvailableFurnitureQuantity(context);
+                                          },
                                           child: Text(
                                             "Checkout",
                                             style: TextStyle(
