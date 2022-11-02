@@ -26,6 +26,7 @@ class HomeCubit extends Cubit<HomeState> {
   List<String> returnedCategory = [];
   List<Color?> availableColors = [];
   CacheModel? cacheModel;
+  List<String> unavailableQuantityFurniture = [];
   var cache;
 
   getAllData() async {
@@ -168,7 +169,7 @@ class HomeCubit extends Cubit<HomeState> {
     // chosenFurnitureColor.quantityCart = cartQuantity.toString();
     furnitureList[index].shared[selectedIndex].quantityCart =
         cartQuantity.toString();
-    emit(SuccessOffersState());
+    emit(AddedToCartSuccessfully());
     // var cachedtemp = cacheModel!.cachedModel.where(
     //     (element) => element.uid == FirebaseAuth.instance.currentUser!.uid);
     // CachedUserModel cachedModel;
@@ -190,6 +191,7 @@ class HomeCubit extends Cubit<HomeState> {
     bool flag = false;
     Map<String, List<int>> availableQuantity = {};
     String categoryName = "";
+    unavailableQuantityFurniture = [];
 
     for(String key in cache.cartMap.keys) {
       categoryName = furnitureList
@@ -215,21 +217,31 @@ class HomeCubit extends Cubit<HomeState> {
       for (int j = 0; j < cache.cartMap[key].length; j++) {
         if (int.parse(cache.cartMap[key][j].quantityCart) > availableQuantity[key]![j]) {
           flag = true;
-          break;
+          FurnitureModel furniture = furnitureList.where((element) => element.furnitureId == key).first;
+          String itemString = availableQuantity[key]![j] == 1 ? "item" : "items";
+          String availableQuantityString = availableQuantity[key]![j] == 0 ? " is out of stock." : " has only " + availableQuantity[key]![j].toString() + " ${itemString} left.";
+          unavailableQuantityFurniture.add(furniture.shared[j].colorName + " " + furniture.name + availableQuantityString);
+          // break;
         }
       }
-      if(flag) {
-        break;
-      }
+      // if(flag) {
+      //   break;
+      // }
     }
 
     if(!flag) {
+      bool isCacheChanged = false;
+
       cache.cartMap.forEach((key, value) async {
         int index =
         furnitureList.indexWhere((element) => element.furnitureId == key);
 
+        bool isSharedModelChanged = false;
+
         for (int j = 0; j < value.length; j++) {
           if(int.parse(value[j].quantityCart) > 0) {
+            isSharedModelChanged = true;
+            isCacheChanged = true;
             furnitureList[index].shared[j].quantity =
                 (availableQuantity[key]![j] - int.parse(value[j].quantityCart))
                     .toString();
@@ -238,24 +250,25 @@ class HomeCubit extends Cubit<HomeState> {
           }
         }
 
-        await FirebaseFirestore.instance
-            .collection('category')
-            .doc(categoryName)
-            .collection(categoryName)
-            .doc(key)
-            .update({"shared": furnitureList[index].toMap()["shared"]})
-            .then((value) => print("Added to cart successfully !")).catchError((error) => print("Error: " + error.toString()));
+        if(isSharedModelChanged) {
+          await FirebaseFirestore.instance
+              .collection('category')
+              .doc(categoryName)
+              .collection(categoryName)
+              .doc(key)
+              .update({"shared": furnitureList[index].toMap()["shared"]})
+              .then((value) => print("Added to cart successfully !")).catchError((error) => print("Error: " + error.toString()));
+        }
+
       });
 
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('Added to cart successfully !'),
-      ));
-      emit(AddedToCartSuccessfully());
-      Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
+      if(isCacheChanged) {
+        cache.cartMap.clear();
+        emit(CheckoutSuccessfully());
+      }
+
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('Unavailable Quantity !'),
-      ));
+      emit(ErrorInCheckout());
     }
 
   }
