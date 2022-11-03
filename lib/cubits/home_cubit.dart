@@ -217,6 +217,7 @@ class HomeCubit extends Cubit<HomeState> {
           email: temp.first.cachedUser.email, password: password);
       await FirebaseAuth.instance.currentUser?.reauthenticateWithCredential( credential).then((value)async {
         await FirebaseAuth.instance.currentUser?.updatePassword(newPassword);
+        password=newPassword;
         emit(UpdatePasswordSuccessState());
       }).catchError((error){emit(UpdatePasswordErrorState("Incorrect email or password"));});
     }
