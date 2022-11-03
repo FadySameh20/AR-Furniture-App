@@ -1,16 +1,15 @@
 import 'package:ar_furniture_app/models/user_model.dart';
 import 'package:ar_furniture_app/shared/cache/sharedpreferences.dart';
 import 'package:ar_furniture_app/shared/constants/constants.dart';
+import 'package:ar_furniture_app/shared/widgets/SearchFilterScreen.dart';
 import 'package:ar_furniture_app/shared/widgets/boarding_screen.dart';
 import 'package:ar_furniture_app/shared/widgets/home_screen.dart';
 import 'package:ar_furniture_app/shared/widgets/login_screen.dart';
 import 'package:ar_furniture_app/shared/widgets/register_screen.dart';
-import 'package:ar_furniture_app/shared/widgets/search.dart';
 import 'package:ar_furniture_app/shared/widgets/splash_welcome_screen.dart';
 import 'package:circular_bottom_navigation/circular_bottom_navigation.dart';
 import 'package:ar_furniture_app/shared/widgets/profile_edit.dart';
 import 'package:circular_bottom_navigation/tab_item.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -48,6 +47,7 @@ class MyApp extends StatelessWidget {
           '/register': (context) => RegisterScreen(),
           '/login': (context) => LoginScreen(),
           '/home': (context) => HomePage(),
+          '/filter': (context) => SearchFilterScreen(),
         },
         // home: BoardingScreen(),
       ),

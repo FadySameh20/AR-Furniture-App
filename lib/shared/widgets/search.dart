@@ -3,10 +3,8 @@ import 'package:ar_furniture_app/cubits/home_states.dart';
 import 'package:ar_furniture_app/models/furniture_model.dart';
 import 'package:ar_furniture_app/shared/widgets/categories_scroller.dart';
 import 'package:ar_furniture_app/shared/widgets/favorite_icon.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import '../../models/shared_model.dart';
 import '../constants/constants.dart';
 
@@ -94,17 +92,17 @@ class _SearchState extends State<Search> {
                       ),
                     ),
                   ),
-                  Material(
-                    child: const Padding(
-                      padding: EdgeInsets.all(8.0),
-                      child: Icon(
-                        Icons.filter_list,
-                        color: Colors.white,
-                        size: 25,
-                      ),
+                  Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: kAppBackgroundColor,
                     ),
-                    borderRadius: BorderRadius.circular(10),
-                    color: kAppBackgroundColor,
+                    child: IconButton(
+                      icon: Icon(Icons.filter_list, color: Colors.white, size: 25,),
+                      onPressed: () {
+                        Navigator.pushNamed(context, '/filter');
+                      },
+                    ),
                   ),
                   const SizedBox(
                     width: 10,
