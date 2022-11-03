@@ -18,7 +18,9 @@ class CartScreen extends StatefulWidget {
 
   List<FurnitureModel> furnitureList;
   Map<String, dynamic> cartMap;
+
   CartScreen({required this.furnitureList, required this.cartMap});
+
 
   @override
   State<CartScreen> createState() => _CartScreenState();
@@ -30,8 +32,10 @@ class _CartScreenState extends State<CartScreen> {
   List<String> furniturePrices = [];
   List<String> furnitureQuantities = [];
   List<String> availableQuantity = [];
+  // Map<String, dynamic> cartMap = {};
   List<String> furnitureIds=[];
   List<String> furnitureColors=[];
+
   var quantity = 0;
   double subTotal = 0;
   double tax = 0;
@@ -61,6 +65,7 @@ class _CartScreenState extends State<CartScreen> {
     print(widget.cartMap);
     widget.cartMap.forEach((key, value) {
       value.forEach((element) {
+
         if (int.parse(element.quantityCart) > 0) {
           furnitureQuantities.add(element.quantityCart);
           furnitureImages.add(element.image);
@@ -74,6 +79,8 @@ class _CartScreenState extends State<CartScreen> {
               .first
               .name);
 
+          furniturePrices.add(element.price);
+
           furnitureIds.add(widget.furnitureList
               .where((element) => element.furnitureId == key)
               .first
@@ -85,8 +92,10 @@ class _CartScreenState extends State<CartScreen> {
       subTotal +=
           int.parse(furnitureQuantities[i]) * int.parse(furniturePrices[i]);
     }
+
     tax = subTotal * estimatingTax;
     totalPrice = subTotal + tax;
+
     print(furnitureQuantities);
   }
 

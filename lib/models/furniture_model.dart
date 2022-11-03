@@ -18,6 +18,7 @@ class FurnitureModel {
     required this.name,
     required this.model,
     required this.shared,
+    required this.category,
     required this.ratings,
   });
 

@@ -33,7 +33,9 @@ class SelectedFurnitureScreen extends StatefulWidget {
 class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
   int quantity = 1;
   int selectedColorIndex = 0;
+
   Color? selectedColor;
+
 
   // Map<String, dynamic> cartMap = {};
 
@@ -45,7 +47,25 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
   //   // Colors.blue,
   // ];
 
+  // @override
+  // void initState() {
+  //   WidgetsBinding.instance.addPostFrameCallback((_) async {
+  //     await this.isFavorite();
+  //     setState(() { });
+  //   });
+  // }
+  //
+  // Future<void> isFavorite() async {
+  //   List<String> favorites = await CacheHelper.getData("favorites") ?? [];
+  //   print("Favorites");
+  //   print(favorites);
+  //   if(favorites.contains(widget.selectedFurniture.furnitureId)) {
+  //     widget.selectedFurniture.isFavorite = true;
+  //   }
+  // }
+
   @override
+
   void initState() {
     selectedColor = widget.availableColors[0];
   }
@@ -119,7 +139,7 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                             .of(context)
                             .size
                             .height * 0.155,
-                        child: CustomCircleAvatar(
+                       child: CustomCircleAvatar(
                           radius: MediaQuery
                               .of(context)
                               .size
@@ -308,7 +328,9 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                                     onTap: () {
                                       setState(() {
                                         selectedColorIndex = index;
+
                                         selectedColor = widget.availableColors[index];
+
                                         //   chosenColor = availableColors[index];
                                       });
                                     },
@@ -494,6 +516,7 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                         child: Center(
                           child: ElevatedButton(
                                 onPressed: () async {
+
                                   print("Selected Color");
                                   print('#${selectedColor!.value.toRadixString(16)}');
                                   print("Red: " + selectedColor!.red.toRadixString(16).padLeft(2, '0').toString().toUpperCase());
@@ -504,6 +527,7 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                                   BlocProvider.of<HomeCubit>(context).addToCart(
                                       widget.selectedFurniture.furnitureId,
                                       color, quantity);
+
                                   // widget
                                   //     .selectedFurniture
                                   //     .shared[selectedColorIndex]
