@@ -18,7 +18,9 @@ class CartScreen extends StatefulWidget {
 
   List<FurnitureModel> furnitureList;
   Map<String, dynamic> cartMap;
-  CartScreen({required this.furnitureList ,required this.cartMap});
+
+  CartScreen({required this.furnitureList, required this.cartMap});
+
 
   @override
   State<CartScreen> createState() => _CartScreenState();
@@ -31,10 +33,16 @@ class _CartScreenState extends State<CartScreen> {
   List<String> furnitureQuantities = [];
   List<String> availableQuantity = [];
   // Map<String, dynamic> cartMap = {};
+  List<String> furnitureIds=[];
+  List<String> furnitureColors=[];
+
   var quantity = 0;
-  int subTotal = 0;
-  bool flag=false;
-  var estimatingTax = 0.14;
+  double subTotal = 0;
+  double tax = 0;
+  double totalPrice = 0;
+  bool flag = false;
+  double estimatingTax = 0.14;
+
   @override
   void initState() {
     // TODO: implement initState
@@ -57,26 +65,37 @@ class _CartScreenState extends State<CartScreen> {
     print(widget.cartMap);
     widget.cartMap.forEach((key, value) {
       value.forEach((element) {
-        if(int.parse(element.quantityCart) > 0) {
+
+        if (int.parse(element.quantityCart) > 0) {
           furnitureQuantities.add(element.quantityCart);
           furnitureImages.add(element.image);
           availableQuantity.add(element.quantity);
+          furniturePrices.add(element.price);
+          furnitureColors.add(element.color);
+          print("furnitureCOLORS");
+          print(furnitureColors);
           furnitureNames.add(widget.furnitureList
               .where((element) => element.furnitureId == key)
               .first
               .name);
+
           furniturePrices.add(element.price);
+
+          furnitureIds.add(widget.furnitureList
+              .where((element) => element.furnitureId == key)
+              .first
+              .furnitureId);
         }
       });
-
     });
-    for(int i=0;i<furniturePrices.length;i++) {
-      subTotal += int.parse(
-          furnitureQuantities[
-          i]) * int.parse(
-          furniturePrices[
-          i]);
+    for (int i = 0; i < furniturePrices.length; i++) {
+      subTotal +=
+          int.parse(furnitureQuantities[i]) * int.parse(furniturePrices[i]);
     }
+
+    tax = subTotal * estimatingTax;
+    totalPrice = subTotal + tax;
+
     print(furnitureQuantities);
   }
 
@@ -106,172 +125,217 @@ class _CartScreenState extends State<CartScreen> {
                   child: ListView.builder(
                     itemCount: furnitureNames.length,
                     itemBuilder: (context, index) {
-                      return Padding(
-                        padding: const EdgeInsets.all(10.0),
-                        child: Material(
-                          borderRadius: BorderRadius.circular(30),
-                          child: Stack(
-                            children: [
-                              Row(
-                                children: [
-                                  Expanded(
-                                      flex: 1,
-                                      child: Padding(
-                                        padding: const EdgeInsets.all(10.0),
-                                        child: Image.network(
-                                          furnitureImages[index],
-                                          fit: BoxFit.contain,
-                                        ),
-                                      )),
-                                  Expanded(
-                                    flex: 2,
-                                    child: Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
+                      return Dismissible(
+                        key: UniqueKey(),
+                        // Provide a function that tells the app
+                        // what to do after an item has been swiped away
+                        onDismissed: (direction) {
+                          BlocProvider.of<HomeCubit>(context).removeFromCart(
+                              furnitureIds[index], furnitureColors[index]);
+                          subTotal =subTotal- (int.parse(
+                              furniturePrices[index])*int.parse(
+                              furnitureQuantities[index]));
+                          tax = subTotal *
+                              estimatingTax;
+                          totalPrice =
+                          (subTotal + tax);
+                          // Remove the item from the data source.
+                          setState(() {
+                            furnitureNames.removeAt(index);
 
-                                          furnitureNames[index],
-                                          style: TextStyle(fontSize: 15),
-                                        ),
-                                        SizedBox(
-                                          height: 10,
-                                        ),
-                                        Row(
-                                          children: [
-                                            InkWell(
-                                              onTap: () {
-                                                print(int.parse(
-                                                    furnitureQuantities[
-                                                    index]));
-                                                setState(() {if (int.parse(
-                                                    furnitureQuantities[
-                                                    index]) >
-                                                    1) {
+                          });
 
-                                                  quantity = int.parse(
+                          // Then show a snackbar.
+                          ScaffoldMessenger.of(context)
+                              .showSnackBar(SnackBar(content: Text('$furnitureNames dismissed')));
+                        },
+                        // Show a red background as the item is swiped away.
+                        background: ColoredBox(color: Colors.red,child: Align(
+                          alignment: Alignment.centerRight,
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Icon(Icons.delete),
+                          ),
+                        ),),
+
+                        child: Padding(
+                          padding: const EdgeInsets.all(10.0),
+                          child: Material(
+                            borderRadius: BorderRadius.circular(30),
+                            child: Stack(
+                              children: [
+                                Row(
+                                  children: [
+                                    Expanded(
+                                        flex: 1,
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(10.0),
+                                          child: Image.network(
+                                            furnitureImages[index],
+                                            fit: BoxFit.contain,
+                                          ),
+                                        )),
+                                    Expanded(
+                                      flex: 2,
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            furnitureNames[index],
+                                            style: TextStyle(fontSize: 15),
+                                          ),
+                                          SizedBox(
+                                            height: 10,
+                                          ),
+                                          Row(
+                                            children: [
+                                              InkWell(
+                                                onTap: () {
+                                                  print(int.parse(
                                                       furnitureQuantities[
-                                                      index]);
-                                                  quantity--;
-
-                                                  print("Quantityyyy");
-                                                  print(furnitureQuantities[index]);
-                                                  furnitureQuantities[index] =
-                                                      quantity.toString();
-                                                  subTotal -=  int.parse(
-                                                      furniturePrices[
-                                                      index]);
-                                                  print('minus quantity');
-                                                  print(furnitureQuantities[
-                                                  index]);
-                                                }});
-                                              },
-                                              child: CustomCircleAvatar(
-                                                radius: MediaQuery.of(context)
-                                                            .size
-                                                            .height >
-                                                        700
-                                                    ? 15.0
-                                                    : 12.0,
-                                                CavatarColor:
-                                                    kAppBackgroundColor,
-                                                icon: Icon(
-                                                  Icons.remove,
-                                                  size: MediaQuery.of(context)
-                                                              .size
-                                                              .height >
-                                                          700
-                                                      ? 22.0
-                                                      : 18.0,
-                                                  color: Colors.white,
-                                                ),
-                                              ),
-                                            ),
-                                            SizedBox(
-                                              width: 10.0,
-                                            ),
-                                            Text(
-                                              furnitureQuantities[index],
-                                              style: TextStyle(
-                                                fontSize: MediaQuery.of(context)
-                                                            .size
-                                                            .height >
-                                                        700
-                                                    ? 20.0
-                                                    : 18.0,
-                                                fontWeight: FontWeight.w600,
-                                              ),
-                                            ),
-                                            SizedBox(
-                                              width: 10.0,
-                                            ),
-                                            InkWell(
-                                              onTap: () {
-                                                if (int.parse(
-                                                            furnitureQuantities[
-                                                                index]) +
-                                                        1 <=
-                                                    int.parse(availableQuantity[
-                                                        index])) {
-                                                  quantity = int.parse(
-                                                      furnitureQuantities[
-                                                          index]);
+                                                          index]));
                                                   setState(() {
-                                                    quantity++;
-                                                    furnitureQuantities[index] =
-                                                        quantity.toString();
-                                                    subTotal += int.parse(
-                                                        furniturePrices[
-                                                        index]);
-                                                    print('quantity new:');
-                                                    print(furnitureQuantities[
-                                                        index]);
+                                                    if (int.parse(
+                                                            furnitureQuantities[
+                                                                index]) >
+                                                        1) {
+                                                      quantity = int.parse(
+                                                          furnitureQuantities[
+                                                              index]);
+                                                      quantity--;
+
+                                                      print("Quantityyyy");
+                                                      print(furnitureQuantities[
+                                                          index]);
+                                                      furnitureQuantities[index] =
+                                                          quantity.toString();
+                                                      subTotal -= int.parse(
+                                                          furniturePrices[index]);
+                                                      tax = subTotal *
+                                                          estimatingTax;
+                                                      totalPrice =
+                                                          (subTotal + tax);
+
+                                                      BlocProvider.of<HomeCubit>(context).addToCart(
+                                                          furnitureIds[index], furnitureColors[index], quantity);
+                                                      print('minus quantity');
+                                                      print(furnitureQuantities[
+                                                          index]);
+                                                    }
                                                   });
-                                                }
-                                              },
-                                              child: CustomCircleAvatar(
-                                                radius: MediaQuery.of(context)
-                                                            .size
-                                                            .height >
-                                                        700
-                                                    ? 15.0
-                                                    : 12.0,
-                                                CavatarColor:
-                                                    kAppBackgroundColor,
-                                                icon: Icon(
-                                                  Icons.add,
-                                                  size: MediaQuery.of(context)
+                                                },
+                                                child: CustomCircleAvatar(
+                                                  radius: MediaQuery.of(context)
                                                               .size
                                                               .height >
                                                           700
-                                                      ? 22.0
-                                                      : 18.0,
-                                                  color: Colors.white,
+                                                      ? 15.0
+                                                      : 12.0,
+                                                  CavatarColor:
+                                                      kAppBackgroundColor,
+                                                  icon: Icon(
+                                                    Icons.remove,
+                                                    size: MediaQuery.of(context)
+                                                                .size
+                                                                .height >
+                                                            700
+                                                        ? 22.0
+                                                        : 18.0,
+                                                    color: Colors.white,
+                                                  ),
                                                 ),
                                               ),
-                                            ),
-                                            Spacer(),
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 10.0),
-                                              child: Text(
-                                                '\EGP ${furniturePrices[index]}',
-                                                style: TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                    fontSize: 18),
+                                              SizedBox(
+                                                width: 10.0,
                                               ),
-                                            ),
-                                          ],
-                                        )
-                                      ],
+                                              Text(
+                                                furnitureQuantities[index],
+                                                style: TextStyle(
+                                                  fontSize: MediaQuery.of(context)
+                                                              .size
+                                                              .height >
+                                                          700
+                                                      ? 20.0
+                                                      : 18.0,
+                                                  fontWeight: FontWeight.w600,
+                                                ),
+                                              ),
+                                              SizedBox(
+                                                width: 10.0,
+                                              ),
+                                              InkWell(
+                                                onTap: () {
+                                                  if (int.parse(
+                                                              furnitureQuantities[
+                                                                  index]) +
+                                                          1 <=
+                                                      int.parse(availableQuantity[
+                                                          index])) {
+                                                    quantity = int.parse(
+                                                        furnitureQuantities[
+                                                            index]);
+                                                    setState(() {
+                                                      quantity++;
+                                                      furnitureQuantities[index] =
+                                                          quantity.toString();
+                                                      subTotal += int.parse(
+                                                          furniturePrices[index]);
+                                                      tax = subTotal *
+                                                          estimatingTax;
+                                                      totalPrice = subTotal + tax;
+                                                      BlocProvider.of<HomeCubit>(context).addToCart(
+                                                          furnitureIds[index], furnitureColors[index], quantity);
+                                                      print('quantity new:');
+                                                      print(furnitureQuantities[
+                                                          index]);
+                                                    });
+                                                  }
+                                                },
+                                                child: CustomCircleAvatar(
+                                                  radius: MediaQuery.of(context)
+                                                              .size
+                                                              .height >
+                                                          700
+                                                      ? 15.0
+                                                      : 12.0,
+                                                  CavatarColor:
+                                                      kAppBackgroundColor,
+                                                  icon: Icon(
+                                                    Icons.add,
+                                                    size: MediaQuery.of(context)
+                                                                .size
+                                                                .height >
+                                                            700
+                                                        ? 22.0
+                                                        : 18.0,
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                              ),
+                                              Spacer(),
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        horizontal: 10.0),
+                                                child: Text(
+                                                  '\EGP ${furniturePrices[index]}',
+                                                  style: TextStyle(
+                                                      fontWeight: FontWeight.bold,
+                                                      fontSize: 18),
+                                                ),
+                                              ),
+                                            ],
+                                          )
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                ],
-                              ),
-                            ],
+                                  ],
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       );
@@ -300,31 +364,29 @@ class _CartScreenState extends State<CartScreen> {
                                     MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text("Sub Total            "),
-                                  Text("\EGP ${subTotal}"),
+                                  Text("\EGP ${subTotal.toStringAsFixed(2)}"),
                                 ],
                               ),
                               SizedBox(
                                 height: 10,
                               ),
+                              // Row(
+                              //   mainAxisAlignment:
+                              //       MainAxisAlignment.spaceBetween,
+                              //   children: [
+                              //     Text("Shipping fee    "),
+                              //     Text('\EGP 300'),
+                              //   ],
+                              // ),
+                              // SizedBox(
+                              //   height: 10,
+                              // ),
                               Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Text("Shipping fee    "),
-                                  Text('\EGP 300'),
-                                ],
-                              ),
-                              SizedBox(
-                                height: 10,
-                              ),
-                              Row(
-
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text("Estimating Tax"),
-
-                                  Text("\$6.50"),
+                                  Text("Estimating Tax(14%)            "),
+                                  Text("\EGP ${tax.toStringAsFixed(2)}"),
                                 ],
                               ),
                               SizedBox(
@@ -341,7 +403,7 @@ class _CartScreenState extends State<CartScreen> {
                                     MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text("Total"),
-                                  Text("\$104.50"),
+                                  Text("\EGP ${totalPrice.toStringAsFixed(2)}"),
                                 ],
                               ),
                               SizedBox(
