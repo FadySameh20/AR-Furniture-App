@@ -5,7 +5,6 @@ import 'package:ar_furniture_app/shared/widgets/categories_scroller.dart';
 import 'package:ar_furniture_app/shared/widgets/favorite_icon.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../models/shared_model.dart';
 import '../constants/constants.dart';
 
 
@@ -22,6 +21,9 @@ class _SearchState extends State<Search> {
   int flag = 0;
   ScrollController _scrollController = ScrollController();
   TextEditingController _searchController = TextEditingController();
+
+  //filter
+  Map<String, bool> priceFilter = {'EGP 0 - 4,999': false, 'EGP 5,000 - 9,999': false, 'EGP 10,000 - 14,999': false, 'EGP 15,000 - 19,999': false, 'EGP 20,000+': false};
 
 
   @override
@@ -98,9 +100,10 @@ class _SearchState extends State<Search> {
                       color: kAppBackgroundColor,
                     ),
                     child: IconButton(
-                      icon: Icon(Icons.filter_list, color: Colors.white, size: 25,),
+                      icon: const Icon(Icons.filter_list, color: Colors.white, size: 25,),
                       onPressed: () {
-                        Navigator.pushNamed(context, '/filter');
+                        print(priceFilter);
+                        Navigator.pushNamed(context, '/filter', arguments: {'priceFilter': priceFilter});
                       },
                     ),
                   ),
