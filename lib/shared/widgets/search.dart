@@ -1,26 +1,17 @@
+import 'package:ar_furniture_app/cubits/home_cubit.dart';
+import 'package:ar_furniture_app/cubits/home_states.dart';
+import 'package:ar_furniture_app/models/furniture_model.dart';
 import 'package:ar_furniture_app/shared/widgets/categories_scroller.dart';
 import 'package:ar_furniture_app/shared/widgets/favorite_icon.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../cubits/home_cubit.dart';
-import '../../cubits/home_states.dart';
-import '../../models/furniture_model.dart';
-import '../../models/name_model.dart';
+import '../../models/shared_model.dart';
 import '../constants/constants.dart';
 
 
-class FurnitureSearch{
-  final String name;
-
-  const FurnitureSearch({
-    required this.name,
-  });
-}
-// List<FurnitureModel> filteredFurniture = [];
-
-List<String> searchResult = [];
-
+List<FurnitureModel> filteredFurniture = [];
 class Search extends StatefulWidget {
   @override
   State<Search> createState() => _SearchState();
@@ -28,34 +19,46 @@ class Search extends StatefulWidget {
 
 class _SearchState extends State<Search> {
   //const Search({Key? key}) : super(key: key);
-  List<String> searchR = searchResult;
+  List<FurnitureModel> searchR = filteredFurniture;
   bool viewSuggestions = false;
-  List<FurnitureModel> filteredFurniture = [];
+  int flag = 0;
+  ScrollController _scrollController = ScrollController();
+  TextEditingController _searchController = TextEditingController();
 
 
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _scrollController.addListener(() async {
+      if (_scrollController.position.atEdge) {
+        if (_scrollController.position.pixels != 0) {
+          int lengthSearchR = searchR.length;
+          List<FurnitureModel> addSearchData = await addMoreData(searchR, _searchController.text.toLowerCase());
+          if (addSearchData.length > lengthSearchR){
+            setState(() {
+              searchR = addSearchData;
+            });
+          }
+        }
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<HomeCubit, HomeState>(
-        listener: (context, state) {
+      listener: (context, state){
 
-        },
-        builder: (context, state) {
-          // print("haaaa");
-          // print(BlocProvider.of<HomeCubit>(context).furnitureList.length);
-          // print("hola");
-          // print(filteredFurniture[0].name);
-          // print("plz");
-          // print(BlocProvider.of<HomeCubit>(context).categories.length);
-          filteredFurniture = BlocProvider.of<HomeCubit>(context).allFurnitureList.toList();
-          print("sammm");
-          print(filteredFurniture.length);
-          for (var element in filteredFurniture) {
-            searchResult.add(element.name);
-          }
-
-          return SingleChildScrollView(
-              child: Column(
+      },
+      builder: (context, state)  {
+        // var temp= FirebaseFirestore.instance.collection("category").doc("beds").collection("furniture").doc();
+        // print("hello");
+        // print(temp.id);
+        // temp.set(FurnitureModel(furnitureId: temp.id,category: "beds", name: "iraqian bed", model: "", shared: [SharedModel(color: "#FF0000", image: "https://firebasestorage.googleapis.com/v0/b/ar-furniture-7fb69.appspot.com/o/furniture%2FItem_1.png?alt=media&token=0bd24e89-91c4-4c7a-a8f1-65dde2dd7cbf", price: "200", quantity: "5")], ratings: []).toMap());
+        filteredFurniture = BlocProvider.of<HomeCubit>(context).furnitureList.toList();
+        return SingleChildScrollView(
+          child: Column(
             children: [
               Row(
                 children: [
@@ -63,6 +66,7 @@ class _SearchState extends State<Search> {
                     child: Padding(
                       padding: const EdgeInsets.all(10.0),
                       child: TextField(
+                        controller: _searchController,
                         cursorColor: kAppBackgroundColor,
                         decoration: InputDecoration(
                           enabledBorder: OutlineInputBorder(
@@ -84,7 +88,9 @@ class _SearchState extends State<Search> {
                           contentPadding: const EdgeInsets.only(
                               left: 14.0, bottom: 5.0, top: 5.0),
                         ),
-                        onChanged: searchItem,
+                        onChanged: (value) async {
+                          await searchItem(value);
+                        },
                       ),
                     ),
                   ),
@@ -111,13 +117,15 @@ class _SearchState extends State<Search> {
                       .of(context)
                       .size
                       .height / 5,
-                  child: ListView.builder(
+                  child: searchR.isEmpty? const Center(
+                    child: Text("No Items To Show"),
+                  ):ListView.builder(
+                    controller: _scrollController,
                     itemCount: searchR.length,
                     itemBuilder: (context, index) {
                       final fur = searchR[index];
                       return ListTile(
-                        title: Text(fur,
-                        ),
+                        title: Text(fur.name),
                         leading: FavoriteIcon(iconLogo: Icons.search),
                       );
                     },),
@@ -350,19 +358,48 @@ class _SearchState extends State<Search> {
             ],
           ),
         );
-          }
-    );}
-  void searchItem(String query){
+      },
+    );
+  }
+
+
+  Future<void> searchItem (String query) async {
     if (query == ''){
       setState(() => viewSuggestions = false);
     }else{
       setState(() => viewSuggestions = true);
-      final suggestions = searchResult.where((fur) {
-        final searchTitle = fur.toLowerCase();
-        final input = query.toLowerCase();
+      final input = query.toLowerCase();
+      List<FurnitureModel> suggestions = filteredFurniture.where((fur) {
+        final searchTitle = fur.name.toLowerCase();
         return searchTitle.contains(input);
       }).toList();
+      if (suggestions.length < 4){
+        suggestions = await addMoreData(suggestions,input);
+      }
       setState(() => searchR = suggestions);
     }
+  }
+  Future<List<FurnitureModel>> addMoreData(List<FurnitureModel> suggestions1, String input) async {
+    int moreFurnitureCount = filteredFurniture.length;
+
+    print("FURNITURE LIST:");
+    await BlocProvider.of<HomeCubit>(context).getSearchData(input);
+    filteredFurniture = BlocProvider.of<HomeCubit>(context).furnitureList.toList();
+    print("hi");
+    filteredFurniture.forEach((element) {
+      print(element.name);
+    });
+    print("end");
+    print("FURNITURE LIST ENDEDDDD");
+    if (moreFurnitureCount != filteredFurniture.length){
+      int j;
+      for(j=moreFurnitureCount; j<filteredFurniture.length; j++){
+        final searchTitle = filteredFurniture[j].name.toLowerCase();
+        if(searchTitle.contains(input)){
+          suggestions1.add(filteredFurniture[j]);
+        }
+      }
+    }
+    return suggestions1;
   }
 }

@@ -60,6 +60,22 @@ class HomeCubit extends Cubit<HomeState> {
 
   }
 
+  getSearchData(String searchbarName) async {
+    print("get search dataaaaaaaa");
+    print(furnitureList.map((e) => e.name).toList());
+    print("--------------------------------");
+    await FirebaseFirestore.instance.collectionGroup("furniture").where('name',whereNotIn:furnitureList.map((e) => e.name).toList()).where('name', isGreaterThanOrEqualTo: searchbarName, isLessThanOrEqualTo: '$searchbarName\uf8ff').limit(4).get().then((value) {
+      value.docs.forEach((element) {
+        print(element["name"]);
+        furnitureList.add(FurnitureModel.fromJson(element.data()));
+      });
+    });
+    print("Hellloooo");
+    print(furnitureList.length);
+    print(furnitureList.map((e) => e.name).toList());
+    print("get search data 5alset");
+  }
+
   getOffers() async {
     await FirebaseFirestore.instance.collection('offer').get().then((value) {
       value.docs.forEach((element) {
@@ -138,19 +154,19 @@ class HomeCubit extends Cubit<HomeState> {
     for(int i =0;i<furnitureList.length;i++){
       furnitureList[i].isFavorite=false;
     }
-   await FirebaseAuth.instance.signOut();
-   // emit(SuccessOffersState());
-   Navigator.pushReplacementNamed(context, "/");
+    await FirebaseAuth.instance.signOut();
+    // emit(SuccessOffersState());
+    Navigator.pushReplacementNamed(context, "/");
   }
 
   updateFavoriteList(){
-    if(cache.cachedFavoriteIds.isNotEmpty){
-    List favoritesId=cache.cachedFavoriteIds;
-    for(int i=0;i<furnitureList.length;i++){
-      if(favoritesId.contains(furnitureList[i].furnitureId)){
-        furnitureList[i].isFavorite=true;
-      }
-    }}
+    if(cache != ""){
+      List favoritesId=cache.cachedFavoriteIds;
+      for(int i=0;i<furnitureList.length;i++){
+        if(favoritesId.contains(furnitureList[i].furnitureId)){
+          furnitureList[i].isFavorite=true;
+        }
+      }}
   }
 
   createCache() async{
@@ -203,7 +219,7 @@ class HomeCubit extends Cubit<HomeState> {
       temp.first.cachedUser.phone =phone;
     }
     CacheHelper.setData(key: "user", value: jsonEncode(cacheModel!.toMap()));
-   await FirebaseFirestore.instance.collection("user").doc(FirebaseAuth.instance.currentUser!.uid).update(temp.first.cachedUser.toMap());
+    await FirebaseFirestore.instance.collection("user").doc(FirebaseAuth.instance.currentUser!.uid).update(temp.first.cachedUser.toMap());
 
   }
 
@@ -227,7 +243,7 @@ class HomeCubit extends Cubit<HomeState> {
       CacheHelper.setData( key: 'user', value: jsonEncode(cacheModel!.toMap()));
     }
   }
-   void updateCartInFirestore(FurnitureModel selectedFurniture) async {
+  void updateCartInFirestore(FurnitureModel selectedFurniture) async {
     await FirebaseFirestore.instance
         .collection('category')
         .doc(selectedFurniture.category)
@@ -268,9 +284,9 @@ class CachedUserModel {
     uid = json["uid"];
     print(json["cachedFavoriteIds"]);
     if(json["cachedFavoriteIds"]!=null){
-    json["cachedFavoriteIds"].forEach((element){
-      cachedFavoriteIds.add(element);
-    });}
+      json["cachedFavoriteIds"].forEach((element){
+        cachedFavoriteIds.add(element);
+      });}
     else{
       cachedFavoriteIds=[];
     }
