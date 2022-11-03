@@ -80,8 +80,6 @@ class _CartScreenState extends State<CartScreen> {
               .first
               .name);
 
-          furniturePrices.add(element.price);
-
           furnitureIds.add(widget.furnitureList
               .where((element) => element.furnitureId == key)
               .first
