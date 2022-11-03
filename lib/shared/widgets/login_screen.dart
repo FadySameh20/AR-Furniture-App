@@ -41,6 +41,7 @@ class _LoginScreenState extends State<LoginScreen> {
             ));
             await BlocProvider.of<HomeCubit>(context).setCache();
             await BlocProvider.of<HomeCubit>(context).updateFavoriteList();
+            await BlocProvider.of<HomeCubit>(context).updateCart();
             Navigator.pushNamedAndRemoveUntil(
                 context, '/home', (route) => false);
           } else if (state is AuthErrorState) {
