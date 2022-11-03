@@ -1,3 +1,4 @@
+import 'package:ar_furniture_app/shared/cache/sharedpreferences.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -61,6 +62,7 @@ class SplashWelcomeScreen extends StatelessWidget {
 
                 ElevatedButton(
                   onPressed: () {
+                    // CacheHelper.removeData("user");
                     Navigator.pushNamedAndRemoveUntil(context, '/login', (route) => false);
                   },
                   style: ElevatedButton.styleFrom(

@@ -26,6 +26,8 @@ class HomeCubit extends Cubit<HomeState> {
   List<String> returnedCategory = [];
   List<Color?> availableColors = [];
   CacheModel? cacheModel;
+
+  List<String> removeIds = [];
   List<String> unavailableQuantityFurniture = [];
   var cache;
 
@@ -43,6 +45,7 @@ class HomeCubit extends Cubit<HomeState> {
     await getFurniture(categories.first.name);
   }
 
+
   setCache() async {
     cache = await getCache();
   }
@@ -56,6 +59,24 @@ class HomeCubit extends Cubit<HomeState> {
       categories = List.from(myCategory.names);
     }).catchError((error) {});
     print(categories.length);
+
+  }
+
+  getSearchData(String searchbarName) async {
+    print("get search dataaaaaaaa");
+    print(furnitureList.map((e) => e.name).toList());
+    print("--------------------------------");
+    await FirebaseFirestore.instance.collectionGroup("furniture").where('name',whereNotIn:furnitureList.map((e) => e.name).toList()).where('name', isGreaterThanOrEqualTo: searchbarName, isLessThanOrEqualTo: '$searchbarName\uf8ff').limit(4).get().then((value) {
+      value.docs.forEach((element) {
+        print(element["name"]);
+        furnitureList.add(FurnitureModel.fromJson(element.data()));
+      });
+    });
+    print("Hellloooo");
+    print(furnitureList.length);
+    print(furnitureList.map((e) => e.name).toList());
+    print("get search data 5alset");
+
   }
 
   getOffers() async {
@@ -120,6 +141,7 @@ class HomeCubit extends Cubit<HomeState> {
   logout(context) async {
     for (int i = 0; i < furnitureList.length; i++) {
       furnitureList[i].isFavorite = false;
+
       for (int j = 0; j < furnitureList[i].shared.length; j++) {
         furnitureList[i].shared[j].quantityCart = "0";
       }
@@ -138,8 +160,6 @@ class HomeCubit extends Cubit<HomeState> {
           furnitureList[i].isFavorite = true;
         }
       }
-    }
-  }
 
   updateCart() {
     if (cache.cartMap.isNotEmpty) {
@@ -158,7 +178,98 @@ class HomeCubit extends Cubit<HomeState> {
     }
   }
 
+  removeFromCart(String furnitureId, String selectedColor) async {
+    int index = furnitureList
+        .indexWhere((element) => element.furnitureId == furnitureId);
+    int selectedIndex = furnitureList[index]
+        .shared
+        .indexWhere((element) => element.color == selectedColor);
+    furnitureList[index].shared[selectedIndex].quantityCart = '0';
+
+    emit(SuccessOffersState());
+    if (furnitureList[index].shared.length > 1) {
+      cache.cartMap[furnitureId][selectedIndex].quantityCart = '0';
+      int x = 0;
+      cache.cartMap[furnitureId].forEach((element) {
+        if (int.parse(element.quantityCart) == 0) {
+          x += 1;
+        }
+      });
+      if (x == cache.cartMap[furnitureId].length) {
+        print('cart item no shared');
+        cache.cartMap.removeWhere((key, value) => key == furnitureId);
+      }
+    } else {
+      cache.cartMap
+          .removeWhere((key, value) => key == furnitureList[index].furnitureId);
+    }
+    CacheHelper.setData(key: 'user', value: jsonEncode(cacheModel!.toMap()));
+
+  }
+  updateUserData(context,fName, lName, address, phone, {email,password,newPassword=""}) async {
+    emit(UpdateLoadingState());
+    int flag = 0;
+    var temp = cacheModel!.usersCachedModel.where(
+            (element) => element.uid == FirebaseAuth.instance.currentUser!.uid);
+    if(newPassword!=""){
+      flag=2;
+      AuthCredential credential = EmailAuthProvider.credential(
+          email: temp.first.cachedUser.email, password: password);
+      await FirebaseAuth.instance.currentUser?.reauthenticateWithCredential( credential).then((value)async {
+        await FirebaseAuth.instance.currentUser?.updatePassword(newPassword);
+        emit(UpdatePasswordSuccessState());
+      }).catchError((error){emit(UpdatePasswordErrorState("Incorrect email or password"));});
+    }
+    print(temp.first.cachedUser.email);
+    print(email);
+    if(temp.first.cachedUser.email!=email){
+      flag=1;
+      AuthCredential credential = EmailAuthProvider.credential(
+          email: temp.first.cachedUser.email, password: password);
+      await FirebaseAuth.instance.currentUser?.reauthenticateWithCredential( credential).then((value)async {
+        await FirebaseAuth.instance.currentUser?.updateEmail(email);
+        temp.first.cachedUser.email=email;
+        emit(UpdateEmailSuccessState());
+      }).catchError((error){emit(UpdateEmailErrorState("Incorrect email or password"));});
+    }
+
+
+
+    if (temp.first.cachedUser.fName != fName) {
+      temp.first.cachedUser.fName = fName;
+      flag = 1;
+    }
+    if (temp.first.cachedUser.lName != lName) {
+      temp.first.cachedUser.lName = lName;
+      flag = 1;
+    }
+    if (temp.first.cachedUser.address != address) {
+      temp.first.cachedUser.address = address;
+      flag = 1;
+    }
+    if (temp.first.cachedUser.phone != phone) {
+      temp.first.cachedUser.phone = phone;
+      flag = 1;
+    }
+    if (flag == 1) {
+      CacheHelper.setData(key: "user", value: jsonEncode(cacheModel!.toMap()));
+      await FirebaseFirestore.instance
+          .collection("user")
+          .doc(FirebaseAuth.instance.currentUser!.uid)
+          .update(temp.first.cachedUser.toMap()).then((value)
+      {
+        emit(UpdateUserDataSuccessData());
+      }).catchError((error){
+
+      });
+    }
+    else{
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Nothing to update")));
+    }
+  }
+
   addToCart(String furnitureId, String selectedColor, int cartQuantity) async {
+    print("Co;orr " + selectedColor);
     int index = furnitureList
         .indexWhere((element) => element.furnitureId == furnitureId);
     //SharedModel chosenFurnitureColor = furnitureList[index].shared.where((element) => element.color == selectedColor).first;
@@ -186,6 +297,7 @@ class HomeCubit extends Cubit<HomeState> {
     print("After");
     print(cache.cartMap);
   }
+
 
   checkAvailableFurnitureQuantity(context) async {
     bool flag = false;
@@ -271,7 +383,9 @@ class HomeCubit extends Cubit<HomeState> {
       emit(ErrorInCheckout());
     }
 
+
   }
+
 
   createCache() async {
     var temp = await FirebaseFirestore.instance
@@ -322,11 +436,16 @@ class HomeCubit extends Cubit<HomeState> {
     } else {
       await createCache();
     }
-    return cacheModel!.usersCachedModel
-        .where(
-            (element) => element.uid == FirebaseAuth.instance.currentUser!.uid)
-        .first;
+
+
+
+    return cacheModel!.usersCachedModel.where(
+            (element) => element.uid == FirebaseAuth.instance.currentUser!.uid).first;
+
+  
     // return "";
+
+
   }
 
   addOrRemoveFromFavorite(index) async {
@@ -389,17 +508,21 @@ class CachedUserModel {
   CachedUserModel.fromJson(Map json) {
     uid = json["uid"];
     print(json["cachedFavoriteIds"]);
+
     if (json["cachedFavoriteIds"] != null) {
       json["cachedFavoriteIds"].forEach((element) {
         cachedFavoriteIds.add(element);
       });
     } else {
       cachedFavoriteIds = [];
+
     }
 
     cachedUser = UserModel.fromJson(json["userData"]);
 
     // cartMap = json["cartData"];
+
+if(json["cartData"]!=null)
 
     json["cartData"].forEach((key, value) {
       List<SharedModel> shared = [];
