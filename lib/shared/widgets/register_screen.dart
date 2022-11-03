@@ -41,7 +41,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
               content: Text('Regiseterd Successfully !'),
             ));
-            await BlocProvider.of<HomeCubit>(context).getCache();
+            await BlocProvider.of<HomeCubit>(context).setCache();
             Navigator.pushNamedAndRemoveUntil(
                 context, '/home', (route) => false);
           } else if (state is AuthErrorState) {

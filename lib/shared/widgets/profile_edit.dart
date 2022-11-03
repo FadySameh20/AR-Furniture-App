@@ -23,7 +23,7 @@ class _ProfileEditState extends State<ProfileEdit> {
   var oldPasswordController= TextEditingController();
   var addressController= TextEditingController();
   String initialCountry = 'EG';
-  PhoneNumber number = PhoneNumber(isoCode: 'EG');
+  var number ;
   Validations validator = Validations();
   TextEditingController mobileNumberController = TextEditingController();
   var formKey=GlobalKey<FormState>();
@@ -31,7 +31,7 @@ class _ProfileEditState extends State<ProfileEdit> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    var temp=BlocProvider.of<HomeCubit>(context).cacheModel!.cachedModel.where((element) => element.uid==FirebaseAuth.instance.currentUser!.uid);
+    var temp=BlocProvider.of<HomeCubit>(context).cacheModel!.usersCachedModel.where((element) => element.uid==FirebaseAuth.instance.currentUser!.uid);
     UserModel userModel=temp.first.cachedUser;
     fNameController.text= userModel.fName;
     lNameController.text = userModel.lName;
@@ -39,6 +39,9 @@ class _ProfileEditState extends State<ProfileEdit> {
     newPasswordController.text ="";
     oldPasswordController.text="";
     addressController.text = userModel.address;
+    // number.phoneNumber=userModel.phone;
+    number=PhoneNumber(phoneNumber:userModel.phone,isoCode: 'EG');
+    // number=phone
     mobileNumberController.text= userModel.phone;
   }
   @override
@@ -134,6 +137,7 @@ class _ProfileEditState extends State<ProfileEdit> {
                         InternationalPhoneNumberInput(
                           spaceBetweenSelectorAndTextField:
                           0,
+                          onInputValidated: (value){},
                           onInputChanged:
                               (PhoneNumber number) {},
                           selectorConfig:
@@ -178,8 +182,15 @@ class _ProfileEditState extends State<ProfileEdit> {
                     ElevatedButton(
                         onPressed: () {
                           if(formKey.currentState!.validate()){
-                            BlocProvider.of<HomeCubit>(context).updateCache(fNameController.text, lNameController.text, addressController.text, mobileNumberController.text);
-
+                            if(newPasswordController.text.isNotEmpty){
+                              BlocProvider.of<HomeCubit>(context).updateUserData(context,fNameController.text, lNameController.text, addressController.text, mobileNumberController.text,email: emailController.text,password: oldPasswordController.text,newPassword: newPasswordController.text);
+                            }
+                           else {
+                              BlocProvider.of<HomeCubit>(context)
+                                  .updateUserData(context,fNameController.text,
+                                  lNameController.text, addressController.text,
+                                  mobileNumberController.text,email: emailController.text,password: oldPasswordController.text);
+                            }
                           }
                         },
                         child: Text("SAVE",style: TextStyle(

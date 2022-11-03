@@ -82,7 +82,20 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<HomeCubit,HomeState>(
-        listener: (context,state){},
+        listener: (context,state){
+          if(state is UpdateUserDataSuccessData){
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("User data updated Successfully")));
+          }
+          if(state is UpdateEmailSuccessState){
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("User Email updated Successfully")));
+          }
+          if(state is UpdateEmailErrorState){
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Failed to update Email")));
+          }
+          if(state is UpdatePasswordErrorState){
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Failed to update password")));
+          }
+        },
           builder: (context,state) {
             // print(FirebaseAuth.instance.currentUser!.uid);
             return  Scaffold(
@@ -279,7 +292,7 @@ class _HomePageState extends State<HomePage> {
                                                       const Spacer(),
                                                       InkWell(
                                                         onTap: () async{
-                                                          context.read<HomeCubit>().addOrRemoveFromFavorite(index);
+                                                          context.read<HomeCubit>().addOrRemoveFromFavorite(BlocProvider.of<HomeCubit>(context).furnitureList[index].furnitureId);
                                                           context.read<HomeCubit>().emit(SuccessOffersState());
                                                           },
                                                         child: FavoriteIcon(
