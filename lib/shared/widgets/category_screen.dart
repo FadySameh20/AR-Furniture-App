@@ -11,18 +11,6 @@ import 'categories_scroller.dart';
 
 class CategoriesScreen extends StatelessWidget {
 
-  List<String> furnitureImages = [
-    "assets/Item_1.png",
-    "assets/Item_2.png",
-    "assets/Item_3.png",
-    "assets/Item_1.png",
-    "assets/Item_2.png",
-    "assets/Item_3.png",
-    "assets/Item_1.png",
-    "assets/Item_2.png",
-    "assets/Item_3.png",
-  ];
-
   List<Color?> colors = [
     Colors.teal[300],
     Colors.orange[300],
@@ -177,8 +165,11 @@ class CategoriesScreen extends StatelessWidget {
                                           TextButton(
                                             onPressed: () {
                                               print('Add to favorites');
+                                              int tempIndex = BlocProvider.of<HomeCubit>(context).furnitureList.indexWhere((element) => element.furnitureId == filteredFurniture[index].furnitureId);
+                                              BlocProvider.of<HomeCubit>(context).addOrRemoveFromFavorite(tempIndex);
+                                              BlocProvider.of<HomeCubit>(context).emit(AddOrRemoveFavoriteState());
                                             },
-                                            child: FavoriteIcon(iconLogo: Icons.favorite_border_rounded, iconColor: kAppBackgroundColor,),
+                                            child: filteredFurniture[index].isFavorite ? FavoriteIcon(iconLogo: Icons.favorite, iconColor: kAppBackgroundColor,) : FavoriteIcon(iconLogo: Icons.favorite_border_rounded, iconColor: kAppBackgroundColor,),
                                             style: TextButton.styleFrom(
                                               padding: EdgeInsets.zero,
                                               tapTargetSize:
@@ -192,7 +183,11 @@ class CategoriesScreen extends StatelessWidget {
                                           TextButton(
                                             onPressed: () {
                                               print('Add to cart');
-                                            },
+                                              BlocProvider.of<HomeCubit>(context).addToCart(filteredFurniture[index].furnitureId, filteredFurniture[index].shared[0].color, 1);
+                                              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                                content: Text('Added to cart successfully !'),
+                                              ));
+                                              },
                                             child: Icon(
                                               Icons.add_shopping_cart,
                                               color: kAppBackgroundColor,

@@ -47,7 +47,7 @@ class _LoginScreenState extends State<LoginScreen> {
           } else if (state is AuthErrorState) {
             print("Error in login");
             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text('Error in login !'),
+              content: Text('Incorrect email or password !'),
             ));
             setState(() {
               isLoading = false;

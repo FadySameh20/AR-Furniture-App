@@ -10,6 +10,7 @@ class ErrorOffersState extends HomeState{}
 
 class AddOrRemoveFavoriteState extends HomeState{}
 
+
 class UpdatePasswordSuccessState extends HomeState{}
 
 class UpdatePasswordErrorState extends HomeState{
@@ -32,3 +33,10 @@ class UpdateUserDataErrorData extends HomeState{
   String error;
   UpdateUserDataErrorData(this.error);
 }
+
+class AddedToCartSuccessfully extends HomeState{}
+
+class CheckoutSuccessfully extends HomeState{}
+
+class ErrorInCheckout extends HomeState{}
+

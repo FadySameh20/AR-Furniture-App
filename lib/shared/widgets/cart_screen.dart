@@ -11,6 +11,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../models/furniture_model.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 
 class CartScreen extends StatefulWidget {
   // List<FurnitureModel> furnitureList;
@@ -102,7 +103,41 @@ class _CartScreenState extends State<CartScreen> {
   @override
   Widget build(BuildContext context) {
     return BlocConsumer<HomeCubit, HomeState>(
-        listener: (context, state) {},
+        listener: (context, state) {
+          if(state is ErrorInCheckout) {
+            Alert(
+              context: context,
+              type: AlertType.warning,
+              title: "Unavailable Quantity",
+              desc: BlocProvider.of<HomeCubit>(context).unavailableQuantityFurniture.join('\n\n'),
+              buttons: [
+                DialogButton(
+                  child: Text(
+                    "OK",
+                    style: TextStyle(color: Colors.white, fontSize: 20),
+                  ),
+                  onPressed: () => Navigator.pop(context),
+                  color: kAppBackgroundColor,
+                ),
+              ],
+              style: AlertStyle(
+                animationType: AnimationType.fromTop,
+                animationDuration: Duration(milliseconds: 400),
+                titleStyle: TextStyle(
+                  color: Colors.red,
+                ),
+                descStyle: TextStyle(
+                  fontSize: 17,
+                ),
+              ),
+            ).show();
+          } else {
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text('Added to cart successfully !'),
+            ));
+            Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
+          }
+        },
         builder: (context, state) {
           return Scaffold(
             appBar: AppBar(
@@ -419,7 +454,9 @@ class _CartScreenState extends State<CartScreen> {
                                             backgroundColor:
                                                 Color.fromRGBO(191, 122, 47, 1),
                                           ),
-                                          onPressed: () {},
+                                          onPressed: () async {
+                                            await BlocProvider.of<HomeCubit>(context).checkAvailableFurnitureQuantity(context);
+                                          },
                                           child: Text(
                                             "Checkout",
                                             style: TextStyle(
