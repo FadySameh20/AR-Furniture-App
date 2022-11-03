@@ -160,7 +160,7 @@ class HomeCubit extends Cubit<HomeState> {
           furnitureList[i].isFavorite = true;
         }
       }
-
+    }}
   updateCart() {
     if (cache.cartMap.isNotEmpty) {
       for (int i = 0; i < furnitureList.length; i++) {
