@@ -143,7 +143,8 @@ class _SettingsState extends State<Settings> {
             child: Row(
               children: [
                 CircleAvatar(
-                  backgroundColor: Colors.blue,
+                  backgroundColor: Colors.white,
+                  backgroundImage:  BlocProvider.of<HomeCubit>(context).cache.cachedUser.img!=""?NetworkImage(BlocProvider.of<HomeCubit>(context).cache.cachedUser.img):AssetImage("assets/profile.png") as ImageProvider,
                   radius: 50,
                 ),
                 SizedBox(
