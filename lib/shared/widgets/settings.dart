@@ -21,7 +21,8 @@ class _SettingsState extends State<Settings> {
   var fNameController = TextEditingController();
   var lNameController = TextEditingController();
   var emailController = TextEditingController();
-
+  int screenIndex=0;
+  // List screenwidget= [Settings()]
   // index 0 darkmode
   // index 1 notifications
   // 2 for icon (out of the list)
@@ -53,7 +54,8 @@ class _SettingsState extends State<Settings> {
           InkWell(
             onTap: () {
               if(optionText == "Edit Profile"){
-                ProfileEdit();
+
+
               }
               else if(optionText == "My Favorites"){
 
@@ -145,6 +147,7 @@ class _SettingsState extends State<Settings> {
                 CircleAvatar(
                   backgroundColor: Colors.blue,
                   radius: 50,
+                  backgroundImage: BlocProvider.of<HomeCubit>(context).cache.cachedUser.img!=""?NetworkImage(BlocProvider.of<HomeCubit>(context).cache.cachedUser.img):AssetImage("assets/profile.png") as ImageProvider,
                 ),
                 SizedBox(
                   width: 15,

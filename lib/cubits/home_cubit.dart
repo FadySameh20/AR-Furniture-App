@@ -9,6 +9,7 @@ import 'package:ar_furniture_app/models/shared_model.dart';
 import 'package:ar_furniture_app/shared/cache/sharedpreferences.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -234,7 +235,7 @@ class HomeCubit extends Cubit<HomeState> {
     CacheHelper.setData(key: 'user', value: jsonEncode(cacheModel!.toMap()));
   }
 
-  updateUserData(context, fName, lName, address, phone,
+  updateUserData(context, fName, lName, address, phone,img,
       {email, password, newPassword = ""}) async {
     emit(UpdateLoadingState());
     int flag = 0;
@@ -287,6 +288,19 @@ class HomeCubit extends Cubit<HomeState> {
       temp.first.cachedUser.phone = phone;
       flag = 1;
     }
+    if (img!=null) {
+     var userId = FirebaseAuth.instance.currentUser!.uid;
+     if (temp.first.cachedUser.img != "") {
+       await FirebaseStorage.instance.refFromURL(
+           temp.first.cachedUser.img.toString()).delete();
+     }
+     final ref=FirebaseStorage.instance.ref().child("users/$userId.${img.path.split(".").last}");
+      await ref.putFile(img);
+      final url= await ref.getDownloadURL();
+      temp.first.cachedUser.img =url;
+      flag = 1;
+    }
+
     if (flag == 1) {
       CacheHelper.setData(key: "user", value: jsonEncode(cacheModel!.toMap()));
       await FirebaseFirestore.instance

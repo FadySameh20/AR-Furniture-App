@@ -34,7 +34,7 @@ class _HomePageState extends State<HomePage> {
   // ];
 
   int selectedPos = 0;
-  List<Widget> NavbarPages = [HomePage(),FavoriteScreen(), Search(), CategoriesScreen(), Settings()];
+  List<Widget> NavbarPages = [HomePage(),FavoriteScreen(), Search(), CategoriesScreen(), ProfileEdit()];
 
 
   double bottomNavBarHeight = 60;

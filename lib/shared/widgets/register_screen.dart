@@ -136,9 +136,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                                           .width *
                                                       0.4,
                                                   child: ElevatedButton(
-                                                    onPressed: () {
-                                                      setState(() {
-                                                        getImage(0);
+                                                    onPressed: () async{
+                                                      await getImage(0);
+                                                      setState(()  {
+
                                                       });
                                                     },
                                                     style: ElevatedButton
@@ -161,9 +162,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                                           .width *
                                                       0.4,
                                                   child: ElevatedButton(
-                                                    onPressed: () {
+                                                    onPressed: ()async {
+                                                      await getImage(1);
                                                       setState(() {
-                                                        getImage(1);
+
                                                       });
                                                     },
                                                     style: ElevatedButton
