@@ -19,6 +19,8 @@ class _SettingsState extends State<Settings> {
   var fNameController = TextEditingController();
   var lNameController = TextEditingController();
   var emailController = TextEditingController();
+  List<Widget> NavbarPages = [ProfileEdit(),FavoriteScreen()];
+
 
   // index 0 darkmode
   // index 1 notifications
@@ -51,10 +53,10 @@ class _SettingsState extends State<Settings> {
           InkWell(
             onTap: () {
               if(optionText == "Edit Profile"){
-                ProfileEdit();
-              }
-              else if(optionText == "My Favorites"){
-
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) =>  ProfileEdit()),
+                );
               }
               else if(optionText == "My Orders"){
                 print("ORDERS");
@@ -181,7 +183,7 @@ class _SettingsState extends State<Settings> {
           settingsOptionCategory("Notifications"),
           settingsOption("Notifications", Icons.notifications, 1),
           settingsOptionCategory("App Settings"),
-          settingsOption("My Favorites", Icons.favorite),
+          // settingsOption("My Favorites", Icons.favorite),
           settingsOption("My Orders", Icons.shopping_bag),
           settingsOption("About Us", Icons.error),
           settingsOption("Logout", Icons.logout),

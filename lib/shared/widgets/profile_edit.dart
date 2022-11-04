@@ -30,7 +30,7 @@ class _ProfileEditState extends State<ProfileEdit> {
   TextEditingController mobileNumberController = TextEditingController();
   var formKey=GlobalKey<FormState>();
   get labelText => null;
-  List<Widget> NavbarPages = [ProfileEdit(),FavoriteScreen()];
+  // List<Widget> NavbarPages = [ProfileEdit(),FavoriteScreen()];
 
 
   @override
@@ -44,6 +44,7 @@ class _ProfileEditState extends State<ProfileEdit> {
     newPasswordController.text ="";
     oldPasswordController.text="";
     addressController.text = userModel.address;
+    // imageController = userModel.
     // number.phoneNumber=userModel.phone;
     number=PhoneNumber(phoneNumber:userModel.phone,isoCode: 'EG');
     // number=phone
@@ -52,6 +53,12 @@ class _ProfileEditState extends State<ProfileEdit> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Color.fromRGBO(191, 122, 47, 1),
+        // leading: FlutterLogo(),
+        centerTitle: true,
+        title: const Text('Edit Profile'),
+      ),
       body: Container(
         padding: EdgeInsets.only(left: 15, top: 20, right: 15),
         child: GestureDetector(
