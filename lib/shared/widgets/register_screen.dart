@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:ar_furniture_app/shared/widgets/auth_cubit.dart';
 import 'package:ar_furniture_app/shared/widgets/auth_states.dart';
 import 'package:ar_furniture_app/shared/widgets/validations.dart';
@@ -9,6 +11,7 @@ import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import '../../cubits/home_cubit.dart';
 import '../constants/constants.dart';
 import 'input_text_field.dart';
+import 'package:image_picker/image_picker.dart';
 
 class RegisterScreen extends StatefulWidget {
   @override
@@ -24,24 +27,42 @@ class _RegisterScreenState extends State<RegisterScreen> {
   TextEditingController confirmPassController = TextEditingController();
   TextEditingController addressController = TextEditingController();
   TextEditingController mobileNumberController = TextEditingController();
+  var number =PhoneNumber(isoCode: 'EG');
   bool isPasswordHidden = false;
   bool isLoading = false;
   String initialCountry = 'EG';
-  PhoneNumber number = PhoneNumber(isoCode: 'EG');
+  // PhoneNumber number = PhoneNumber(isoCode: 'EG');
   Validations validator = Validations();
+  final ImagePicker _picker = ImagePicker();
+  File? imageFile;
+
+  getImage(int flag) async {
+    XFile? image;
+    if (flag == 0) {
+      image = await _picker.pickImage(source: ImageSource.gallery);
+    } else {
+      image = await _picker.pickImage(source: ImageSource.camera);
+    }
+
+    if (image != null) {
+      imageFile = File(image.path);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider<AuthCubit>(
       create: (context) => AuthCubit(),
       child: BlocConsumer<AuthCubit, AuthStates>(
-        listener: (context, state) async{
+        listener: (context, state) async {
           if (state is AuthSuccessfullyState) {
             print("Registered Successfully");
             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
               content: Text('Regiseterd Successfully !'),
             ));
             await BlocProvider.of<HomeCubit>(context).setCache();
+            await BlocProvider.of<HomeCubit>(context).updateFavoriteList();
+            await BlocProvider.of<HomeCubit>(context).updateCart();
             Navigator.pushNamedAndRemoveUntil(
                 context, '/home', (route) => false);
           } else if (state is AuthErrorState) {
@@ -78,7 +99,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       ),
                       Padding(
                         padding: EdgeInsets.only(
-                            top: MediaQuery.of(context).size.height / 3.45,
+                          top: MediaQuery.of(context).size.height / 3.45,
                         ),
                         child: SingleChildScrollView(
                           child: Column(
@@ -99,13 +120,76 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                         child: SingleChildScrollView(
                                           child: Column(
                                             children: [
+                                              CircleAvatar(
+                                                  radius: 50,
+                                                  backgroundColor: Colors.white,
+                                                  backgroundImage: imageFile ==
+                                                          null
+                                                      ? const AssetImage(
+                                                          "assets/profile.png")
+                                                      : FileImage(imageFile!)
+                                                          as ImageProvider),
+                                              Row(children: [
+                                                Container(
+                                                  width: MediaQuery.of(context)
+                                                          .size
+                                                          .width *
+                                                      0.4,
+                                                  child: ElevatedButton(
+                                                    onPressed: () async{
+                                                      await getImage(0);
+                                                      setState(()  {
+
+                                                      });
+                                                    },
+                                                    style: ElevatedButton
+                                                        .styleFrom(
+                                                      backgroundColor:
+                                                          Color.fromRGBO(
+                                                              191, 122, 47, 1),
+                                                    ),
+                                                    child: Text(
+                                                      "upload from gallery",
+                                                      style: TextStyle(
+                                                          fontSize: 14),
+                                                    ),
+                                                  ),
+                                                ),
+                                                Spacer(),
+                                                Container(
+                                                  width: MediaQuery.of(context)
+                                                          .size
+                                                          .width *
+                                                      0.4,
+                                                  child: ElevatedButton(
+                                                    onPressed: ()async {
+                                                      await getImage(1);
+                                                      setState(() {
+
+                                                      });
+                                                    },
+                                                    style: ElevatedButton
+                                                        .styleFrom(
+                                                      backgroundColor:
+                                                          Color.fromRGBO(
+                                                              191, 122, 47, 1),
+                                                    ),
+                                                    child: Text(
+                                                      "From camera",
+                                                      style: TextStyle(
+                                                          fontSize: 14),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ]),
                                               InputTextField(
                                                 textController:
                                                     firstNameController,
                                                 hint: "First Name",
                                                 prefixIconData: Icons.person,
                                                 validate: (String? val) {
-                                                  return validator.validateName(val!);
+                                                  return validator
+                                                      .validateName(val!);
                                                 },
                                               ),
                                               InputTextField(
@@ -114,7 +198,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                                 hint: "Last Name",
                                                 prefixIconData: Icons.person,
                                                 validate: (String? val) {
-                                                  return validator.validateName(val!);
+                                                  return validator
+                                                      .validateName(val!);
                                                 },
                                               ),
                                               InputTextField(
@@ -122,7 +207,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                                 hint: "Email",
                                                 prefixIconData: Icons.email,
                                                 validate: (String? val) {
-                                                  return validator.validateEmail(val!);
+                                                  return validator
+                                                      .validateEmail(val!);
                                                 },
                                               ),
                                               InputTextField(
@@ -130,7 +216,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                                 hint: "Password",
                                                 prefixIconData: Icons.password,
                                                 validate: (String? val) {
-                                                  return validator.validatePassword(val!);
+                                                  return validator
+                                                      .validatePassword(val!);
                                                 },
                                               ),
                                               InputTextField(
@@ -139,7 +226,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                                 hint: "Confirm Password",
                                                 prefixIconData: Icons.password,
                                                 validate: (String? val) {
-                                                  return validator.checkPasswordCompatability(passController.text, val!);
+                                                  return validator
+                                                      .checkPasswordCompatability(
+                                                          passController.text,
+                                                          val!);
                                                 },
                                               ),
                                               InputTextField(
@@ -149,7 +239,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                                 prefixIconData:
                                                     Icons.add_location,
                                                 validate: (String? val) {
-                                                  return validator.validateAddress(val!);
+                                                  return validator
+                                                      .validateAddress(val!);
                                                 },
                                               ),
                                               Padding(
@@ -207,18 +298,20 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 height: 2.0,
                               ),
                               ElevatedButton(
-                                onPressed: () async{
-                                  if(formKey.currentState!.validate()) {
+                                onPressed: () async {
+                                  if (formKey.currentState!.validate()) {
                                     setState(() {
                                       isLoading = true;
                                     });
-                                   await BlocProvider.of<AuthCubit>(context).register(
-                                        firstNameController.text,
-                                        lastNameController.text,
-                                        emailController.text,
-                                        passController.text,
-                                        addressController.text,
-                                        mobileNumberController.text);
+                                    await BlocProvider.of<AuthCubit>(context)
+                                        .register(
+                                            firstNameController.text,
+                                            lastNameController.text,
+                                            emailController.text,
+                                            passController.text,
+                                            addressController.text,
+                                            mobileNumberController.text,
+                                            image: imageFile ?? null);
                                   }
                                 },
                                 style: ElevatedButton.styleFrom(
