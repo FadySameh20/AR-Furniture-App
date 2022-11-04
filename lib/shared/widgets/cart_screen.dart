@@ -4,6 +4,7 @@ import 'package:ar_furniture_app/cubits/home_cubit.dart';
 import 'package:ar_furniture_app/cubits/home_states.dart';
 import 'package:ar_furniture_app/shared/cache/sharedpreferences.dart';
 import 'package:ar_furniture_app/shared/constants/constants.dart';
+import 'package:ar_furniture_app/shared/widgets/checkout_screen.dart';
 import 'package:ar_furniture_app/shared/widgets/circle_avatar.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -102,39 +103,39 @@ class _CartScreenState extends State<CartScreen> {
   Widget build(BuildContext context) {
     return BlocConsumer<HomeCubit, HomeState>(
         listener: (context, state) {
-          if(state is ErrorInCheckout) {
-            Alert(
-              context: context,
-              type: AlertType.warning,
-              title: "Unavailable Quantity",
-              desc: BlocProvider.of<HomeCubit>(context).unavailableQuantityFurniture.join('\n\n'),
-              buttons: [
-                DialogButton(
-                  child: Text(
-                    "OK",
-                    style: TextStyle(color: Colors.white, fontSize: 20),
-                  ),
-                  onPressed: () => Navigator.pop(context),
-                  color: kAppBackgroundColor,
-                ),
-              ],
-              style: AlertStyle(
-                animationType: AnimationType.fromTop,
-                animationDuration: Duration(milliseconds: 400),
-                titleStyle: TextStyle(
-                  color: Colors.red,
-                ),
-                descStyle: TextStyle(
-                  fontSize: 17,
-                ),
-              ),
-            ).show();
-          } else if(state is CheckoutSuccessfully) {
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text('Added to cart successfully !'),
-            ));
-            Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
-          }
+          // if(state is ErrorInCheckout) {
+          //   Alert(
+          //     context: context,
+          //     type: AlertType.warning,
+          //     title: "Unavailable Quantity",
+          //     desc: BlocProvider.of<HomeCubit>(context).unavailableQuantityFurniture.join('\n\n'),
+          //     buttons: [
+          //       DialogButton(
+          //         child: Text(
+          //           "OK",
+          //           style: TextStyle(color: Colors.white, fontSize: 20),
+          //         ),
+          //         onPressed: () => Navigator.pop(context),
+          //         color: kAppBackgroundColor,
+          //       ),
+          //     ],
+          //     style: AlertStyle(
+          //       animationType: AnimationType.fromTop,
+          //       animationDuration: Duration(milliseconds: 400),
+          //       titleStyle: TextStyle(
+          //         color: Colors.red,
+          //       ),
+          //       descStyle: TextStyle(
+          //         fontSize: 17,
+          //       ),
+          //     ),
+          //   ).show();
+          // } else if(state is CheckoutSuccessfully) {
+          //   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          //     content: Text('Added to cart successfully !'),
+          //   ));
+          //   Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
+          // }
         },
         builder: (context, state) {
           return Scaffold(
@@ -453,7 +454,16 @@ class _CartScreenState extends State<CartScreen> {
                                                 Color.fromRGBO(191, 122, 47, 1),
                                           ),
                                           onPressed: () async {
-                                            await BlocProvider.of<HomeCubit>(context).checkAvailableFurnitureQuantity(context);
+                                           // qawait BlocProvider.of<HomeCubit>(context).checkAvailableFurnitureQuantity(context);
+                                            Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) => CheckoutScreen(
+                                                      subTotal: subTotal,
+                                                      cartMap: BlocProvider
+                                                          .of<HomeCubit>(context)
+                                                          .cache.cartMap)),
+                                            );
                                           },
                                           child: Text(
                                             "Checkout",

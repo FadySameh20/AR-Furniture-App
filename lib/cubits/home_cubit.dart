@@ -87,6 +87,7 @@ class HomeCubit extends Cubit<HomeState> {
     print(furnitureList.length);
     print(furnitureList.map((e) => e.name).toList());
     print("get search data 5alset");
+
   }
 
   getOffers() async {
@@ -272,6 +273,8 @@ class HomeCubit extends Cubit<HomeState> {
       });
     }
 
+
+
     if (temp.first.cachedUser.fName != fName) {
       temp.first.cachedUser.fName = fName;
       flag = 1;
@@ -346,7 +349,13 @@ class HomeCubit extends Cubit<HomeState> {
     print(cache.cartMap);
   }
 
-  checkAvailableFurnitureQuantity(context) async {
+  checkAvailableFurnitureQuantity(
+      String appartmentNumber,
+      String area,
+      String buildingNumber,
+      String floorNumber,
+      String mobileNumber,
+      String streetName) async {
     bool flag = false;
     Map<String, List<int>> availableQuantity = {};
     String categoryName = "";
@@ -367,9 +376,12 @@ class HomeCubit extends Cubit<HomeState> {
           .then((value) {
         availableQuantity[key] = [];
         for (int i = 0; i < value.data()!["shared"].length; i++) {
+
           availableQuantity[key]!
               .add(int.parse(value.data()!["shared"][i]["quantity"]));
         }
+        print('availablequantity list');
+        print(availableQuantity);
       }).catchError((error) {
         print("Error: " + error.toString());
       });
@@ -400,7 +412,7 @@ class HomeCubit extends Cubit<HomeState> {
       // }
     }
 
-    if (!flag) {
+    if(!flag) {
       bool isCacheChanged = false;
 
       cache.cartMap.forEach((key, value) async {
@@ -428,7 +440,7 @@ class HomeCubit extends Cubit<HomeState> {
               .collection(categoryName)
               .doc(key)
               .update({"shared": furnitureList[index].toMap()["shared"]})
-              .then((value) => print("Added to cart successfully !"))
+              .then((value) => print("Placed order successfully !"))
               .catchError((error) => print("Error: " + error.toString()));
         }
       });
@@ -524,6 +536,27 @@ class HomeCubit extends Cubit<HomeState> {
       CacheHelper.setData(key: 'user', value: jsonEncode(cacheModel!.toMap()));
     }
   }
+
+  createOrder(String appartmentNumber, String area, String buildingNumber,
+      String floorNumber, String mobileNumber, String streetName) async {
+    OrderModel orderModel = OrderModel(
+        uid: FirebaseAuth.instance.currentUser!.uid,
+        appartmentNumber: appartmentNumber,
+        area: area,
+        buildingNumber: buildingNumber,
+        floorNumber: floorNumber,
+        mobileNumber: mobileNumber,
+        streetName: streetName,
+        order: cache.cartMap);
+    await FirebaseFirestore.instance
+        .collection("order")
+        .add(orderModel.toMap())
+        .then((value) {
+      print(value.id);
+    }).catchError((error) {
+      print('errorOrder: ' + error.toString());
+    });
+  }
 }
 
 class CacheModel {
@@ -567,6 +600,7 @@ class CachedUserModel {
       });
     } else {
       cachedFavoriteIds = [];
+
     }
 
     cachedUser = UserModel.fromJson(json["userData"]);
