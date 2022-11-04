@@ -212,13 +212,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                     setState(() {
                                       isLoading = true;
                                     });
-                                   await BlocProvider.of<AuthCubit>(context).register(
-                                        firstNameController.text,
-                                        lastNameController.text,
-                                        emailController.text,
-                                        passController.text,
-                                        addressController.text,
-                                        mobileNumberController.text);
+                                   // await BlocProvider.of<AuthCubit>(context).register(
+                                   //      firstNameController.text,
+                                   //      lastNameController.text,
+                                   //      emailController.text,
+                                   //      passController.text,
+                                   //      addressController.text,
+                                   //      mobileNumberController.text
+                                   // imgController.text);
                                   }
                                 },
                                 style: ElevatedButton.styleFrom(

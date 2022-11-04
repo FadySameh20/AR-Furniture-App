@@ -20,7 +20,7 @@ class AuthCubit extends Cubit<AuthStates> {
   }
 
   register(String firstName, String lastName, String email,
-      String password, String address, String mobileNumber) async {
+      String password, String address, String mobileNumber,String img) async {
     await FirebaseAuth.instance
         .createUserWithEmailAndPassword(email: email, password: password)
         .then((value) async {
@@ -31,14 +31,19 @@ class AuthCubit extends Cubit<AuthStates> {
               phone: mobileNumber,
               address: address,
               uid: userId,
-              email: email);
+              email: email
+          );
           await FirebaseFirestore.instance
               .collection('user')
               .doc(userId)
+
               .set(registeredUser.toMap())
               .then((value) => emit(AuthSuccessfullyState()))
-              .catchError((error) => emit(AuthErrorState()));
+              .catchError((error) {
+                print(error);
+                emit(AuthErrorState());});
     }).catchError((error) {
+      print(error);
       emit(AuthErrorState());
     });
     
