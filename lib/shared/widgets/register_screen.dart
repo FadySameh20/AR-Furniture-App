@@ -27,10 +27,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
   TextEditingController confirmPassController = TextEditingController();
   TextEditingController addressController = TextEditingController();
   TextEditingController mobileNumberController = TextEditingController();
+  var number =PhoneNumber(isoCode: 'EG');
   bool isPasswordHidden = false;
   bool isLoading = false;
   String initialCountry = 'EG';
-  PhoneNumber number = PhoneNumber(isoCode: 'EG');
+  // PhoneNumber number = PhoneNumber(isoCode: 'EG');
   Validations validator = Validations();
   final ImagePicker _picker = ImagePicker();
   File? imageFile;
@@ -60,6 +61,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
               content: Text('Regiseterd Successfully !'),
             ));
             await BlocProvider.of<HomeCubit>(context).setCache();
+            await BlocProvider.of<HomeCubit>(context).updateFavoriteList();
+            await BlocProvider.of<HomeCubit>(context).updateCart();
             Navigator.pushNamedAndRemoveUntil(
                 context, '/home', (route) => false);
           } else if (state is AuthErrorState) {
