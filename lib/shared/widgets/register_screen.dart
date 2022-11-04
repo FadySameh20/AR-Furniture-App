@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:ar_furniture_app/shared/widgets/auth_cubit.dart';
 import 'package:ar_furniture_app/shared/widgets/auth_states.dart';
 import 'package:ar_furniture_app/shared/widgets/validations.dart';
@@ -9,6 +11,7 @@ import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import '../../cubits/home_cubit.dart';
 import '../constants/constants.dart';
 import 'input_text_field.dart';
+import 'package:image_picker/image_picker.dart';
 
 class RegisterScreen extends StatefulWidget {
   @override
@@ -29,7 +32,20 @@ class _RegisterScreenState extends State<RegisterScreen> {
   String initialCountry = 'EG';
   PhoneNumber number = PhoneNumber(isoCode: 'EG');
   Validations validator = Validations();
+  final ImagePicker _picker = ImagePicker();
+  File? imageFile;
+  getImage(int flag) async {
+    XFile? image;
+    if(flag==0) {
+      image = await _picker.pickImage(source: ImageSource.gallery);
+    } else {
+      image = await _picker.pickImage(source: ImageSource.camera);
+    }
 
+    if (image != null) {
+       imageFile = File(image.path);
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return BlocProvider<AuthCubit>(
@@ -77,9 +93,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         ),
                       ),
                       Padding(
+
+
                         padding: EdgeInsets.only(
                             top: MediaQuery.of(context).size.height / 3.45,
                         ),
+
                         child: SingleChildScrollView(
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -99,6 +118,39 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                         child: SingleChildScrollView(
                                           child: Column(
                                             children: [
+                                             CircleAvatar(radius: 50, backgroundColor: Colors.white ,backgroundImage:imageFile==null?const AssetImage("assets/profile.png"):FileImage(imageFile!) as ImageProvider),
+                                              Row(
+
+                                                  children: [Container(
+                                                    width: MediaQuery.of(context).size.width*0.4,
+                                                    child: ElevatedButton(
+                                                            onPressed: () { getImage(0);},
+                                                            style: ElevatedButton.styleFrom(
+                                                            backgroundColor:
+                                                            Color.fromRGBO(191, 122, 47, 1),
+                                                            ),
+                                                            child: Text(
+                                                            "upload from gallery",
+                                                            style: TextStyle(fontSize: 14),
+                                                            ),
+                                                            ),
+                                                  ),
+                                                Spacer(),
+
+                                                Container(
+                                                  width: MediaQuery.of(context).size.width*0.4,
+                                                  child: ElevatedButton(
+                                                    onPressed: () { getImage(1);},
+                                                    style: ElevatedButton.styleFrom(
+                                                      backgroundColor:
+                                                      Color.fromRGBO(191, 122, 47, 1),
+                                                    ),
+                                                    child: Text(
+                                                      "From camera",
+                                                      style: TextStyle(fontSize: 14),
+                                                    ),
+                                                  ),
+                                                ),]),
                                               InputTextField(
                                                 textController:
                                                     firstNameController,

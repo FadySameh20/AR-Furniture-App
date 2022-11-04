@@ -2,12 +2,14 @@ import 'package:ar_furniture_app/shared/widgets/profile_edit.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../../cubits/home_cubit.dart';
 import '../../cubits/home_states.dart';
 import '../../models/user_model.dart';
 import 'cart_screen.dart';
 import 'favorite_screen.dart';
+
 
 class Settings extends StatefulWidget {
   @override
