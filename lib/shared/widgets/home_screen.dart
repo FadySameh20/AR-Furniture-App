@@ -34,7 +34,7 @@ class _HomePageState extends State<HomePage> {
   // ];
 
   int selectedPos = 0;
-  List<Widget> NavbarPages = [HomePage(),FavoriteScreen(), Search(), CategoriesScreen(), ProfileEdit()];
+  List<Widget> NavbarPages = [HomePage(),FavoriteScreen(), Search(), ProfileEdit(), Settings()];
 
 
   double bottomNavBarHeight = 60;
@@ -66,28 +66,7 @@ class _HomePageState extends State<HomePage> {
       Color.fromRGBO(191, 122, 47, 1),
     ),
   ]);
-  List<Text> texts = List.of([
-    Text(
-      "Home",
-      style: TextStyle(),
-    ),
-    Text(
-      "Favorites",
-      style: TextStyle(),
-    ),
-    Text(
-      "Search",
-      style: TextStyle(),
-    ),
-    Text(
-      "Categories",
-      style: TextStyle(),
-    ),
-    Text(
-      "Profile",
-      style: TextStyle(),
-    ),
-  ]);
+
   late CircularBottomNavigationController _navigationController;
 
   @override
@@ -131,7 +110,10 @@ class _HomePageState extends State<HomePage> {
                     IconButton(onPressed: () {context.read<HomeCubit>().logout(context);}, icon: Icon(Icons.shopping_cart))
                   ],
                   centerTitle: true,
-                  title: texts[selectedPos]),
+                  title: Text(
+                    "Home",
+                    style: TextStyle(),
+                  )),
               body: Stack(
                 children: <Widget>[
                   Padding(

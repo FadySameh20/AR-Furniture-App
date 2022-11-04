@@ -2,14 +2,12 @@ import 'package:ar_furniture_app/shared/widgets/profile_edit.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:image_picker/image_picker.dart';
 
 import '../../cubits/home_cubit.dart';
 import '../../cubits/home_states.dart';
 import '../../models/user_model.dart';
 import 'cart_screen.dart';
 import 'favorite_screen.dart';
-
 
 class Settings extends StatefulWidget {
   @override
@@ -21,8 +19,9 @@ class _SettingsState extends State<Settings> {
   var fNameController = TextEditingController();
   var lNameController = TextEditingController();
   var emailController = TextEditingController();
-  int screenIndex=0;
-  // List screenwidget= [Settings()]
+  List<Widget> NavbarPages = [ProfileEdit(),FavoriteScreen()];
+
+
   // index 0 darkmode
   // index 1 notifications
   // 2 for icon (out of the list)
@@ -54,11 +53,10 @@ class _SettingsState extends State<Settings> {
           InkWell(
             onTap: () {
               if(optionText == "Edit Profile"){
-
-
-              }
-              else if(optionText == "My Favorites"){
-
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) =>  ProfileEdit()),
+                );
               }
               else if(optionText == "My Orders"){
                 print("ORDERS");
@@ -147,7 +145,6 @@ class _SettingsState extends State<Settings> {
                 CircleAvatar(
                   backgroundColor: Colors.blue,
                   radius: 50,
-                  backgroundImage: BlocProvider.of<HomeCubit>(context).cache.cachedUser.img!=""?NetworkImage(BlocProvider.of<HomeCubit>(context).cache.cachedUser.img):AssetImage("assets/profile.png") as ImageProvider,
                 ),
                 SizedBox(
                   width: 15,
@@ -186,7 +183,7 @@ class _SettingsState extends State<Settings> {
           settingsOptionCategory("Notifications"),
           settingsOption("Notifications", Icons.notifications, 1),
           settingsOptionCategory("App Settings"),
-          settingsOption("My Favorites", Icons.favorite),
+          // settingsOption("My Favorites", Icons.favorite),
           settingsOption("My Orders", Icons.shopping_bag),
           settingsOption("About Us", Icons.error),
           settingsOption("Logout", Icons.logout),
