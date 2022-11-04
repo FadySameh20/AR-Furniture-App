@@ -129,7 +129,7 @@ class _CartScreenState extends State<CartScreen> {
                 ),
               ),
             ).show();
-          } else {
+          } else if(state is CheckoutSuccessfully) {
             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
               content: Text('Added to cart successfully !'),
             ));

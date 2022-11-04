@@ -166,7 +166,7 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                         alignment: Alignment.center,
                         child: Container(
                           color: Colors.transparent,
-                          child: Image.asset('assets/Item_1.png'),
+                          child: Image.network(widget.selectedFurniture.shared[selectedColorIndex].image),
                         ),
                       ),
                       Positioned(
@@ -643,7 +643,7 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                                   child: Column(
                                     children: [
                                       Expanded(
-                                        child: Image.asset('assets/Item_1.png'),
+                                        child: Image.network(widget.selectedFurniture.shared[selectedColorIndex].image),
                                       ),
                                       Text('Havan Chair')
                                     ],

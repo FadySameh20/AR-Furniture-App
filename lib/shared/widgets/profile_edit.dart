@@ -7,6 +7,8 @@ import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 
 import '../../models/user_model.dart';
 import '../constants/constants.dart';
+import 'cart_screen.dart';
+import 'favorite_screen.dart';
 
 
 class ProfileEdit extends StatefulWidget{
@@ -28,6 +30,9 @@ class _ProfileEditState extends State<ProfileEdit> {
   TextEditingController mobileNumberController = TextEditingController();
   var formKey=GlobalKey<FormState>();
   get labelText => null;
+  List<Widget> NavbarPages = [ProfileEdit(),FavoriteScreen()];
+
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();

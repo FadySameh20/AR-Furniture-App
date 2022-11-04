@@ -5,6 +5,7 @@ import 'package:ar_furniture_app/shared/cache/sharedpreferences.dart';
 import 'package:ar_furniture_app/shared/widgets/favorite_icon.dart';
 import 'package:ar_furniture_app/shared/widgets/profile_edit.dart';
 import 'package:ar_furniture_app/shared/widgets/search.dart';
+import 'package:ar_furniture_app/shared/widgets/settings.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:circular_bottom_navigation/circular_bottom_navigation.dart';
 import 'package:circular_bottom_navigation/tab_item.dart';
@@ -33,7 +34,7 @@ class _HomePageState extends State<HomePage> {
   // ];
 
   int selectedPos = 0;
-  List<Widget> NavbarPages = [HomePage(),FavoriteScreen(), Search(), CategoriesScreen(), ProfileEdit()];
+  List<Widget> NavbarPages = [HomePage(),FavoriteScreen(), Search(), CategoriesScreen(), Settings()];
 
 
   double bottomNavBarHeight = 60;

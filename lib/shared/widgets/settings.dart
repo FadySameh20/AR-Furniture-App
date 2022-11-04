@@ -1,4 +1,13 @@
+import 'package:ar_furniture_app/shared/widgets/profile_edit.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../cubits/home_cubit.dart';
+import '../../cubits/home_states.dart';
+import '../../models/user_model.dart';
+import 'cart_screen.dart';
+import 'favorite_screen.dart';
 
 class Settings extends StatefulWidget {
   @override
@@ -7,6 +16,9 @@ class Settings extends StatefulWidget {
 
 class _SettingsState extends State<Settings> {
   List<bool> allowSwitches = [false, false];
+  var fNameController = TextEditingController();
+  var lNameController = TextEditingController();
+  var emailController = TextEditingController();
 
   // index 0 darkmode
   // index 1 notifications
@@ -31,13 +43,27 @@ class _SettingsState extends State<Settings> {
 
   Padding settingsOption(String optionText, IconData optionIcon,
       [int switchIndex = 2]) {
+
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Column(
         children: [
           InkWell(
             onTap: () {
-              print("hii");
+              if(optionText == "Edit Profile"){
+                ProfileEdit();
+              }
+              else if(optionText == "My Favorites"){
+
+              }
+              else if(optionText == "My Orders"){
+                print("ORDERS");
+              }
+                // Navigator.push(
+                //   context,
+                //   MaterialPageRoute(builder: (context) => ProfileEdit()),
+                // );              }
+              // print("hii");
             },
             child: Row(
               children: [
@@ -71,6 +97,7 @@ class _SettingsState extends State<Settings> {
   }
 
   Padding settingsOptionCategory(String categoryText) {
+
     return Padding(
       padding: const EdgeInsets.all(20.0),
       child: Row(
@@ -87,7 +114,20 @@ class _SettingsState extends State<Settings> {
       ),
     );
   }
-
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    var temp = BlocProvider
+        .of<HomeCubit>(context)
+        .cacheModel!
+        .usersCachedModel
+        .where((element) =>
+    element.uid == FirebaseAuth.instance.currentUser!.uid);
+    UserModel userModel = temp.first.cachedUser;
+    fNameController.text = userModel.fName;
+    lNameController.text = userModel.lName;
+    emailController.text = userModel.email;
+  }
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -96,7 +136,7 @@ class _SettingsState extends State<Settings> {
         child: Column(children: [
           InkWell(
             onTap: () {
-              //print("name");
+              // print("name");
             },
             child: Row(
               children: [
@@ -111,14 +151,14 @@ class _SettingsState extends State<Settings> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Mariam',
+                      fNameController.text+" "+lNameController.text,
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 25,
                       ),
                     ),
                     Text(
-                      'mariam@gmail.com',
+                      emailController.text,
                       style: TextStyle(
                         fontSize: 15,
                       ),
@@ -136,8 +176,8 @@ class _SettingsState extends State<Settings> {
           settingsOption("Dark Mode", Icons.dark_mode, 0),
           settingsOptionCategory("Profile"),
           settingsOption("Edit Profile", Icons.account_circle),
-          settingsOption("Change Email", Icons.email),
-          settingsOption("Change Password", Icons.key),
+          // settingsOption("Change Email", Icons.email),
+          // settingsOption("Change Password", Icons.key),
           settingsOptionCategory("Notifications"),
           settingsOption("Notifications", Icons.notifications, 1),
           settingsOptionCategory("App Settings"),
