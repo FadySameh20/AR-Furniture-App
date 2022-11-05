@@ -1,3 +1,4 @@
+import 'package:ar_furniture_app/shared/constants/constants.dart';
 import 'package:flutter/material.dart';
 
 import 'order_details_screen.dart';
@@ -77,16 +78,22 @@ class OrderScreen extends StatelessWidget {
                         SizedBox(
                           height: 5,
                         ),
+                    Row(
+                        mainAxisAlignment:
+                        MainAxisAlignment.end,
+                      children:[
                     OutlinedButton(
-                      style: ElevatedButton.styleFrom(side:BorderSide(width:2,color: Colors.black),shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15))),
+                      style: ElevatedButton.styleFrom(side:BorderSide(width:2,color:kAppBackgroundColor),shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15))),
                         onPressed: ()
                     { showModalBottomSheet(isScrollControlled: true,shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.only(
                           topLeft: Radius.circular(25.0), topRight: Radius.circular(25.0)),
 
                     ),context: context, builder: (BuildContext context) { return OrderDetailsScreen(); }); },
-                        child:Text("Details", style:TextStyle(color:Colors.black))),
+                        child:Text("Details", style:TextStyle(color:kAppBackgroundColor))),
 
+                        ]
+                        ),
                       ]
                   ),
                  ),
