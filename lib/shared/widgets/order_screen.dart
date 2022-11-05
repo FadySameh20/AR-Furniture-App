@@ -1,3 +1,4 @@
+import 'package:ar_furniture_app/shared/widgets/order_details_screen.dart';
 import 'package:flutter/material.dart';
 
 class OrderScreen extends StatelessWidget {
@@ -10,10 +11,14 @@ class OrderScreen extends StatelessWidget {
         backgroundColor: Color.fromRGBO(191, 122, 47, 1),
         // leading: FlutterLogo(),
         centerTitle: true,
-        title: const Text('Edit Profile'),
+        title: const Text('My Orders'),
       ),
       body: Center(
-        child: Text("My orders"),
+        child: TextButton(onPressed: () { showModalBottomSheet(isScrollControlled: true,shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(25.0), topRight: Radius.circular(25.0)),
+        ),context: context, builder: (BuildContext context) { return OrderDetailsScreen(); }); },
+        child:Text("Order")),
       ),
     );
   }
