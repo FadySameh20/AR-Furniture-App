@@ -107,7 +107,7 @@ class _HomePageState extends State<HomePage> {
                   backgroundColor: Color.fromRGBO(191, 122, 47, 1),
                   leading: FlutterLogo(),
                   actions: [
-                    IconButton(onPressed: () {context.read<HomeCubit>().logout(context);}, icon: Icon(Icons.shopping_cart))
+                    IconButton(onPressed: () {}, icon: Icon(Icons.shopping_cart))
                   ],
                   centerTitle: true,
                   title: Text(

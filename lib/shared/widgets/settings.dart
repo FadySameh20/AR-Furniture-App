@@ -1,3 +1,4 @@
+import 'package:ar_furniture_app/shared/widgets/order_screen.dart';
 import 'package:ar_furniture_app/shared/widgets/profile_edit.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -59,12 +60,18 @@ class _SettingsState extends State<Settings> {
                 );
               }
               else if(optionText == "My Orders"){
-                print("ORDERS");
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) =>  OrderScreen()),
+                );
               }
-                // Navigator.push(
-                //   context,
-                //   MaterialPageRoute(builder: (context) => ProfileEdit()),
-                // );              }
+              else if(optionText=="Logout"){
+                context.read<HomeCubit>().logout(context);
+              }
+              // Navigator.push(
+              //   context,
+              //   MaterialPageRoute(builder: (context) => ProfileEdit()),
+              // );              }
               // print("hii");
             },
             child: Row(
@@ -132,9 +139,9 @@ class _SettingsState extends State<Settings> {
   }
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: SingleChildScrollView(
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
         child: Column(children: [
           InkWell(
             onTap: () {
