@@ -1,5 +1,8 @@
+import 'package:ar_furniture_app/cubits/home_cubit.dart';
+import 'package:ar_furniture_app/models/furniture_model.dart';
 import 'package:ar_furniture_app/shared/constants/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'order_details_screen.dart';
 
@@ -20,8 +23,20 @@ class OrderScreen extends StatelessWidget {
       ),
 
       body: ListView.builder(
-              itemCount: 6,
+              itemCount: BlocProvider.of<HomeCubit>(context).orders.length,
                itemBuilder: (BuildContext context, int index) {
+                 int quantity=0;
+                 double totalPrice=0;
+                BlocProvider.of<HomeCubit>(context).orders[index].order.forEach((key, value) {
+                  value.forEach((element){
+                    if(element.quantityCart!=null) {
+                      quantity += int.parse(element.quantityCart);
+                      totalPrice+=double.parse(element.quantityCart)*double.parse(element.price);
+                    }
+                  });
+                });
+                print("Quantity");
+                print(quantity);
                 return Padding(
                   padding: const EdgeInsets.all(15.0),
                   child: Material(
@@ -46,12 +61,15 @@ class OrderScreen extends StatelessWidget {
                           crossAxisAlignment:
                           CrossAxisAlignment.start,
                       children: [
-                      Text("Order NO:",
+                      Container(
+                        width:MediaQuery.of(context).size.width/2,
+                        child: Text("Order NO: ${BlocProvider.of<HomeCubit>(context).orders[index].orderId}",
 
                   style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold),
                  ),
+                      ),
                         Spacer(),
-                        Text("date",
+                        Text("${BlocProvider.of<HomeCubit>(context).orders[index].time.toDate().year.toString()}-${BlocProvider.of<HomeCubit>(context).orders[index].time.toDate().month.toString()}-${BlocProvider.of<HomeCubit>(context).orders[index].time.toDate().day.toString()}",
 
                           style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold),
                         ),
@@ -64,12 +82,12 @@ class OrderScreen extends StatelessWidget {
                           crossAxisAlignment:
                           CrossAxisAlignment.start,
                           children: [
-                            Text("Quatlity:",
+                            Text("Quantity: ${quantity}",
 
                               style: TextStyle(fontSize: 15,color: Colors.grey),
                             ),
                             Spacer(),
-                            Text("Total Amount:",
+                            Text("Total Amount: ${totalPrice}",
 
                               style: TextStyle(fontSize: 15,color: Colors.grey),
                             ),

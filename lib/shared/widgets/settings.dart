@@ -52,7 +52,7 @@ class _SettingsState extends State<Settings> {
       child: Column(
         children: [
           InkWell(
-            onTap: () {
+            onTap: ()async {
               if(optionText == "Edit Profile"){
                 Navigator.push(
                   context,
@@ -60,6 +60,9 @@ class _SettingsState extends State<Settings> {
                 );
               }
               else if(optionText == "My Orders"){
+                if(BlocProvider.of<HomeCubit>(context).orders.isEmpty) {
+                  await BlocProvider.of<HomeCubit>(context).getOrders();
+                }
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) =>  OrderScreen()),

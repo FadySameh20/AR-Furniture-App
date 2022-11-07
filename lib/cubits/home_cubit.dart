@@ -9,6 +9,7 @@ import 'package:ar_furniture_app/models/shared_model.dart';
 import 'package:ar_furniture_app/shared/cache/sharedpreferences.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -32,6 +33,7 @@ class HomeCubit extends Cubit<HomeState> {
   List<String> removeIds = [];
   List<String> unavailableQuantityFurniture = [];
   List<FurnitureModel> recommendedFurniture = [];
+  List<OrderModel> orders=[];
   var cache;
 
   getAllData() async {
@@ -54,6 +56,7 @@ class HomeCubit extends Cubit<HomeState> {
 
   setCache() async {
     cache = await getCache();
+    orders=[];
   }
 
   getCategoryNames() async {
@@ -418,7 +421,7 @@ class HomeCubit extends Cubit<HomeState> {
       bool isCacheChanged = false;
       print("Cached map to order map");
       print(cache.cartMap);
-      createOrder(appartmentNumber, area, buildingNumber, floorNumber, mobileNumber, streetName);
+      await createOrder(appartmentNumber, area, buildingNumber, floorNumber, mobileNumber, streetName);
 
       cache.cartMap.forEach((key, value) async {
         int index =
@@ -542,6 +545,17 @@ class HomeCubit extends Cubit<HomeState> {
     }
   }
 
+  getOrders() async{
+    orders=[];
+    await FirebaseFirestore.instance.collection("order").where("uid",isEqualTo: FirebaseAuth.instance.currentUser!.uid).get().then((value) {
+      value.docs.forEach((element) {
+        print(element);
+        orders.add(OrderModel.fromJson(element.data()));
+      });
+    });
+    print(orders);
+  }
+  
   createOrder(String appartmentNumber, String area, String buildingNumber,
       String floorNumber, String mobileNumber, String streetName) async {
       String docId = await FirebaseFirestore.instance
@@ -553,7 +567,7 @@ class HomeCubit extends Cubit<HomeState> {
         orderId: docId,
         uid: FirebaseAuth.instance.currentUser!.uid,
         userName: customerName,
-        time: Timestamp.now().toString(),
+        time: Timestamp.now(),
         appartmentNumber: appartmentNumber,
         area: area,
         buildingNumber: buildingNumber,

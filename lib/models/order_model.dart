@@ -1,12 +1,13 @@
 import 'dart:ffi';
 
 import 'package:ar_furniture_app/models/shared_model.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class OrderModel {
   late String orderId;
   late String uid;
   late String userName;
-  late String time;
+  late Timestamp time;
   late String appartmentNumber;
   late String area;
   late String buildingNumber;
