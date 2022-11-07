@@ -2,22 +2,31 @@ import 'package:ar_furniture_app/shared/constants/constants.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../models/furniture_model.dart';
+import '../../models/order_model.dart';
+
 class OrderDetailsScreen extends StatelessWidget {
-  const OrderDetailsScreen({Key? key}) : super(key: key);
+  List<FurnitureModel> furniture = [];
+  OrderModel myOrder;
+  OrderDetailsScreen(this.furniture,this.myOrder);
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: MediaQuery.of(context).size.height - 100,
+      height: MediaQuery
+          .of(context)
+          .size
+          .height - 100,
       child: Column(
         children: [
           Container(
             height: 50,
             decoration: BoxDecoration(
               color: kAppBackgroundColor,
-              borderRadius: BorderRadius.only(topRight: Radius.circular(20),topLeft:Radius.circular(20) ),
+              borderRadius: BorderRadius.only(
+                  topRight: Radius.circular(20), topLeft: Radius.circular(20)),
             ),
-           
+
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -61,7 +70,8 @@ class OrderDetailsScreen extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         Text(
-                          "Order id: ",
+                          "Order id: ${myOrder.orderId}",
+                          overflow: TextOverflow.ellipsis,
                           style: GoogleFonts.raleway(
                             textStyle: const TextStyle(
                                 fontSize: 18, fontWeight: FontWeight.bold),
@@ -73,23 +83,35 @@ class OrderDetailsScreen extends StatelessWidget {
                       height: 10,
                     ),
                     Container(
-                      height: 2*MediaQuery.of(context).size.height / 5.5,
-                      width: MediaQuery.of(context).size.width-10,
+                      height: furniture.length * MediaQuery
+                          .of(context)
+                          .size
+                          .height / 5.5,
+                      width: MediaQuery
+                          .of(context)
+                          .size
+                          .width - 10,
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
                           color: Colors.grey[300]),
                       child: ListView.builder(
-                        physics: NeverScrollableScrollPhysics(),
+                          physics: NeverScrollableScrollPhysics(),
                           shrinkWrap: true,
-                          itemCount: 2,
+                          itemCount: furniture.length,
                           itemBuilder: (context, index) {
                             return Row(
                               // mainAxisAlignment: MainAxisAlignment.,
                               children: [
                                 Container(
-                                  width: MediaQuery.of(context).size.width / 4,
-                                  height: MediaQuery.of(context).size.height / 5.5,
-                                  child: Image.asset("assets/chair.png"),
+                                  width: MediaQuery
+                                      .of(context)
+                                      .size
+                                      .width / 4,
+                                  height: MediaQuery
+                                      .of(context)
+                                      .size
+                                      .height / 5.5,
+                                  child: Image.network(furniture[index].shared.first.image),
                                   // color: Colors.purple,
                                 ),
                                 SizedBox(
@@ -99,10 +121,13 @@ class OrderDetailsScreen extends StatelessWidget {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Container(
-                                      width:MediaQuery.of(context).size.width/2.3,
+                                      width: MediaQuery
+                                          .of(context)
+                                          .size
+                                          .width / 2.3,
                                       // color:Colors.red,
                                       child: Text(
-                                        "${index}Porche sports foots",
+                                        furniture[index].name,
                                         overflow: TextOverflow.ellipsis,
                                         maxLines: 1,
                                         style: GoogleFonts.raleway(
@@ -117,7 +142,7 @@ class OrderDetailsScreen extends StatelessWidget {
                                       height: 5,
                                     ),
                                     Text(
-                                      "\$85",
+                                      "\$ ${furniture[index].shared.first.price}",
                                       style: GoogleFonts.raleway(
                                         textStyle: const TextStyle(
                                             fontSize: 16,
@@ -125,6 +150,11 @@ class OrderDetailsScreen extends StatelessWidget {
                                       ),
                                     )
                                   ],
+                                ),
+                                Spacer(),
+                                Padding(
+                                  padding: const EdgeInsets.only(right:15.0),
+                                  child: Text("${furniture[index].shared.first.quantityCart}"),
                                 )
                               ],
                             );
@@ -145,6 +175,7 @@ class OrderDetailsScreen extends StatelessWidget {
                         ),
                       ],
                     ),
+                    Text("Apartment No:${myOrder.appartmentNumber}, Floor no:${myOrder.floorNumber},Building no:${myOrder.buildingNumber}, Street no: ${myOrder.streetName},Area:${myOrder.area}"),
                     SizedBox(
                       height: 30,
                     ),
