@@ -110,168 +110,170 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
 
         // height: MediaQuery.of(context).size.height * 0.6,
         // flex: 2,
-        body: Stack(children: [
-          Container(
-              padding: EdgeInsets.only(left: 15, top: 20, right: 15),
-              child: Container(
-                child: Form(
-                  key: formKey,
-                  child: Column(
-                      // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        buildTextField(
-                          'Area',
-                          areaController,
-                          validator: (String? val) {
-                            return validator.validateText(val!);
-                          },
-                        ),
-                        SizedBox(height: 10),
-                        buildTextField('Street Name', streetNameController,
+        body: SingleChildScrollView(
+          child: Column(
+              children: [
+            Container(
+                padding: EdgeInsets.only(left: 15, top: 20, right: 15),
+                child: Container(
+                  child: Form(
+                    key: formKey,
+                    child: Column(
+                        // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          buildTextField(
+                            'Area',
+                            areaController,
                             validator: (String? val) {
-                          return validator.validateText(val!);
-                        }),
-                        SizedBox(height: 10),
-                        buildTextField(
-                          'building Number',
-                          buildingNumberController,
-                          validator: (String? val) {
-                            return validator.validateText(val!);
-                          },
-                        ),
-                        SizedBox(height: 10),
-                        buildTextField('Floor Number', floorNumberController),
-                        SizedBox(height: 10),
-                        buildTextField(
-                          'Appartment Number',
-                          appartmentNumberController,
-                          validator: (String? val) {
-                            return validator.validateText(val!);
-                          },
-                        ),
-                        SizedBox(height: 10),
-                        InternationalPhoneNumberInput(
-                          spaceBetweenSelectorAndTextField: 0,
-                          onInputValidated: (value) {},
-                          onInputChanged: (PhoneNumber number) {},
-                          selectorConfig: const SelectorConfig(
-                            selectorType: PhoneInputSelectorType.BOTTOM_SHEET,
+                              return validator.validateText(val!);
+                            },
                           ),
-                          ignoreBlank: false,
-                          autoValidateMode: AutovalidateMode.onUserInteraction,
-                          selectorTextStyle:
-                              const TextStyle(color: Colors.black),
-                          initialValue: number,
-                          textFieldController: mobileNumberController,
-                          formatInput: false,
-                          keyboardType: const TextInputType.numberWithOptions(
-                              signed: true, decimal: true),
-                          inputBorder: const OutlineInputBorder(
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(20.0)),
+                          SizedBox(height: 10),
+                          buildTextField('Street Name', streetNameController,
+                              validator: (String? val) {
+                            return validator.validateText(val!);
+                          }),
+                          SizedBox(height: 10),
+                          buildTextField(
+                            'building Number',
+                            buildingNumberController,
+                            validator: (String? val) {
+                              return validator.validateText(val!);
+                            },
                           ),
-                        ),
-                      ]),
+                          SizedBox(height: 10),
+                          buildTextField('Floor Number', floorNumberController),
+                          SizedBox(height: 10),
+                          buildTextField(
+                            'Appartment Number',
+                            appartmentNumberController,
+                            validator: (String? val) {
+                              return validator.validateText(val!);
+                            },
+                          ),
+                          SizedBox(height: 10),
+                          InternationalPhoneNumberInput(
+                            spaceBetweenSelectorAndTextField: 0,
+                            onInputValidated: (value) {},
+                            onInputChanged: (PhoneNumber number) {},
+                            selectorConfig: const SelectorConfig(
+                              selectorType: PhoneInputSelectorType.BOTTOM_SHEET,
+                            ),
+                            ignoreBlank: false,
+                            autoValidateMode: AutovalidateMode.onUserInteraction,
+                            selectorTextStyle:
+                                const TextStyle(color: Colors.black),
+                            initialValue: number,
+                            textFieldController: mobileNumberController,
+                            formatInput: false,
+                            keyboardType: const TextInputType.numberWithOptions(
+                                signed: true, decimal: true),
+                            inputBorder: const OutlineInputBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(20.0)),
+                            ),
+                          ),
+                        ]),
+                  ),
                 ),
-              )),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Container(
+            ),
+            SizedBox(height: MediaQuery.of(context).size.height*0.07,),
+            Container(
                 width: double.infinity,
-                height: MediaQuery.of(context).size.height * 0.35,
+                height: MediaQuery.of(context).size.height * 0.3,
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.only(
                       topRight: Radius.circular(30),
                       topLeft: Radius.circular(30)),
                 ),
-                child: SingleChildScrollView(
-                  physics: BouncingScrollPhysics(),
-                  child: Padding(
-                    padding: const EdgeInsets.all(20.0),
-                    child: Column(
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text("Sub Total            "),
-                            Text("\EGP ${widget.subTotal.toStringAsFixed(2)}"),
-                          ],
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text("Estimating Tax(14%)            "),
-                            Text("\EGP ${tax.toStringAsFixed(2)}"),
-                          ],
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Divider(
-                          color: Colors.black,
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text("Total"),
-                            Text("\EGP ${totalPrice.toStringAsFixed(2)}"),
-                          ],
-                        ),
-                        SizedBox(
-                          height: 20,
-                        ),
-                        Row(
-                          children: [
-                            Expanded(
-                                child: ElevatedButton(
-                                    style: ElevatedButton.styleFrom(
-                                      padding:
-                                          EdgeInsets.symmetric(vertical: 10),
-                                      backgroundColor:
-                                          Color.fromRGBO(191, 122, 47, 1),
-                                    ),
-                                    onPressed: () async {
-                                      if (formKey.currentState!.validate()) {
-                                        setState(() {});
-                                        // await BlocProvider.of<AuthCubit>(context).register(
-                                        //      firstNameController.text,
-                                        //      lastNameController.text,
-                                        //      emailController.text,
-                                        //      passController.text,
-                                        //      addressController.text,
-                                        //      mobileNumberController.text
-                                        // imgController.text);
-                                      }
+                child: Padding(
+                  padding: const EdgeInsets.all(20.0),
+                  child: Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text("Sub Total            "),
+                          Text("\EGP ${widget.subTotal.toStringAsFixed(2)}"),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text("Estimating Tax(14%)            "),
+                          Text("\EGP ${tax.toStringAsFixed(2)}"),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Divider(
+                        color: Colors.black,
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text("Total"),
+                          Text("\EGP ${totalPrice.toStringAsFixed(2)}"),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Row(
+                        children: [
+                          Expanded(
+                              child: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    padding:
+                                        EdgeInsets.symmetric(vertical: 10),
+                                    backgroundColor:
+                                        Color.fromRGBO(191, 122, 47, 1),
+                                  ),
+                                  onPressed: () async {
+                                    if (formKey.currentState!.validate()) {
+                                      setState(() {});
+                                      // await BlocProvider.of<AuthCubit>(context).register(
+                                      //      firstNameController.text,
+                                      //      lastNameController.text,
+                                      //      emailController.text,
+                                      //      passController.text,
+                                      //      addressController.text,
+                                      //      mobileNumberController.text
+                                      // imgController.text);
+
                                       await BlocProvider.of<HomeCubit>(context)
                                           .checkAvailableFurnitureQuantity(
-                                              appartmentNumberController.text,
-                                              areaController.text,
-                                              buildingNumberController.text,
-                                              floorNumberController.text,
-                                              mobileNumberController.text,
-                                              streetNameController.text);
-                                    },
-                                    child: Text(
-                                      "Place Order",
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 20),
-                                    ))),
-                          ],
-                        )
-                      ],
-                    ),
+                                          appartmentNumberController.text,
+                                          areaController.text,
+                                          buildingNumberController.text,
+                                          floorNumberController.text,
+                                          mobileNumberController.text,
+                                          streetNameController.text);
+                                    }
+
+                                  },
+                                  child: Text(
+                                    "Place Order",
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 20),
+                                  ))),
+                        ],
+                      )
+                    ],
                   ),
                 )),
+          ],
           ),
-        ]),
+        ),
        );
     });
   }

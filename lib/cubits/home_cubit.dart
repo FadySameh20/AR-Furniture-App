@@ -32,6 +32,7 @@ class HomeCubit extends Cubit<HomeState> {
   List<String> removeIds = [];
   List<String> unavailableQuantityFurniture = [];
   List<FurnitureModel> recommendedFurniture = [];
+  Map<String, dynamic> orderMap = {};
   var cache;
 
   getAllData() async {
@@ -418,7 +419,19 @@ class HomeCubit extends Cubit<HomeState> {
       bool isCacheChanged = false;
       print("Cached map to order map");
       print(cache.cartMap);
-      createOrder(appartmentNumber, area, buildingNumber, floorNumber, mobileNumber, streetName);
+      print("after printing cache map");
+
+
+      List<SharedModel> orderedSharedList = [];
+      cache.cartMap.forEach((key, value) {
+        value.forEach((element) {
+          if(int.parse(element.quantityCart) > 0) {
+            orderedSharedList.add(element);
+          }
+        });
+        orderMap[key] = orderedSharedList;
+      });
+      await createOrder(appartmentNumber, area, buildingNumber, floorNumber, mobileNumber, streetName);
 
       cache.cartMap.forEach((key, value) async {
         int index =
@@ -560,9 +573,10 @@ class HomeCubit extends Cubit<HomeState> {
         floorNumber: floorNumber,
         mobileNumber: mobileNumber,
         streetName: streetName,
-        order: cache.cartMap);
+        order: orderMap);
     print("After creating OrderModel");
       print(orderModel.order);
+      print("After printing orders");
     await FirebaseFirestore.instance
         .collection("order")
         .doc(docId)
