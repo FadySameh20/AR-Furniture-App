@@ -10,6 +10,7 @@ import 'package:ar_furniture_app/shared/widgets/splash_welcome_screen.dart';
 import 'package:circular_bottom_navigation/circular_bottom_navigation.dart';
 import 'package:ar_furniture_app/shared/widgets/profile_edit.dart';
 import 'package:circular_bottom_navigation/tab_item.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -17,11 +18,17 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import 'cubits/home_cubit.dart';
+import 'models/furniture_model.dart';
+import 'models/shared_model.dart';
 
 void main() async{
   await WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   await CacheHelper.init();
+  // var temp=await FirebaseFirestore.instance.collection("category").doc("tables").collection("tables").doc();
+//print("hello");
+//print(temp.id);
+//   await temp.set(FurnitureModel(furnitureId: temp.id,category: "tables", name: "classic tables", model: "", shared: [SharedModel(color: "#FF0000", image: "https://firebasestorage.googleapis.com/v0/b/ar-furniture-7fb69.appspot.com/o/furniture%2FItem_1.png?alt=media&token=0bd24e89-91c4-4c7a-a8f1-65dde2dd7cbf", price: "200", quantity: "5", colorName: '')], ratings: []).toMap());
   runApp(const MyApp());
 }
 

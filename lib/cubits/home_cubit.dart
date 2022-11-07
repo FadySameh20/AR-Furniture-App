@@ -9,11 +9,13 @@ import 'package:ar_furniture_app/models/shared_model.dart';
 import 'package:ar_furniture_app/shared/cache/sharedpreferences.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../models/name_model.dart';
+import '../models/order_model.dart';
 import '../models/user_model.dart';
 import '../shared/cache/sharedpreferences.dart';
 
@@ -43,9 +45,12 @@ class HomeCubit extends Cubit<HomeState> {
     }
     print(FirebaseAuth.instance.currentUser!.uid);
     // print(cacheModel.cachedModel.where((element) => ))
-    await getFurniture(categories.first.name);
-  }
+    for (int i = 0; i < categories.length; i++) {
+      print(categories[i].name);
+      await getFurniture(categories[i].name, limit: 2);
 
+    }
+  }
 
   setCache() async {
     cache = await getCache();
@@ -60,14 +65,21 @@ class HomeCubit extends Cubit<HomeState> {
       categories = List.from(myCategory.names);
     }).catchError((error) {});
     print(categories.length);
-
   }
 
   getSearchData(String searchbarName) async {
     print("get search dataaaaaaaa");
     print(furnitureList.map((e) => e.name).toList());
     print("--------------------------------");
-    await FirebaseFirestore.instance.collectionGroup("furniture").where('name',whereNotIn:furnitureList.map((e) => e.name).toList()).where('name', isGreaterThanOrEqualTo: searchbarName, isLessThanOrEqualTo: '$searchbarName\uf8ff').limit(4).get().then((value) {
+    await FirebaseFirestore.instance
+        .collectionGroup("furniture")
+        .where('name', whereNotIn: furnitureList.map((e) => e.name).toList())
+        .where('name',
+            isGreaterThanOrEqualTo: searchbarName,
+            isLessThanOrEqualTo: '$searchbarName\uf8ff')
+        .limit(4)
+        .get()
+        .then((value) {
       value.docs.forEach((element) {
         print(element["name"]);
         furnitureList.add(FurnitureModel.fromJson(element.data()));
@@ -92,7 +104,7 @@ class HomeCubit extends Cubit<HomeState> {
     print(offers.length);
   }
 
-  getFurniture(String categoryName) async {
+  getFurniture(String categoryName, {limit = 0}) async {
     returnedCategory.add(categoryName);
 
     List favoritesId;
@@ -102,20 +114,37 @@ class HomeCubit extends Cubit<HomeState> {
       favoritesId = cache.cachedFavoriteIds;
     }
     print(favoritesId);
-    await FirebaseFirestore.instance
-        .collection('category')
-        .doc(categoryName)
-        .collection(categoryName)
-        .get()
-        .then((value) {
-      for (var element in value.docs) {
-        FurnitureModel myFurniture = FurnitureModel.fromJson(element.data());
-        furnitureList.add(myFurniture);
-        if (favoritesId.contains(myFurniture.furnitureId)) {
-          furnitureList.last.isFavorite = true;
+    if (limit == 0) {
+      await FirebaseFirestore.instance
+          .collection('category')
+          .doc(categoryName)
+          .collection(categoryName)
+          .get()
+          .then((value) {
+        for (var element in value.docs) {
+          FurnitureModel myFurniture = FurnitureModel.fromJson(element.data());
+          furnitureList.add(myFurniture);
+          if (favoritesId.contains(myFurniture.furnitureId)) {
+            furnitureList.last.isFavorite = true;
+          }
         }
-      }
-    });
+      });
+    } else {
+      await FirebaseFirestore.instance
+          .collection('category')
+          .doc(categoryName)
+          .collection(categoryName).limit(limit)
+          .get()
+          .then((value) {
+        for (var element in value.docs) {
+          FurnitureModel myFurniture = FurnitureModel.fromJson(element.data());
+          furnitureList.add(myFurniture);
+          if (favoritesId.contains(myFurniture.furnitureId)) {
+            furnitureList.last.isFavorite = true;
+          }
+        }
+      });
+    }
     emit(SuccessOffersState());
     print(furnitureList.length);
   }
@@ -161,7 +190,9 @@ class HomeCubit extends Cubit<HomeState> {
           furnitureList[i].isFavorite = true;
         }
       }
-    }}
+    }
+  }
+
   updateCart() {
     if (cache.cartMap.isNotEmpty) {
       for (int i = 0; i < furnitureList.length; i++) {
@@ -205,34 +236,43 @@ class HomeCubit extends Cubit<HomeState> {
           .removeWhere((key, value) => key == furnitureList[index].furnitureId);
     }
     CacheHelper.setData(key: 'user', value: jsonEncode(cacheModel!.toMap()));
-
   }
-  updateUserData(context,fName, lName, address, phone, {email,password,newPassword=""}) async {
+
+  updateUserData(context, fName, lName, address, phone,img,
+      {email, password, newPassword = ""}) async {
     emit(UpdateLoadingState());
     int flag = 0;
     var temp = cacheModel!.usersCachedModel.where(
-            (element) => element.uid == FirebaseAuth.instance.currentUser!.uid);
-    if(newPassword!=""){
-      flag=2;
+        (element) => element.uid == FirebaseAuth.instance.currentUser!.uid);
+    if (newPassword != "") {
+      flag = 2;
       AuthCredential credential = EmailAuthProvider.credential(
           email: temp.first.cachedUser.email, password: password);
-      await FirebaseAuth.instance.currentUser?.reauthenticateWithCredential( credential).then((value)async {
+      await FirebaseAuth.instance.currentUser
+          ?.reauthenticateWithCredential(credential)
+          .then((value) async {
         await FirebaseAuth.instance.currentUser?.updatePassword(newPassword);
-        password=newPassword;
+        password = newPassword;
         emit(UpdatePasswordSuccessState());
-      }).catchError((error){emit(UpdatePasswordErrorState("Incorrect email or password"));});
+      }).catchError((error) {
+        emit(UpdatePasswordErrorState("Incorrect email or password"));
+      });
     }
     print(temp.first.cachedUser.email);
     print(email);
-    if(temp.first.cachedUser.email!=email){
-      flag=1;
+    if (temp.first.cachedUser.email != email) {
+      flag = 1;
       AuthCredential credential = EmailAuthProvider.credential(
           email: temp.first.cachedUser.email, password: password);
-      await FirebaseAuth.instance.currentUser?.reauthenticateWithCredential( credential).then((value)async {
+      await FirebaseAuth.instance.currentUser
+          ?.reauthenticateWithCredential(credential)
+          .then((value) async {
         await FirebaseAuth.instance.currentUser?.updateEmail(email);
-        temp.first.cachedUser.email=email;
+        temp.first.cachedUser.email = email;
         emit(UpdateEmailSuccessState());
-      }).catchError((error){emit(UpdateEmailErrorState("Incorrect email or password"));});
+      }).catchError((error) {
+        emit(UpdateEmailErrorState("Incorrect email or password"));
+      });
     }
 
 
@@ -253,20 +293,31 @@ class HomeCubit extends Cubit<HomeState> {
       temp.first.cachedUser.phone = phone;
       flag = 1;
     }
+    if (img!=null) {
+     var userId = FirebaseAuth.instance.currentUser!.uid;
+     if (temp.first.cachedUser.img != "") {
+       await FirebaseStorage.instance.refFromURL(
+           temp.first.cachedUser.img.toString()).delete();
+     }
+     final ref=FirebaseStorage.instance.ref().child("users/$userId.${img.path.split(".").last}");
+      await ref.putFile(img);
+      final url= await ref.getDownloadURL();
+      temp.first.cachedUser.img =url;
+      flag = 1;
+    }
+
     if (flag == 1) {
       CacheHelper.setData(key: "user", value: jsonEncode(cacheModel!.toMap()));
       await FirebaseFirestore.instance
           .collection("user")
           .doc(FirebaseAuth.instance.currentUser!.uid)
-          .update(temp.first.cachedUser.toMap()).then((value)
-      {
+          .update(temp.first.cachedUser.toMap())
+          .then((value) {
         emit(UpdateUserDataSuccessData());
-      }).catchError((error){
-
-      });
-    }
-    else{
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Nothing to update")));
+      }).catchError((error) {});
+    } else {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text("Nothing to update")));
     }
   }
 
@@ -300,14 +351,19 @@ class HomeCubit extends Cubit<HomeState> {
     print(cache.cartMap);
   }
 
-
-  checkAvailableFurnitureQuantity(context) async {
+  checkAvailableFurnitureQuantity(
+      String appartmentNumber,
+      String area,
+      String buildingNumber,
+      String floorNumber,
+      String mobileNumber,
+      String streetName) async {
     bool flag = false;
     Map<String, List<int>> availableQuantity = {};
     String categoryName = "";
     unavailableQuantityFurniture = [];
 
-    for(String key in cache.cartMap.keys) {
+    for (String key in cache.cartMap.keys) {
       categoryName = furnitureList
           .where((element) => element.furnitureId == key)
           .first
@@ -320,21 +376,36 @@ class HomeCubit extends Cubit<HomeState> {
           .doc(key)
           .get()
           .then((value) {
-            availableQuantity[key] = [];
-            for (int i = 0; i < value.data()!["shared"].length; i++) {
-              availableQuantity[key]!.add(int.parse(value.data()!["shared"][i]["quantity"]));
-            }
+        availableQuantity[key] = [];
+        for (int i = 0; i < value.data()!["shared"].length; i++) {
+
+          availableQuantity[key]!
+              .add(int.parse(value.data()!["shared"][i]["quantity"]));
+        }
+        print('availablequantity list');
+        print(availableQuantity);
       }).catchError((error) {
         print("Error: " + error.toString());
       });
 
       for (int j = 0; j < cache.cartMap[key].length; j++) {
-        if (int.parse(cache.cartMap[key][j].quantityCart) > availableQuantity[key]![j]) {
+        if (int.parse(cache.cartMap[key][j].quantityCart) >
+            availableQuantity[key]![j]) {
           flag = true;
-          FurnitureModel furniture = furnitureList.where((element) => element.furnitureId == key).first;
-          String itemString = availableQuantity[key]![j] == 1 ? "item" : "items";
-          String availableQuantityString = availableQuantity[key]![j] == 0 ? " is out of stock." : " has only " + availableQuantity[key]![j].toString() + " ${itemString} left.";
-          unavailableQuantityFurniture.add(furniture.shared[j].colorName + " " + furniture.name + availableQuantityString);
+          FurnitureModel furniture = furnitureList
+              .where((element) => element.furnitureId == key)
+              .first;
+          String itemString =
+              availableQuantity[key]![j] == 1 ? "item" : "items";
+          String availableQuantityString = availableQuantity[key]![j] == 0
+              ? " is out of stock."
+              : " has only " +
+                  availableQuantity[key]![j].toString() +
+                  " ${itemString} left.";
+          unavailableQuantityFurniture.add(furniture.shared[j].colorName +
+              " " +
+              furniture.name +
+              availableQuantityString);
           // break;
         }
       }
@@ -348,12 +419,12 @@ class HomeCubit extends Cubit<HomeState> {
 
       cache.cartMap.forEach((key, value) async {
         int index =
-        furnitureList.indexWhere((element) => element.furnitureId == key);
+            furnitureList.indexWhere((element) => element.furnitureId == key);
 
         bool isSharedModelChanged = false;
 
         for (int j = 0; j < value.length; j++) {
-          if(int.parse(value[j].quantityCart) > 0) {
+          if (int.parse(value[j].quantityCart) > 0) {
             isSharedModelChanged = true;
             isCacheChanged = true;
             furnitureList[index].shared[j].quantity =
@@ -364,30 +435,26 @@ class HomeCubit extends Cubit<HomeState> {
           }
         }
 
-        if(isSharedModelChanged) {
+        if (isSharedModelChanged) {
           await FirebaseFirestore.instance
               .collection('category')
               .doc(categoryName)
               .collection(categoryName)
               .doc(key)
               .update({"shared": furnitureList[index].toMap()["shared"]})
-              .then((value) => print("Added to cart successfully !")).catchError((error) => print("Error: " + error.toString()));
+              .then((value) => print("Placed order successfully !"))
+              .catchError((error) => print("Error: " + error.toString()));
         }
-
       });
 
-      if(isCacheChanged) {
+      if (isCacheChanged) {
         cache.cartMap.clear();
         emit(CheckoutSuccessfully());
       }
-
     } else {
       emit(ErrorInCheckout());
     }
-
-
   }
-
 
   createCache() async {
     var temp = await FirebaseFirestore.instance
@@ -439,15 +506,12 @@ class HomeCubit extends Cubit<HomeState> {
       await createCache();
     }
 
+    return cacheModel!.usersCachedModel
+        .where(
+            (element) => element.uid == FirebaseAuth.instance.currentUser!.uid)
+        .first;
 
-
-    return cacheModel!.usersCachedModel.where(
-            (element) => element.uid == FirebaseAuth.instance.currentUser!.uid).first;
-
-  
     // return "";
-
-
   }
 
   addOrRemoveFromFavorite(index) async {
@@ -473,6 +537,27 @@ class HomeCubit extends Cubit<HomeState> {
       // print(jsonEncode(BlocProvider.of<HomeCubit>(context).cacheModel!.toMap()));
       CacheHelper.setData(key: 'user', value: jsonEncode(cacheModel!.toMap()));
     }
+  }
+
+  createOrder(String appartmentNumber, String area, String buildingNumber,
+      String floorNumber, String mobileNumber, String streetName) async {
+    OrderModel orderModel = OrderModel(
+        uid: FirebaseAuth.instance.currentUser!.uid,
+        appartmentNumber: appartmentNumber,
+        area: area,
+        buildingNumber: buildingNumber,
+        floorNumber: floorNumber,
+        mobileNumber: mobileNumber,
+        streetName: streetName,
+        order: cache.cartMap);
+    await FirebaseFirestore.instance
+        .collection("order")
+        .add(orderModel.toMap())
+        .then((value) {
+      print(value.id);
+    }).catchError((error) {
+      print('errorOrder: ' + error.toString());
+    });
   }
 
   getFurnitureRecommendation(FurnitureModel selectedFurniture, int selectedColorIndex) {
@@ -555,17 +640,16 @@ class CachedUserModel {
 
     // cartMap = json["cartData"];
 
-if(json["cartData"]!=null)
-
-    json["cartData"].forEach((key, value) {
-      List<SharedModel> shared = [];
-      value.forEach((element) {
-        SharedModel tempShared = SharedModel.fromJson(element);
-        tempShared.quantityCart = element['quantityCart'];
-        shared.add(tempShared);
+    if (json["cartData"] != null)
+      json["cartData"].forEach((key, value) {
+        List<SharedModel> shared = [];
+        value.forEach((element) {
+          SharedModel tempShared = SharedModel.fromJson(element);
+          tempShared.quantityCart = element['quantityCart'];
+          shared.add(tempShared);
+        });
+        cartMap[key] = shared;
       });
-      cartMap[key] = shared;
-    });
   }
 
   Map toMap() {
