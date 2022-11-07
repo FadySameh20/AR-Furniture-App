@@ -29,6 +29,7 @@ class HomeCubit extends Cubit<HomeState> {
 
   List<String> removeIds = [];
   List<String> unavailableQuantityFurniture = [];
+  List<FurnitureModel> recommendedFurniture = [];
   var cache;
 
   getAllData() async {
@@ -473,6 +474,37 @@ class HomeCubit extends Cubit<HomeState> {
       CacheHelper.setData(key: 'user', value: jsonEncode(cacheModel!.toMap()));
     }
   }
+
+  getFurnitureRecommendation(FurnitureModel selectedFurniture, int selectedColorIndex) {
+    recommendedFurniture = [];
+    List<FurnitureModel> sortedFurniture = furnitureList.where((element) => element.category == selectedFurniture.category).toList();
+    sortedFurniture.sort((a, b) => a.shared[selectedColorIndex].price.compareTo(b.shared[0].price));
+    int index = sortedFurniture.indexWhere((element) => element.furnitureId == selectedFurniture.furnitureId);
+    print("Sorted Furniture");
+    print(sortedFurniture);
+    print(index);
+
+    for(int i = 1; i < 4; i++) {
+      if(index - i >= 0) {
+        recommendedFurniture.add(sortedFurniture[index-i]);
+      }
+
+      if(recommendedFurniture.length == 4) {
+        break;
+      }
+
+      if(index + i < sortedFurniture.length){
+        recommendedFurniture.add(sortedFurniture[index+i]);
+      }
+
+      if(recommendedFurniture.length == 4) {
+        break;
+      }
+
+    }
+    print(recommendedFurniture[0].name);
+  }
+
 }
 
 class CacheModel {
