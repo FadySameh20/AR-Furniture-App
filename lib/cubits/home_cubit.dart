@@ -119,7 +119,7 @@ class HomeCubit extends Cubit<HomeState> {
       await FirebaseFirestore.instance
           .collection('category')
           .doc(categoryName)
-          .collection(categoryName)
+          .collection('furniture')
           .get()
           .then((value) {
         for (var element in value.docs) {
@@ -134,7 +134,7 @@ class HomeCubit extends Cubit<HomeState> {
       await FirebaseFirestore.instance
           .collection('category')
           .doc(categoryName)
-          .collection(categoryName).limit(limit)
+          .collection("furniture").limit(limit)
           .get()
           .then((value) {
         for (var element in value.docs) {
@@ -346,7 +346,10 @@ class HomeCubit extends Cubit<HomeState> {
     } else {
       cache.cartMap[furnitureId][selectedIndex].quantityCart =
           cartQuantity.toString();
+      cache.cartMap[furnitureId][selectedIndex].quantity = furnitureList[index].shared[selectedIndex].quantity;
     }
+    print("Quantity Value in FurnitureList = " + furnitureList[index].shared[selectedIndex].quantity);
+    print("Quantity Value in Cart = " + cache.cartMap[furnitureId][selectedIndex].quantity);
     CacheHelper.setData(key: 'user', value: jsonEncode(cacheModel!.toMap()));
     print("After");
     print(cache.cartMap);
@@ -373,7 +376,7 @@ class HomeCubit extends Cubit<HomeState> {
       await FirebaseFirestore.instance
           .collection('category')
           .doc(categoryName)
-          .collection(categoryName)
+          .collection("furniture")
           .doc(key)
           .get()
           .then((value) {
@@ -426,6 +429,7 @@ class HomeCubit extends Cubit<HomeState> {
       cache.cartMap.forEach((key, value) {
         value.forEach((element) {
           if(int.parse(element.quantityCart) > 0) {
+            element.quantity = (int.parse(element.quantity) - int.parse(element.quantityCart)).toString();
             orderedSharedList.add(element);
           }
         });
@@ -446,16 +450,21 @@ class HomeCubit extends Cubit<HomeState> {
             furnitureList[index].shared[j].quantity =
                 (availableQuantity[key]![j] - int.parse(value[j].quantityCart))
                     .toString();
+            cache.cartMap[key][j].quantity = (availableQuantity[key]![j] - int.parse(value[j].quantityCart))
+                .toString();
             cache.cartMap[key][j].quantityCart = "0";
             furnitureList[index].shared[j].quantityCart = "0";
+            print("Cache quantity value");
+            print(cache.cartMap[key][j].quantity);
           }
         }
+
 
         if (isSharedModelChanged) {
           await FirebaseFirestore.instance
               .collection('category')
               .doc(categoryName)
-              .collection(categoryName)
+              .collection("furniture")
               .doc(key)
               .update({"shared": furnitureList[index].toMap()["shared"]})
               .then((value) => print("Placed order successfully !"))
@@ -566,7 +575,7 @@ class HomeCubit extends Cubit<HomeState> {
         orderId: docId,
         uid: FirebaseAuth.instance.currentUser!.uid,
         userName: customerName,
-        time: Timestamp.now().toString(),
+        time: Timestamp.now(),
         appartmentNumber: appartmentNumber,
         area: area,
         buildingNumber: buildingNumber,

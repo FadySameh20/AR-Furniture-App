@@ -269,10 +269,12 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                             RatingBar.builder(
                               itemSize: 20.0,
                               initialRating:
-                              widget.selectedFurniture.calculateAverageRating(),
+                              widget.selectedFurniture
+                                  .calculateAverageRating()
+                                  .toString() == "NaN" ? 0.0: widget.selectedFurniture.calculateAverageRating(),
                               //minRating: 1,
                               direction: Axis.horizontal,
-                              allowHalfRating: true,
+                              // allowHalfRating: true,
                               ignoreGestures: true,
                               itemCount: 5,
                               itemPadding: EdgeInsets.symmetric(
@@ -294,6 +296,8 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                             ),
                             Text(
                               widget.selectedFurniture
+                                  .calculateAverageRating()
+                                  .toString() == "NaN" ? "No ratings yet": widget.selectedFurniture
                                   .calculateAverageRating()
                                   .toString(),
                             ),
@@ -317,7 +321,7 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                                         initialRating: 1,
                                         minRating: 1,
                                         direction: Axis.horizontal,
-                                        allowHalfRating: true,
+                                        // allowHalfRating: true,
                                         // ignoreGestures: true,
                                         itemCount: 5,
                                         itemPadding: EdgeInsets.symmetric(
@@ -343,7 +347,7 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                                         style: TextStyle(color: Colors.white, fontSize: 20),
                                       ),
                                       onPressed: () async {
-                                        await  FirebaseFirestore.instance.collection('category').doc(widget.selectedFurniture.category).collection(widget.selectedFurniture.category).doc(widget.selectedFurniture.furnitureId).update({"ratings": widget.selectedFurniture.ratings});
+                                        await  FirebaseFirestore.instance.collection('category').doc(widget.selectedFurniture.category).collection("furniture").doc(widget.selectedFurniture.furnitureId).update({"ratings": widget.selectedFurniture.ratings});
                                         setState(() {});
                                         Navigator.pop(context);
                                       } ,
