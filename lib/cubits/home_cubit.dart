@@ -566,7 +566,7 @@ class HomeCubit extends Cubit<HomeState> {
         orderId: docId,
         uid: FirebaseAuth.instance.currentUser!.uid,
         userName: customerName,
-        time: Timestamp.now().toString(),
+        time: Timestamp.now(),
         appartmentNumber: appartmentNumber,
         area: area,
         buildingNumber: buildingNumber,

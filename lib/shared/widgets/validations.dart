@@ -62,10 +62,23 @@ class Validations {
 
   //validate no special character and numbers
   String? validateText(String value){
-    if (RegExp(r'[!@#<>?":_`~;[\]\\|=+)(*&^%0-9-]').hasMatch(value)) {
+    print('textvalue');
+    print(value);
+    if (RegExp(r'[!@#<>?":_`~;[\]\\|=+)(*&^%0-9-]').hasMatch(value) || value == null || value.trim().isEmpty) {
       return 'Please enter a valid text';
     }
     return null;
+  }
+  //validate  numbers
+  String? validateNumber(String value){
+    try{
+      int.parse(value);
+      return null;
+    }
+    catch(error){
+      return 'Please enter a valid number';
+    }
+
   }
 
   //validate address (no special characters)
