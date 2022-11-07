@@ -66,7 +66,7 @@ class FurnitureModel {
     print(sum);
     print(ratings.length);
     print(averageRating);
-    return averageRating;
+    return double.parse(averageRating.toStringAsFixed(1));
   }
 
 
