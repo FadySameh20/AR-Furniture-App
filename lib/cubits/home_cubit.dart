@@ -416,6 +416,9 @@ class HomeCubit extends Cubit<HomeState> {
 
     if(!flag) {
       bool isCacheChanged = false;
+      print("Cached map to order map");
+      print(cache.cartMap);
+      createOrder(appartmentNumber, area, buildingNumber, floorNumber, mobileNumber, streetName);
 
       cache.cartMap.forEach((key, value) async {
         int index =
@@ -541,8 +544,16 @@ class HomeCubit extends Cubit<HomeState> {
 
   createOrder(String appartmentNumber, String area, String buildingNumber,
       String floorNumber, String mobileNumber, String streetName) async {
+      String docId = await FirebaseFirestore.instance
+                    .collection("order")
+                    .doc().id;
+      print("Document ID: " + docId);
+      String customerName = cache.cachedUser.fName + " " + cache.cachedUser.lName;
     OrderModel orderModel = OrderModel(
+        orderId: docId,
         uid: FirebaseAuth.instance.currentUser!.uid,
+        userName: customerName,
+        time: Timestamp.now().toString(),
         appartmentNumber: appartmentNumber,
         area: area,
         buildingNumber: buildingNumber,
@@ -550,11 +561,14 @@ class HomeCubit extends Cubit<HomeState> {
         mobileNumber: mobileNumber,
         streetName: streetName,
         order: cache.cartMap);
+    print("After creating OrderModel");
+      print(orderModel.order);
     await FirebaseFirestore.instance
         .collection("order")
-        .add(orderModel.toMap())
+        .doc(docId)
+        .set(orderModel.toMap())
         .then((value) {
-      print(value.id);
+      print("Order made successfully");
     }).catchError((error) {
       print('errorOrder: ' + error.toString());
     });
