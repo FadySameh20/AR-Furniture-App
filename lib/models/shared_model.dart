@@ -14,7 +14,7 @@ class SharedModel {
         required this.image,
         required this.price,
         required this.quantity,
-
+        required this.discount
       });
 
   SharedModel.fromJson(Map<String, dynamic> json) {
