@@ -8,6 +8,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'order_details_screen.dart';
 
 class OrderScreen extends StatelessWidget {
+  double tax = 0;
+  double estimatingTax = 0.14;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,6 +27,7 @@ class OrderScreen extends StatelessWidget {
         itemBuilder: (BuildContext context, int index) {
           int quantity = 0;
           double totalPrice = 0;
+          double subTotalPrice =0;
           List<FurnitureModel> orderFurniture = [];
           BlocProvider.of<HomeCubit>(context)
               .orders[index]
@@ -32,15 +35,14 @@ class OrderScreen extends StatelessWidget {
               .forEach((key, shared) {
             // FirebaseFirestore.instance.collectionGroup("category")
             for (int i = 0;
-                i < BlocProvider.of<HomeCubit>(context).categories.length;
-                i++) {
+            i < BlocProvider.of<HomeCubit>(context).categories.length;
+            i++) {
               FurnitureModel furniture;
               int flag = 0;
               FirebaseFirestore.instance
                   .collection("category")
                   .doc(BlocProvider.of<HomeCubit>(context).categories[i].name)
-                  .collection(
-                      "furniture")
+                  .collection("furniture")
                   .doc(key)
                   .get()
                   .then((value) {
@@ -53,7 +55,6 @@ class OrderScreen extends StatelessWidget {
 
                     // print(furniture.shared.first.colorName);
                     // print(furniture.shared.length);
-
                     orderFurniture.add(furniture);
                     print("hahahah");
                     print(shared[i].quantityCart);
@@ -71,10 +72,16 @@ class OrderScreen extends StatelessWidget {
             shared.forEach((element) {
               if (element.quantityCart != null) {
                 quantity += int.parse(element.quantityCart);
-                totalPrice += double.parse(element.quantityCart) *
+                subTotalPrice+= double.parse(element.quantityCart) *
                     double.parse(element.price);
+
               }
             });
+
+            tax = subTotalPrice * estimatingTax;
+            totalPrice = subTotalPrice  + tax;
+
+
           });
           print("Quantity");
           print(quantity);
@@ -83,10 +90,11 @@ class OrderScreen extends StatelessWidget {
             child: Material(
               elevation: 10,
               borderRadius: BorderRadius.circular(20),
+
               child: Container(
                 margin: EdgeInsets.all(15),
                 color: Colors.white,
-                height: MediaQuery.of(context).size.height / 5,
+                height: MediaQuery.of(context).size.height /4.55,
                 // child:Expanded(
                 // flex: 3,
                 child: Column(
@@ -135,7 +143,9 @@ class OrderScreen extends StatelessWidget {
                         height: 5,
                       ),
                       Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+
                         OutlinedButton(
+
                             style: ElevatedButton.styleFrom(
                                 side: BorderSide(
                                     width: 2, color: kAppBackgroundColor),
