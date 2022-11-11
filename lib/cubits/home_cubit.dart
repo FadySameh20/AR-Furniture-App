@@ -609,6 +609,11 @@ class HomeCubit extends Cubit<HomeState> {
     }).catchError((error) {
       print('errorOrder: ' + error.toString());
     });
+    if(orders.isEmpty){
+      getOrders();
+    }else{
+      orders.add(orderModel);
+    }
   }
 
   getFurnitureRecommendation(FurnitureModel selectedFurniture, int selectedColorIndex) {
