@@ -40,7 +40,7 @@ class OrderScreen extends StatelessWidget {
                   .collection("category")
                   .doc(BlocProvider.of<HomeCubit>(context).categories[i].name)
                   .collection(
-                      BlocProvider.of<HomeCubit>(context).categories[i].name)
+                      "furniture")
                   .doc(key)
                   .get()
                   .then((value) {
