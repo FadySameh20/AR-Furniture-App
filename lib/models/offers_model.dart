@@ -1,4 +1,5 @@
 class Offers{
+  late String category;
   late String  discount;
   late List colors=[];
   late String img;
@@ -13,6 +14,7 @@ class Offers{
       colors.add(element);
     });
     img = json["img"];
+    category=json["category"];
     salesId = json["salesId"];
 
   }
@@ -23,7 +25,8 @@ class Offers{
       "discount":discount,
       "colors":colors,
       "img":img,
-      "salesId":salesId
+      "salesId":salesId,
+      "category":category
     };
   }
 

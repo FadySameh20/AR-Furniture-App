@@ -396,6 +396,7 @@ class HomeCubit extends Cubit<HomeState> {
       });
 
       for (int j = 0; j < cache.cartMap[key].length; j++) {
+        print(availableQuantity[key]![j]);
         if (int.parse(cache.cartMap[key][j].quantityCart) >
             availableQuantity[key]![j]) {
           flag = true;
@@ -428,12 +429,16 @@ class HomeCubit extends Cubit<HomeState> {
       print("after printing cache map");
 
 
+      print("Cart Check");
+      print(cache.cartMap);
       List<SharedModel> orderedSharedList = [];
       cache.cartMap.forEach((key, value) {
         value.forEach((element) {
           if(int.parse(element.quantityCart) > 0) {
             element.quantity = (int.parse(element.quantity) - int.parse(element.quantityCart)).toString();
             orderedSharedList.add(element);
+            print("Orders List");
+            print(orderedSharedList);
           }
         });
         orderMap[key] = orderedSharedList;

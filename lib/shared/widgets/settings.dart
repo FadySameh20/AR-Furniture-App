@@ -10,12 +10,12 @@ import '../../models/user_model.dart';
 import 'cart_screen.dart';
 import 'favorite_screen.dart';
 
-class Settings extends StatefulWidget {
+class SettingsScreen extends StatefulWidget {
   @override
-  State<Settings> createState() => _SettingsState();
+  State<SettingsScreen> createState() => _SettingsScreenState();
 }
 
-class _SettingsState extends State<Settings> {
+class _SettingsScreenState extends State<SettingsScreen> {
   List<bool> allowSwitches = [false, false];
   var fNameController = TextEditingController();
   var lNameController = TextEditingController();
