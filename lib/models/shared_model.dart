@@ -5,6 +5,7 @@ class SharedModel {
   late String price;
   late String quantity;
   String quantityCart='0';
+  late String discount;
 
   SharedModel(
       {
@@ -13,7 +14,7 @@ class SharedModel {
         required this.image,
         required this.price,
         required this.quantity,
-
+        required this.discount
       });
 
   SharedModel.fromJson(Map<String, dynamic> json) {
@@ -22,6 +23,7 @@ class SharedModel {
     image = json["image"];
     price = json["price"];
     quantity = json["quantity"];
+    discount = json["discount"];
   }
   Map<String, dynamic> toMap() {
     print("Inside Shared Model");
@@ -32,6 +34,7 @@ class SharedModel {
       "image": image,
       "price": price,
       "quantity": quantity,
+      "discount": discount
     };
   }
 }
