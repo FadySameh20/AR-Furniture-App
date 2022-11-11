@@ -81,7 +81,6 @@ class OrderScreen extends StatelessWidget {
             tax = subTotalPrice * estimatingTax;
             totalPrice = subTotalPrice  + tax;
 
-
           });
           print("Quantity");
           print(quantity);
