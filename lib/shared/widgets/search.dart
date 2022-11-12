@@ -23,8 +23,12 @@ class _SearchState extends State<Search> {
   ScrollController _scrollController = ScrollController();
   TextEditingController _searchController = TextEditingController();
 
-  //filter
-  Map<String, bool> priceFilter = {'EGP 0 - 4,999': false, 'EGP 5,000 - 9,999': false, 'EGP 10,000 - 14,999': false, 'EGP 15,000 - 19,999': false, 'EGP 20,000+': false};
+  // filter
+  //Map<String, bool> priceFilter = {'EGP 0 - 4999': false, 'EGP 5000 - 9999': false, 'EGP 10000 - 14999': false, 'EGP 15000 - 19999': false, 'EGP 20000 +': false};
+  Map<String, bool> priceFilter = {'EGP 0 - 50': false, 'EGP 200 - 299': false, 'EGP 300 - 399': false, 'EGP 400 - 499': false, 'EGP 500 +': false};
+  var arguments;
+
+  // recently viewed
   List<String> recentlyViewed = [];
 
   @override
@@ -53,10 +57,6 @@ class _SearchState extends State<Search> {
 
       },
       builder: (context, state)  {
-        // var temp= FirebaseFirestore.instance.collection("category").doc("beds").collection("furniture").doc();
-        // print("hello");
-        // print(temp.id);
-        // temp.set(FurnitureModel(furnitureId: temp.id,category: "beds", name: "iraqian bed", model: "", shared: [SharedModel(color: "#FF0000", image: "https://firebasestorage.googleapis.com/v0/b/ar-furniture-7fb69.appspot.com/o/furniture%2FItem_1.png?alt=media&token=0bd24e89-91c4-4c7a-a8f1-65dde2dd7cbf", price: "200", quantity: "5")], ratings: []).toMap());
         filteredFurniture = BlocProvider.of<HomeCubit>(context).furnitureList.toList();
         recentlyViewed = BlocProvider.of<HomeCubit>(context).cache.cacheRecentlySearchedNames;
         return SingleChildScrollView(
@@ -103,9 +103,62 @@ class _SearchState extends State<Search> {
                     ),
                     child: IconButton(
                       icon: const Icon(Icons.filter_list, color: Colors.white, size: 25,),
-                      onPressed: () {
+                      onPressed: () async{
                         print(priceFilter);
-                        Navigator.pushNamed(context, '/filter', arguments: {'priceFilter': priceFilter});
+                        arguments = await Navigator.pushNamed(context, '/filter', arguments: {'priceFilter': priceFilter});
+                        print("====================================");
+                        // print(priceFilter.keys.elementAt(0).split(' '));
+                        // print(priceFilter.keys.elementAt(0).split(' ')[3]);
+                        // print(int.tryParse(priceFilter.keys.elementAt(0).split(' ')[3]));
+                        // print(priceFilter.keys.elementAt(priceFilter.length-1).split(' '));
+
+                        // List<FurnitureModel> applyFilters = [];
+                        priceFilter.forEach((key, value) {
+                          if(value == true){
+                            print(key +  "   " + value.toString());
+                            if(key.split(' ').length == 4){
+                              print("yessssss");
+                              print(searchR.length);
+                              searchR.forEach((element) {
+                                print(element.name);
+                              });
+                              print("after filter");
+                              setState(() {
+                              searchR = searchR.where((element) => int.parse(element.shared[0].price) >= int.parse(key.split(' ')[1]) && int.parse(element.shared[0].price) <= int.parse(key.split(' ')[3])).toList();
+                              });
+                              searchR.forEach((element) {
+                                print(element.name);
+                              });
+                              // searchR.forEach((element) {
+                              //   if (!applyFilters.contains(element)) {
+                              //     for (var element1 in element.shared) {
+                              //       if (int.parse(element1.price) >= int.parse(key.split(' ')[1]) && int.parse(element1.price) <= int.parse(key.split(' ')[3])) {
+                              //         applyFilters.add(element);
+                              //         print(element.name);
+                              //         break;
+                              //       }
+                              //     }
+                              //   }
+                              // });
+                            }
+                            //print("apply filter length");
+                            //print(applyFilters.length);
+                            // else if (key.split(' ').length == 3) {
+                            //   print(key.split(' ')[1]);
+                            //   searchR.forEach((element) {
+                            //     if (!applyFilters.contains(element)) {
+                            //       for (var element1 in element.shared) {
+                            //         if (int.parse(element1.price) >= int.parse(key.split(' ')[1])) {
+                            //           applyFilters.add(element);
+                            //           break;
+                            //         }
+                            //       }
+                            //     }
+                            //   });
+                            // }
+                          }
+                        });
+                        print("====================================");
                       },
                     ),
                   ),
@@ -120,7 +173,17 @@ class _SearchState extends State<Search> {
               ):LayoutBuilder(
                 builder: (context,constraints) {
                   return Container(
-                    height: 600,
+                    height: MediaQuery.of(context).size.height-(160+ MediaQuery.of(context).padding.top+AppBar(
+                        backgroundColor: Color.fromRGBO(191, 122, 47, 1),
+                        leading: FlutterLogo(),
+                        actions: [
+                          IconButton(onPressed: () {context.read<HomeCubit>().logout(context);}, icon: Icon(Icons.shopping_cart))
+                        ],
+                        centerTitle: true,
+                        title: Text(
+                          "Home",
+                          style: TextStyle(),
+                        )).preferredSize.height),
                     child: GridView.builder(
                       gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
                           maxCrossAxisExtent: 200,
