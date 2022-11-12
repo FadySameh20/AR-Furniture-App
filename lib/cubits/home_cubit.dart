@@ -34,6 +34,8 @@ class HomeCubit extends Cubit<HomeState> {
   List<FurnitureModel> recommendedFurniture = [];
   Map<String, dynamic> orderMap = {};
   var cache;
+  DocumentSnapshot? _lastDocument;
+  Map<String, dynamic> lastDocMap = {};
 
   getAllData() async {
     // await createCache();
@@ -133,56 +135,64 @@ class HomeCubit extends Cubit<HomeState> {
         }
       });
     } else {
-      if(furnitureList.isEmpty) {
-        await FirebaseFirestore.instance
-            .collection('category')
-            .doc(categoryName)
-            .collection("furniture")
-            .limit(limit)
-            .get()
-            .then((value) {
-          for (var element in value.docs) {
-            FurnitureModel myFurniture = FurnitureModel.fromJson(element.data());
-            furnitureList.add(myFurniture);
-            if (favoritesId.contains(myFurniture.furnitureId)) {
-              furnitureList.last.isFavorite = true;
-            }
-          }
-        });
-      } else {
-        // List<List<FurnitureModel>> subList = [];
-        // List<FurnitureModel> selectedCategoryList = furnitureList.where((element) => element.category == categoryName).toList();
-        // for (var i = 0; i < selectedCategoryList.length; i += 10) {
-        //   subList.add(
-        //       selectedCategoryList.sublist(i, i + 10> selectedCategoryList.length ? selectedCategoryList.length : i + 10));
-        // }
-        // print("Sublist");
-        // print(subList);
-
-        //subList.forEach((element) async {
-          //print("Furniture Name");
-          //print(element.map((e) => e.name).toList());
+        if(lastDocMap.keys.contains(categoryName)) {
           await FirebaseFirestore.instance
               .collection('category')
               .doc(categoryName)
               .collection("furniture")
-              //.where('name', whereNotIn: furnitureList.map((e) => e.name).toList())
+              .orderBy('furnitureId')
+              .startAfter([lastDocMap[categoryName].get('furnitureId')])
               .limit(limit)
               .get()
-              .then((value) {
-            for (var element in value.docs) {
-              FurnitureModel myFurniture = FurnitureModel.fromJson(element.data());
-              furnitureList.add(myFurniture);
-              if (favoritesId.contains(myFurniture.furnitureId)) {
-                furnitureList.last.isFavorite = true;
-              }
-            }
-          });
-        //});
+              .then((snapshot) {
+                print("Test");
+                print(snapshot.docs.length);
+                if(snapshot.docs.length > 0) {
+                  lastDocMap[categoryName] = snapshot.docs.last;
+                }
 
+                snapshot.docs.forEach((snap) {
+                  print("Snap" + lastDocMap[categoryName].get('furnitureId'));
+                  FurnitureModel myFurniture = FurnitureModel.fromJson(snap.data());
+                  furnitureList.add(myFurniture);
+                  if (favoritesId.contains(myFurniture.furnitureId)) {
+                    furnitureList.last.isFavorite = true;
+                  }
+            });
+
+          }).catchError((error) => print("Error: " + error.toString()));
+
+        } else {
+          print(categoryName);
+          await FirebaseFirestore.instance
+              .collection('category')
+              .doc(categoryName)
+              .collection("furniture")
+              //.orderBy('furnitureId')
+              .limit(limit)
+              .get()
+              .then((snapshot) {
+                print("Test");
+                print(snapshot.docs.length);
+                if(snapshot.docs.length > 0) {
+                  lastDocMap[categoryName] = snapshot.docs.last;
+                }
+                print(lastDocMap);
+
+                snapshot.docs.forEach((snap) {
+                print("Snap " + lastDocMap[categoryName].get('furnitureId'));
+                print(snap.data());
+                FurnitureModel myFurniture = FurnitureModel.fromJson(snap.data());
+                furnitureList.add(myFurniture);
+                if (favoritesId.contains(myFurniture.furnitureId)) {
+                  furnitureList.last.isFavorite = true;
+                }
+            });
+
+          }).catchError((error) => print("Error: " + error.toString()));
+        }
       }
 
-    }
     emit(SuccessOffersState());
     print(furnitureList.length);
   }

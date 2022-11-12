@@ -50,27 +50,28 @@ class _CategoriesScrollerState extends State<CategoriesScroller> {
                     CategoriesScroller.selectedCategoryName=BlocProvider.of<HomeCubit>(context).categories[index].name;
                     CategoriesScroller.selectedCategoryIndex = index;
                   });
+                  BlocProvider.of<HomeCubit>(context).emit(SuccessOffersState());
                   // BlocProvider.of<HomeCubit>(context).furnitureList.clear();
-                  print("Categories");
-                  print(BlocProvider.of<HomeCubit>(context).returnedCategory);
-                  if(!BlocProvider.of<HomeCubit>(context).returnedCategory.contains(BlocProvider.of<HomeCubit>(context).categories[index].name)) {
-                    print("Insideeeee");
-                    BlocProvider.of<HomeCubit>(context).getFurniture(
-                        BlocProvider
-                            .of<HomeCubit>(context)
-                            .categories[index].name);
-                  } else {
-                    // BlocProvider.of<HomeCubit>(context).getFurniture(
-                    //     BlocProvider
-                    //         .of<HomeCubit>(context)
-                    //         .categories[index].name, limit: 2);
-                    print("Category already here");
-                    BlocProvider.of<HomeCubit>(context).emit(SuccessOffersState());
-                  }
-                  print("List");
-                  // BlocProvider.of<HomeCubit>(context).emit(SuccessOffersState());
-                  // BlocProvider.of<HomeCubit>(context).emit(SuccessOffersState());
-                  print(BlocProvider.of<HomeCubit>(context).furnitureList);
+                  // print("Categories");
+                  // print(BlocProvider.of<HomeCubit>(context).returnedCategory);
+                  // if(!BlocProvider.of<HomeCubit>(context).returnedCategory.contains(BlocProvider.of<HomeCubit>(context).categories[index].name)) {
+                  //   print("Insideeeee");
+                  //   BlocProvider.of<HomeCubit>(context).getFurniture(
+                  //       BlocProvider
+                  //           .of<HomeCubit>(context)
+                  //           .categories[index].name);
+                  // } else {
+                  //   // BlocProvider.of<HomeCubit>(context).getFurniture(
+                  //   //     BlocProvider
+                  //   //         .of<HomeCubit>(context)
+                  //   //         .categories[index].name, limit: 2);
+                  //   print("Category already here");
+                  //   BlocProvider.of<HomeCubit>(context).emit(SuccessOffersState());
+                  // }
+                  // print("List");
+                  // // BlocProvider.of<HomeCubit>(context).emit(SuccessOffersState());
+                  // // BlocProvider.of<HomeCubit>(context).emit(SuccessOffersState());
+                  // print(BlocProvider.of<HomeCubit>(context).furnitureList);
                 },
                 child: Container(
                   height: 30,
