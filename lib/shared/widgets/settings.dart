@@ -9,6 +9,7 @@ import '../../cubits/home_states.dart';
 import '../../models/user_model.dart';
 import 'cart_screen.dart';
 import 'favorite_screen.dart';
+import 'order_screen.dart';
 
 class SettingsScreen extends StatefulWidget {
   @override
