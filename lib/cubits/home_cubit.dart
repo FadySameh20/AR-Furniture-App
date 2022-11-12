@@ -500,7 +500,7 @@ class HomeCubit extends Cubit<HomeState> {
           uid: FirebaseAuth.instance.currentUser!.uid,
           cachedFavoriteIds: [],
           cachedUser: UserModel.fromJson(temp.data()!),
-          cartMap: {})
+          cartMap: {}, cacheRecentlySearchedNames: [])
     ]);
     CacheHelper.setData(key: 'user', value: jsonEncode(cacheModel!.toMap()));
   }
@@ -524,7 +524,7 @@ class HomeCubit extends Cubit<HomeState> {
             uid: FirebaseAuth.instance.currentUser!.uid,
             cachedFavoriteIds: [],
             cachedUser: UserModel.fromJson(temp.data()!),
-            cartMap: {}));
+            cartMap: {}, cacheRecentlySearchedNames: []));
         print(cacheModel!.usersCachedModel.last.cachedUser.fName);
         // var cachedModel=cacheModel!.cachedModel.where((element) => element.uid==FirebaseAuth.instance.currentUser!.uid).first;
         // cachedModel.cachedFavoriteIds.remove(furnitureList[index].furnitureId);
@@ -569,6 +569,25 @@ class HomeCubit extends Cubit<HomeState> {
       cache.cachedFavoriteIds.remove(furnitureList[index].furnitureId);
       // print(jsonEncode(BlocProvider.of<HomeCubit>(context).cacheModel!.toMap()));
       CacheHelper.setData(key: 'user', value: jsonEncode(cacheModel!.toMap()));
+    }
+  }
+  addToRecentlySearchedName (String searchName){
+    if(cache.cacheRecentlySearchedNames.length < 5) {
+      if(!cache.cacheRecentlySearchedNames.contains(searchName)) {
+        cache.cacheRecentlySearchedNames.add(searchName);
+        print(cache.cacheRecentlySearchedNames);
+        print("hahaha");
+
+        CacheHelper.setData(key: 'user', value: jsonEncode(cacheModel!.toMap()));
+      }
+    }else {
+      if(!cache.cacheRecentlySearchedNames.contains(searchName)) {
+        cache.cacheRecentlySearchedNames.removeAt(0);
+        cache.cacheRecentlySearchedNames.add(searchName);
+        print(cache.cacheRecentlySearchedNames);
+        print("hahaha");
+        CacheHelper.setData(key: 'user', value: jsonEncode(cacheModel!.toMap()));
+      }
     }
   }
 
@@ -671,6 +690,7 @@ class CachedUserModel {
   late String uid;
   List<String> cachedFavoriteIds = [];
   Map<String, dynamic> cartMap = {};
+  List<String> cacheRecentlySearchedNames = [];
 
   // List<CartModel> cartModels = [];
   late UserModel cachedUser;
@@ -680,7 +700,9 @@ class CachedUserModel {
       {required this.uid,
       required this.cachedFavoriteIds,
       required this.cachedUser,
-      required this.cartMap});
+      required this.cartMap,
+      required this.cacheRecentlySearchedNames
+      });
 
   CachedUserModel.fromJson(Map json) {
     uid = json["uid"];
@@ -692,7 +714,14 @@ class CachedUserModel {
       });
     } else {
       cachedFavoriteIds = [];
+    }
 
+    if (json["cacheRecentlySearchedNames"] != null) {
+      json["cacheRecentlySearchedNames"].forEach((element) {
+        cacheRecentlySearchedNames.add(element);
+      });
+    } else {
+      cacheRecentlySearchedNames = [];
     }
 
     cachedUser = UserModel.fromJson(json["userData"]);
@@ -727,7 +756,8 @@ class CachedUserModel {
       "uid": uid,
       "cachedFavoriteIds": cachedFavoriteIds,
       "userData": cachedUser.toMap(),
-      "cartData": tempCartMap
+      "cartData": tempCartMap,
+      "cacheRecentlySearchedNames":cacheRecentlySearchedNames
     };
   }
 }
