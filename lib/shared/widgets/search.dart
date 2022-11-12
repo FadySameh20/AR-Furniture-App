@@ -205,7 +205,7 @@ class _SearchState extends State<Search> {
                               availableColors = BlocProvider.of<HomeCubit>(context).getAvailableColorsOfFurniture(searchR[index]);
                               Navigator.push(
                                 context,
-                                MaterialPageRoute(builder: (context) => SelectedFurnitureScreen(selectedFurniture: searchR[index], index: index, availableColors: availableColors)),
+                                MaterialPageRoute(builder: (context) => SelectedFurnitureScreen(selectedFurniture: searchR[index], availableColors: availableColors)),
                               );
                             },
                             child: Container(
