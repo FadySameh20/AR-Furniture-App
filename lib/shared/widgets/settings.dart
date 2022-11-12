@@ -10,19 +10,19 @@ import '../../models/user_model.dart';
 import 'cart_screen.dart';
 import 'favorite_screen.dart';
 
-
-class Settings extends StatefulWidget {
+class SettingsScreen extends StatefulWidget {
   @override
-  State<Settings> createState() => _SettingsState();
+  State<SettingsScreen> createState() => _SettingsScreenState();
 }
 
-class _SettingsState extends State<Settings> {
+class _SettingsScreenState extends State<SettingsScreen> {
   List<bool> allowSwitches = [false, false];
   var fNameController = TextEditingController();
   var lNameController = TextEditingController();
   var emailController = TextEditingController();
-  int screenIndex=0;
-  // List screenwidget= [Settings()]
+  List<Widget> NavbarPages = [ProfileEdit(),FavoriteScreen()];
+
+
   // index 0 darkmode
   // index 1 notifications
   // 2 for icon (out of the list)
@@ -52,21 +52,29 @@ class _SettingsState extends State<Settings> {
       child: Column(
         children: [
           InkWell(
-            onTap: () {
+            onTap: ()async {
               if(optionText == "Edit Profile"){
-
-
-              }
-              else if(optionText == "My Favorites"){
-
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) =>  ProfileEdit()),
+                );
               }
               else if(optionText == "My Orders"){
-                print("ORDERS");
+                if(BlocProvider.of<HomeCubit>(context).orders.isEmpty) {
+                  await BlocProvider.of<HomeCubit>(context).getOrders();
+                }
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) =>  OrderScreen()),
+                );
               }
-                // Navigator.push(
-                //   context,
-                //   MaterialPageRoute(builder: (context) => ProfileEdit()),
-                // );              }
+              else if(optionText=="Logout"){
+                context.read<HomeCubit>().logout(context);
+              }
+              // Navigator.push(
+              //   context,
+              //   MaterialPageRoute(builder: (context) => ProfileEdit()),
+              // );              }
               // print("hii");
             },
             child: Row(
@@ -134,9 +142,9 @@ class _SettingsState extends State<Settings> {
   }
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: SingleChildScrollView(
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
         child: Column(children: [
           InkWell(
             onTap: () {
@@ -145,9 +153,9 @@ class _SettingsState extends State<Settings> {
             child: Row(
               children: [
                 CircleAvatar(
-                  backgroundColor: Colors.blue,
+                  backgroundColor: Colors.white,
+                  backgroundImage:  BlocProvider.of<HomeCubit>(context).cache.cachedUser.img!=""?NetworkImage(BlocProvider.of<HomeCubit>(context).cache.cachedUser.img):AssetImage("assets/profile.png") as ImageProvider,
                   radius: 50,
-                  backgroundImage: BlocProvider.of<HomeCubit>(context).cache.cachedUser.img!=""?NetworkImage(BlocProvider.of<HomeCubit>(context).cache.cachedUser.img):AssetImage("assets/profile.png") as ImageProvider,
                 ),
                 SizedBox(
                   width: 15,
@@ -186,7 +194,7 @@ class _SettingsState extends State<Settings> {
           settingsOptionCategory("Notifications"),
           settingsOption("Notifications", Icons.notifications, 1),
           settingsOptionCategory("App Settings"),
-          settingsOption("My Favorites", Icons.favorite),
+          // settingsOption("My Favorites", Icons.favorite),
           settingsOption("My Orders", Icons.shopping_bag),
           settingsOption("About Us", Icons.error),
           settingsOption("Logout", Icons.logout),

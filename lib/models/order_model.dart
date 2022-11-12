@@ -1,9 +1,13 @@
 import 'dart:ffi';
 
 import 'package:ar_furniture_app/models/shared_model.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class OrderModel {
+  late String orderId;
   late String uid;
+  late String userName;
+  late Timestamp time;
   late String appartmentNumber;
   late String area;
   late String buildingNumber;
@@ -18,7 +22,10 @@ class OrderModel {
   // List<double> ratings = [];
 
   OrderModel({
+    required this.orderId,
     required this.uid,
+    required this.userName,
+    required this.time,
     required this.appartmentNumber,
     required this.area,
     required this.buildingNumber,
@@ -29,7 +36,10 @@ class OrderModel {
   });
 
   OrderModel.fromJson(Map<String, dynamic> json) {
+    orderId = json["orderId"];
     uid = json["uid"];
+    userName = json["userName"];
+    time = json["time"];
     appartmentNumber = json["appartmentNumber"];
     area = json["area"];
     buildingNumber = json["buildingNumber"];
@@ -60,7 +70,10 @@ class OrderModel {
         tempCartMap[key] = tempSharedList;
       });
       return {
+        "orderId": orderId,
         "uid": uid,
+        "userName": userName,
+        "time": time,
         "appartmentNumber": appartmentNumber,
         "area": area,
         "buildingNumber": buildingNumber,

@@ -63,9 +63,10 @@ class CategoriesScreen extends StatelessWidget {
                             print("Selecting furniture");
                             List<Color?> availableColors = [];
                             availableColors = BlocProvider.of<HomeCubit>(context).getAvailableColorsOfFurniture(filteredFurniture[index]);
+                            BlocProvider.of<HomeCubit>(context).getFurnitureRecommendation(filteredFurniture[index], 0);
                             Navigator.push(
                               context,
-                              MaterialPageRoute(builder: (context) => SelectedFurnitureScreen(selectedFurniture: filteredFurniture[index], index: index, availableColors: availableColors)),
+                              MaterialPageRoute(builder: (context) => SelectedFurnitureScreen(selectedFurniture: filteredFurniture[index], availableColors: availableColors)),
                             );
                           },
                           child: Padding(

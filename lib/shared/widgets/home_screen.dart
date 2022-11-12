@@ -1,14 +1,17 @@
 import 'dart:convert';
 
 import 'package:ar_furniture_app/cubits/home_cubit.dart';
+import 'package:ar_furniture_app/models/furniture_model.dart';
 import 'package:ar_furniture_app/shared/cache/sharedpreferences.dart';
 import 'package:ar_furniture_app/shared/widgets/favorite_icon.dart';
 import 'package:ar_furniture_app/shared/widgets/profile_edit.dart';
 import 'package:ar_furniture_app/shared/widgets/search.dart';
+import 'package:ar_furniture_app/shared/widgets/selected_furnitue_screen.dart';
 import 'package:ar_furniture_app/shared/widgets/settings.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:circular_bottom_navigation/circular_bottom_navigation.dart';
 import 'package:circular_bottom_navigation/tab_item.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -34,7 +37,7 @@ class _HomePageState extends State<HomePage> {
   // ];
 
   int selectedPos = 0;
-  List<Widget> NavbarPages = [HomePage(),FavoriteScreen(), Search(), ProfileEdit(), Settings()];
+  List<Widget> NavbarPages = [HomePage(),FavoriteScreen(), Search(), CategoriesScreen(),SettingsScreen()];
 
 
   double bottomNavBarHeight = 60;
@@ -107,7 +110,7 @@ class _HomePageState extends State<HomePage> {
                   backgroundColor: Color.fromRGBO(191, 122, 47, 1),
                   leading: FlutterLogo(),
                   actions: [
-                    IconButton(onPressed: () {context.read<HomeCubit>().logout(context);}, icon: Icon(Icons.shopping_cart))
+                    IconButton(onPressed: () {}, icon: Icon(Icons.shopping_cart))
                   ],
                   centerTitle: true,
                   title: Text(
@@ -144,17 +147,45 @@ class _HomePageState extends State<HomePage> {
                                 padding: const EdgeInsets.only(top: 8.0),
                                 child: Builder(
                                   builder: (BuildContext context) {
-                                    return Container(
-                                        width: MediaQuery.of(context).size.width,
-                                        margin: const EdgeInsets.symmetric(horizontal: 5.0),
-                                        clipBehavior: Clip.antiAliasWithSaveLayer,
-                                        decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(20),
-                                            color: Colors.amber),
-                                        child: Image.network(
-                                          i.img,
-                                          fit: BoxFit.fill,
-                                        ));
+                                    return InkWell(
+                                      onTap: (){
+                                        FurnitureModel furn;
+                                        List<Color> availableColors=[];
+                                        if(BlocProvider.of<HomeCubit>(context).furnitureList.where((element) => element.furnitureId==i.salesId).isEmpty){
+                                          print("ya rb");
+                                          print(i.category);
+                                          print(i.salesId);
+                                          FirebaseFirestore.instance.collection("category").doc(i.category).collection("furniture").doc(i.salesId).get().then((value) {
+                                            BlocProvider.of<HomeCubit>(context).furnitureList.add(FurnitureModel.fromJson(value.data() as Map<String,dynamic>));
+                                          });
+                                          furn=BlocProvider.of<HomeCubit>(context).furnitureList.last;
+                                          furn.shared.forEach((element) {
+                                            availableColors.add(BlocProvider.of<HomeCubit>(context).getColorFromHex(element.color)!);
+                                          });
+                                        }else{
+                                        furn=BlocProvider.of<HomeCubit>(context).furnitureList.where((element) => element.furnitureId==i.salesId).first;
+                                          furn.shared.forEach((element) {
+                                            availableColors.add(BlocProvider.of<HomeCubit>(context).getColorFromHex(element.color)!);
+                                          });
+
+                                        }
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(builder: (context) => SelectedFurnitureScreen(selectedFurniture: furn, availableColors: availableColors)),
+                                        );
+                                      },
+                                      child: Container(
+                                          width: MediaQuery.of(context).size.width,
+                                          margin: const EdgeInsets.symmetric(horizontal: 5.0),
+                                          clipBehavior: Clip.antiAliasWithSaveLayer,
+                                          decoration: BoxDecoration(
+                                              borderRadius: BorderRadius.circular(20),
+                                              color: Colors.amber),
+                                          child: Image.network(
+                                            i.img,
+                                            fit: BoxFit.fill,
+                                          )),
+                                    );
                                   },
                                 ),
                               );
