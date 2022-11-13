@@ -2,19 +2,21 @@ import 'package:ar_furniture_app/shared/widgets/profile_edit.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../../cubits/home_cubit.dart';
 import '../../cubits/home_states.dart';
 import '../../models/user_model.dart';
 import 'cart_screen.dart';
 import 'favorite_screen.dart';
+import 'order_screen.dart';
 
-class Settings extends StatefulWidget {
+class SettingsScreen extends StatefulWidget {
   @override
-  State<Settings> createState() => _SettingsState();
+  State<SettingsScreen> createState() => _SettingsScreenState();
 }
 
-class _SettingsState extends State<Settings> {
+class _SettingsScreenState extends State<SettingsScreen> {
   List<bool> allowSwitches = [false, false];
   var fNameController = TextEditingController();
   var lNameController = TextEditingController();
@@ -51,7 +53,7 @@ class _SettingsState extends State<Settings> {
       child: Column(
         children: [
           InkWell(
-            onTap: () {
+            onTap: ()async {
               if(optionText == "Edit Profile"){
                 Navigator.push(
                   context,
@@ -59,12 +61,21 @@ class _SettingsState extends State<Settings> {
                 );
               }
               else if(optionText == "My Orders"){
-                print("ORDERS");
+                if(BlocProvider.of<HomeCubit>(context).orders.isEmpty) {
+                  await BlocProvider.of<HomeCubit>(context).getOrders();
+                }
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) =>  OrderScreen()),
+                );
               }
-                // Navigator.push(
-                //   context,
-                //   MaterialPageRoute(builder: (context) => ProfileEdit()),
-                // );              }
+              else if(optionText=="Logout"){
+                context.read<HomeCubit>().logout(context);
+              }
+              // Navigator.push(
+              //   context,
+              //   MaterialPageRoute(builder: (context) => ProfileEdit()),
+              // );              }
               // print("hii");
             },
             child: Row(
@@ -132,9 +143,9 @@ class _SettingsState extends State<Settings> {
   }
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: SingleChildScrollView(
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
         child: Column(children: [
           InkWell(
             onTap: () {

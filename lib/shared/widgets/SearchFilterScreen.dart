@@ -127,7 +127,9 @@ class _SearchFilterScreenState extends State<SearchFilterScreen> {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: kAppBackgroundColor,
                 ),
-                onPressed: (){},
+                onPressed: (){
+                  Navigator.pop(context, {'priceFilter':priceFilter, 'categoryName':CategoriesScroller.selectedCategoryName});
+                },
               ),
             ],
           ),

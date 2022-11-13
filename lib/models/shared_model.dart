@@ -4,6 +4,7 @@ class SharedModel {
   late String image;
   late String price;
   late String quantity;
+  late String discount;
   String quantityCart='0';
   late String discount;
 
@@ -24,6 +25,7 @@ class SharedModel {
     price = json["price"];
     quantity = json["quantity"];
     discount = json["discount"];
+
   }
   Map<String, dynamic> toMap() {
     print("Inside Shared Model");
@@ -35,6 +37,7 @@ class SharedModel {
       "price": price,
       "quantity": quantity,
       "discount": discount
+
     };
   }
 }

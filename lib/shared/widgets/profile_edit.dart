@@ -78,12 +78,6 @@ class _ProfileEditState extends State<ProfileEdit> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Color.fromRGBO(191, 122, 47, 1),
-        // leading: FlutterLogo(),
-        centerTitle: true,
-        title: const Text('Edit Profile'),
-      ),
       body: Container(
         padding: EdgeInsets.only(left: 15, top: 20, right: 15),
         child: GestureDetector(

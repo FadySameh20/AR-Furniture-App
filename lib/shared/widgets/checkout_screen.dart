@@ -138,17 +138,21 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                             'building Number',
                             buildingNumberController,
                             validator: (String? val) {
-                              return validator.validateText(val!);
+                              return validator.validateNumber(val!);
                             },
                           ),
                           SizedBox(height: 10),
-                          buildTextField('Floor Number', floorNumberController),
+                          buildTextField('Floor Number', floorNumberController,
+                            validator: (String? val) {
+                              return validator.validateNumber(val!);
+                            },),
+
                           SizedBox(height: 10),
                           buildTextField(
                             'Appartment Number',
                             appartmentNumberController,
                             validator: (String? val) {
-                              return validator.validateText(val!);
+                              return validator.validateNumber(val!);
                             },
                           ),
                           SizedBox(height: 10),
@@ -180,7 +184,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
             SizedBox(height: MediaQuery.of(context).size.height*0.07,),
             Container(
                 width: double.infinity,
-                height: MediaQuery.of(context).size.height * 0.3,
+                height: MediaQuery.of(context).size.height * 0.4,
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.only(
@@ -209,7 +213,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                         ],
                       ),
                       SizedBox(
-                        height: 10,
+                        height: MediaQuery.of(context).size.height*0.05,
                       ),
                       Divider(
                         color: Colors.black,
@@ -225,7 +229,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                         ],
                       ),
                       SizedBox(
-                        height: 20,
+                        height:MediaQuery.of(context).size.height*0.025,
                       ),
                       Row(
                         children: [
