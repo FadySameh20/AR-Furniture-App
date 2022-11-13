@@ -13,17 +13,17 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 
 import '../constants/constants.dart';
 import 'circle_avatar.dart';
 
 class SelectedFurnitureScreen extends StatefulWidget {
   FurnitureModel selectedFurniture;
-  int index;
   List<Color?> availableColors;
 
   SelectedFurnitureScreen(
-      {required this.selectedFurniture, required this.index, required this.availableColors});
+      {required this.selectedFurniture, required this.availableColors});
 
   @override
   State<SelectedFurnitureScreen> createState() =>
@@ -174,8 +174,9 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                         right: 15.0,
                         child: GestureDetector(
                               onTap: () {
+                                int tempIndex = BlocProvider.of<HomeCubit>(context).furnitureList.indexWhere((element) => element.furnitureId == widget.selectedFurniture.furnitureId);
                                 BlocProvider.of<HomeCubit>(context)
-                                    .addOrRemoveFromFavorite(widget.index);
+                                    .addOrRemoveFromFavorite(tempIndex);
                                 BlocProvider.of<HomeCubit>(context).emit(
                                     AddOrRemoveFavoriteState());
                               },
@@ -239,16 +240,41 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                                 fontStyle: FontStyle.italic),
                           ),
                           trailing: Padding(
-                            padding: EdgeInsets.only(bottom: 22.0, right: 10.0),
-                            child: Text(
-                              widget.selectedFurniture
-                                  .shared[selectedColorIndex]
-                                  .price +
-                                  ' L.E',
-                              style: TextStyle(
-                                fontSize: 18.0,
-                                fontWeight: FontWeight.w600,
-                                color: kAppBackgroundColor,
+                            padding: EdgeInsets.only(bottom: 22.0, right: 0),
+                            child: Container(
+                              width: MediaQuery.of(context).size.width/1.5,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  Text(
+                                    (double.parse(widget.selectedFurniture
+                                        .shared[selectedColorIndex]
+                                        .price)).toStringAsFixed(2)+
+                                        ' L.E',
+                                    style: TextStyle(
+                                      decoration: widget.selectedFurniture.shared[selectedColorIndex].discount!="0"?TextDecoration.lineThrough:null,
+                                      fontSize: 18.0,
+                                      fontWeight: FontWeight.w600,
+                                      color: kAppBackgroundColor,
+                                    ),
+                                  ),
+                                  SizedBox(width: 10,),
+                                  if(widget.selectedFurniture.shared[selectedColorIndex].discount!="0")
+
+                                    Text(
+
+                                      '${(double.parse(widget.selectedFurniture
+                                        .shared[selectedColorIndex]
+                                        .price) -( (double.parse(widget.selectedFurniture.shared[selectedColorIndex].discount)/100)*double.parse(widget.selectedFurniture
+                                          .shared[selectedColorIndex]
+                                          .price))).toStringAsFixed(2)} L.E',
+                                    style: TextStyle(
+                                      fontSize: 18.0,
+                                      fontWeight: FontWeight.w600,
+                                      color: kAppBackgroundColor,
+                                    ),
+                                  )
+                                ],
                               ),
                             ),
                           ),
@@ -268,10 +294,12 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                             RatingBar.builder(
                               itemSize: 20.0,
                               initialRating:
-                              widget.selectedFurniture.calculateAverageRating(),
+                              widget.selectedFurniture
+                                  .calculateAverageRating()
+                                  .toString() == "NaN" ? 0.0: widget.selectedFurniture.calculateAverageRating(),
                               //minRating: 1,
                               direction: Axis.horizontal,
-                              allowHalfRating: true,
+                              // allowHalfRating: true,
                               ignoreGestures: true,
                               itemCount: 5,
                               itemPadding: EdgeInsets.symmetric(
@@ -294,7 +322,81 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                             Text(
                               widget.selectedFurniture
                                   .calculateAverageRating()
+                                  .toString() == "NaN" ? "No ratings yet": widget.selectedFurniture
+                                  .calculateAverageRating()
                                   .toString(),
+                            ),
+                            Spacer(),
+                            InkWell(
+                              onTap: () {
+                                Alert(
+                                  context: context,
+                                  //type: AlertType.success,
+                                  //title: "Rating",
+                                  desc: BlocProvider.of<HomeCubit>(context).unavailableQuantityFurniture.join('\n\n'),
+                                  content: Column(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Icon(Icons.rate_review, size: 50.0, color: kAppBackgroundColor,),
+                                      SizedBox(height: 20.0,),
+                                      Text("Rating", style: TextStyle(fontSize: 23.0, letterSpacing: 0.8),),
+                                      SizedBox(height: 20.0,),
+                                      RatingBar.builder(
+                                        itemSize: 30.0,
+                                        initialRating: 1,
+                                        minRating: 1,
+                                        direction: Axis.horizontal,
+                                        // allowHalfRating: true,
+                                        // ignoreGestures: true,
+                                        itemCount: 5,
+                                        itemPadding: EdgeInsets.symmetric(
+                                            horizontal: 1.0),
+                                        itemBuilder: (context, _) =>
+                                            Icon(
+                                              Icons.star,
+                                              color: Colors.amber,
+                                            ),
+                                        onRatingUpdate: (rating) {
+                                            print("Rating: " + rating.toString());
+                                            setState(() {
+                                              widget.selectedFurniture.ratings.add(rating);
+                                            });
+                                        },
+                                      ),
+                                    ],
+                                  ),
+                                  buttons: [
+                                    DialogButton(
+                                      child: Text(
+                                        "Rate",
+                                        style: TextStyle(color: Colors.white, fontSize: 20),
+                                      ),
+                                      onPressed: () async {
+                                        await  FirebaseFirestore.instance.collection('category').doc(widget.selectedFurniture.category).collection("furniture").doc(widget.selectedFurniture.furnitureId).update({"ratings": widget.selectedFurniture.ratings});
+                                        setState(() {});
+                                        Navigator.pop(context);
+                                      } ,
+                                      color: kAppBackgroundColor,
+                                    ),
+                                  ],
+                                  style: AlertStyle(
+                                    animationType: AnimationType.fromTop,
+                                    animationDuration: Duration(milliseconds: 400),
+                                    titleStyle: TextStyle(
+                                      color: Colors.red,
+                                    ),
+                                    descStyle: TextStyle(
+                                      fontSize: 17,
+                                    ),
+                                  ),
+                                ).show();
+                              },
+                              child: Text(
+                                'Add a review ?',
+                                style: TextStyle(
+                                  decoration: TextDecoration.underline,
+                                ),
+                              ),
                             ),
                           ],
                         ),
@@ -628,40 +730,71 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                         child: ListView.builder(
                           shrinkWrap: true,
                           scrollDirection: Axis.horizontal,
-                          itemCount: 3,
+                          itemCount: BlocProvider.of<HomeCubit>(context).recommendedFurniture.length,
                           itemBuilder: (context, index) {
                             return Stack(
                               children: [
-                                Container(
-                                  margin: EdgeInsets.only(
-                                      right: 20.0, top: 20.0, bottom: 10.0),
-                                  padding: EdgeInsets.all(10.0),
-                                  decoration: BoxDecoration(
-                                    color: Color.fromRGBO(191, 122, 47, 0.2),
-                                    borderRadius: BorderRadius.circular(20.0),
-                                  ),
-                                  child: Column(
-                                    children: [
-                                      Expanded(
-                                        child: Image.network(widget.selectedFurniture.shared[selectedColorIndex].image),
-                                      ),
-                                      Text('Havan Chair')
-                                    ],
+                                InkWell(
+                                  onTap: () {
+                                    List<Color?> availableColors = [];
+                                    availableColors = BlocProvider.of<HomeCubit>(context).getAvailableColorsOfFurniture(BlocProvider.of<HomeCubit>(context).recommendedFurniture[index]);
+                                    Navigator.pop(context);
+                                    print("Recoo " + BlocProvider.of<HomeCubit>(context).recommendedFurniture[index].name);
+                                    FurnitureModel selectedRecommendedFurniture = BlocProvider.of<HomeCubit>(context).recommendedFurniture[index];
+                                    BlocProvider.of<HomeCubit>(context).getFurnitureRecommendation(BlocProvider.of<HomeCubit>(context).recommendedFurniture[index], 0);
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(builder: (context) => SelectedFurnitureScreen(selectedFurniture: selectedRecommendedFurniture, availableColors: availableColors)),
+                                    );
+                                  },
+                                  child: Container(
+                                    margin: EdgeInsets.only(
+                                        right: 20.0, top: 20.0, bottom: 10.0),
+                                    padding: EdgeInsets.all(10.0),
+                                    decoration: BoxDecoration(
+                                      color: Color.fromRGBO(191, 122, 47, 0.2),
+                                      borderRadius: BorderRadius.circular(20.0),
+                                    ),
+                                    child: Column(
+                                      children: [
+                                        Expanded(
+                                          child: Image.network(BlocProvider.of<HomeCubit>(context).recommendedFurniture[index].shared[0].image),
+                                        ),
+                                        Text(BlocProvider.of<HomeCubit>(context).recommendedFurniture[index].name),
+                                      ],
+                                    ),
                                   ),
                                 ),
                                 Positioned(
                                   top: 25.0,
                                   right: 29.0,
-                                  child: FavoriteIcon(
-                                    iconLogo: Icons.favorite_border_rounded,
-                                    iconColor: kAppBackgroundColor,
-                                    iconSize:
-                                    MediaQuery
-                                        .of(context)
-                                        .size
-                                        .height > 700
-                                        ? 22.0
-                                        : 18.0,
+                                  child: InkWell(
+                                    onTap: () {
+                                      int tempIndex = BlocProvider.of<HomeCubit>(context).furnitureList.indexWhere((element) => element.furnitureId == BlocProvider.of<HomeCubit>(context).recommendedFurniture[index].furnitureId);
+                                      BlocProvider.of<HomeCubit>(context).addOrRemoveFromFavorite(tempIndex);
+                                      BlocProvider.of<HomeCubit>(context).emit(AddOrRemoveFavoriteState());
+                                    },
+                                    child: BlocProvider.of<HomeCubit>(context).recommendedFurniture[index].isFavorite ? FavoriteIcon(
+                                      iconLogo: Icons.favorite,
+                                      iconColor: kAppBackgroundColor,
+                                      iconSize:
+                                      MediaQuery
+                                          .of(context)
+                                          .size
+                                          .height > 700
+                                          ? 22.0
+                                          : 18.0,
+                                    ): FavoriteIcon(
+                                      iconLogo: Icons.favorite_border_rounded,
+                                      iconColor: kAppBackgroundColor,
+                                      iconSize:
+                                      MediaQuery
+                                          .of(context)
+                                          .size
+                                          .height > 700
+                                          ? 22.0
+                                          : 18.0,
+                                    ),
                                   ),
                                 ),
                               ],

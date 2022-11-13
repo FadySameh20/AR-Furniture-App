@@ -11,22 +11,27 @@ class SearchFilterScreen extends StatefulWidget {
 
 class _SearchFilterScreenState extends State<SearchFilterScreen> {
   //const SearchFilterScreen({Key? key}) : super(key: key);
-  List<String> priceFilter = ['EGP 0 - 4,999', 'EGP 5,000 - 9,999', 'EGP 10,000 - 14,999', 'EGP 15,000 - 19,999', 'EGP 20,000+'];
-
   List<Color> colors = [
     Colors.teal,
     Colors.red,
     Colors.yellow,
     Colors.blue,
   ];
-
   List<bool> isCheck = [false, false, false, false];
+  int flag = 1;
+  Map<String, bool> priceFilter = {};
 
   @override
   Widget build(BuildContext context) {
+    final arguments = (ModalRoute.of(context)?.settings.arguments ?? <String, dynamic>{}) as Map;
+    if(flag == 1) {
+      priceFilter = arguments['priceFilter'];
+      flag = 0;
+    }
+
     return Scaffold(
       appBar: AppBar(
-        title: Text("Filter"),
+        title: const Text("Filter"),
         centerTitle: true,
         backgroundColor: kAppBackgroundColor,
       ),
@@ -59,12 +64,15 @@ class _SearchFilterScreenState extends State<SearchFilterScreen> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(priceFilter[index], style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15.0),),
+                          Text(priceFilter.keys.elementAt(index), style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15.0),),
                           SizedBox(
                             height: 25,
-                            child: Checkbox(value: false,
+                            child: Checkbox(value: priceFilter.values.elementAt(index),
+                                activeColor: kAppBackgroundColor,
                                 onChanged: (bool? newValue){
-
+                                  setState(() {
+                                    priceFilter.update(priceFilter.keys.elementAt(index), (value) => !priceFilter.values.elementAt(index));
+                                  });
                                 }
                             ),
                           ),
@@ -73,12 +81,15 @@ class _SearchFilterScreenState extends State<SearchFilterScreen> {
                     );
                   },
               ),
-              const Text(
-                'Category',
-                style: TextStyle(
-                  color: kAppBackgroundColor,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 20,
+              const Padding(
+                padding: EdgeInsets.only(top: 10.0),
+                child: Text(
+                  'Category',
+                  style: TextStyle(
+                    color: kAppBackgroundColor,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20,
+                  ),
                 ),
               ),
               CategoriesScroller(),
@@ -116,7 +127,9 @@ class _SearchFilterScreenState extends State<SearchFilterScreen> {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: kAppBackgroundColor,
                 ),
-                onPressed: (){},
+                onPressed: (){
+                  Navigator.pop(context, {'priceFilter':priceFilter, 'categoryName':CategoriesScroller.selectedCategoryName});
+                },
               ),
             ],
           ),
