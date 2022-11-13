@@ -6,7 +6,6 @@ class SharedModel {
   late String quantity;
   late String discount;
   String quantityCart='0';
-  late String discount;
 
   SharedModel(
       {
