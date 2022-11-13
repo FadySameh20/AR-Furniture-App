@@ -9,8 +9,13 @@ import '../../cubits/home_cubit.dart';
 import '../constants/constants.dart';
 import 'categories_scroller.dart';
 
-class CategoriesScreen extends StatelessWidget {
+class CategoriesScreen extends StatefulWidget {
 
+  @override
+  State<CategoriesScreen> createState() => _CategoriesScreenState();
+}
+
+class _CategoriesScreenState extends State<CategoriesScreen> {
   List<Color?> colors = [
     Colors.teal[300],
     Colors.orange[300],
@@ -25,8 +30,24 @@ class CategoriesScreen extends StatelessWidget {
   ];
 
   int selectedColorIndex = 0;
-  int selectedCategoryIndex=0;
+
   List<FurnitureModel> filteredFurniture = [];
+
+  ScrollController _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _scrollController.addListener(() async {
+      print("Listenerrrrr");
+      if (_scrollController.position.atEdge) {
+        if (_scrollController.position.pixels != 0) {
+          await getMoreFurniture();
+        }
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,6 +76,7 @@ class CategoriesScreen extends StatelessWidget {
                     ),
                   ),
                   ListView.builder(
+                      controller: _scrollController,
                       shrinkWrap: true,
                       itemCount: filteredFurniture.length,
                       itemBuilder: (context, index) {
@@ -230,5 +252,13 @@ class CategoriesScreen extends StatelessWidget {
         );
       },
     );
+  }
+
+  Future<void> getMoreFurniture() async {
+    print("hna");
+    await BlocProvider.of<HomeCubit>(context).getFurniture(
+        BlocProvider
+            .of<HomeCubit>(context)
+            .categories[CategoriesScroller.selectedCategoryIndex].name, limit: 3);
   }
 }

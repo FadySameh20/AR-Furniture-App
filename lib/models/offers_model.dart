@@ -4,9 +4,10 @@ class Offers{
   late List colors=[];
   late String img;
   late String salesId;
+  late String category;
 
 
-  Offers({required this.discount, required this.colors,required this.img,required this.salesId});
+  Offers({required this.discount, required this.colors,required this.img,required this.salesId, required this.category});
 
   Offers.fromJson(Map< String,dynamic> json){
     discount=json["discount"];
@@ -16,6 +17,7 @@ class Offers{
     img = json["img"];
     category=json["category"];
     salesId = json["salesId"];
+    category = json["category"];
 
   }
 
@@ -26,7 +28,8 @@ class Offers{
       "colors":colors,
       "img":img,
       "salesId":salesId,
-      "category":category
+      "category": category
+
     };
   }
 

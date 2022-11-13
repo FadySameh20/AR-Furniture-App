@@ -13,13 +13,13 @@ class CategoriesScroller extends StatefulWidget {
   //   "assets/drawers.png"
   // ];
   static String selectedCategoryName="";
+  static int selectedCategoryIndex = 0;
 
   @override
   State<CategoriesScroller> createState() => _CategoriesScrollerState();
 }
 
 class _CategoriesScrollerState extends State<CategoriesScroller> {
-  int selectedCategoryIndex = 0;
 
   @override
   void initState() {
@@ -48,27 +48,36 @@ class _CategoriesScrollerState extends State<CategoriesScroller> {
                 onTap: () {
                   setState(() {
                     CategoriesScroller.selectedCategoryName=BlocProvider.of<HomeCubit>(context).categories[index].name;
-                    selectedCategoryIndex = index;
+                    CategoriesScroller.selectedCategoryIndex = index;
                   });
+                  BlocProvider.of<HomeCubit>(context).emit(SuccessOffersState());
                   // BlocProvider.of<HomeCubit>(context).furnitureList.clear();
-                  if(!BlocProvider.of<HomeCubit>(context).returnedCategory.contains(BlocProvider.of<HomeCubit>(context).categories[index].name)) {
-                    BlocProvider.of<HomeCubit>(context).getFurniture(
-                        BlocProvider
-                            .of<HomeCubit>(context)
-                            .categories[index].name);
-                  } else {
-                    BlocProvider.of<HomeCubit>(context).emit(SuccessOffersState());
-                  }
-                  print("List");
-                  // BlocProvider.of<HomeCubit>(context).emit(SuccessOffersState());
-                  // BlocProvider.of<HomeCubit>(context).emit(SuccessOffersState());
-                  print(BlocProvider.of<HomeCubit>(context).furnitureList);
+                  // print("Categories");
+                  // print(BlocProvider.of<HomeCubit>(context).returnedCategory);
+                  // if(!BlocProvider.of<HomeCubit>(context).returnedCategory.contains(BlocProvider.of<HomeCubit>(context).categories[index].name)) {
+                  //   print("Insideeeee");
+                  //   BlocProvider.of<HomeCubit>(context).getFurniture(
+                  //       BlocProvider
+                  //           .of<HomeCubit>(context)
+                  //           .categories[index].name);
+                  // } else {
+                  //   // BlocProvider.of<HomeCubit>(context).getFurniture(
+                  //   //     BlocProvider
+                  //   //         .of<HomeCubit>(context)
+                  //   //         .categories[index].name, limit: 2);
+                  //   print("Category already here");
+                  //   BlocProvider.of<HomeCubit>(context).emit(SuccessOffersState());
+                  // }
+                  // print("List");
+                  // // BlocProvider.of<HomeCubit>(context).emit(SuccessOffersState());
+                  // // BlocProvider.of<HomeCubit>(context).emit(SuccessOffersState());
+                  // print(BlocProvider.of<HomeCubit>(context).furnitureList);
                 },
                 child: Container(
                   height: 30,
                   width: 70,
                   decoration: BoxDecoration(
-                      color: index == selectedCategoryIndex
+                      color: index == CategoriesScroller.selectedCategoryIndex
                           ? kAppBackgroundColor
                           : Colors.white,
                       borderRadius: BorderRadius.circular(50)),
@@ -98,7 +107,7 @@ class _CategoriesScrollerState extends State<CategoriesScroller> {
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
                               color:
-                              index == selectedCategoryIndex ? Colors.white : Colors.black),
+                              index == CategoriesScroller.selectedCategoryIndex ? Colors.white : Colors.black),
                         ),
                       ],
                     ),
