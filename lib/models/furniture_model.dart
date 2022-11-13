@@ -9,7 +9,7 @@ class FurnitureModel {
   late String model;
   late String category;
   List<SharedModel> shared = [];
-  bool isFavorite = false;
+  bool isFavorite=false;
   List<double> ratings = [];
 
   FurnitureModel({
@@ -27,7 +27,7 @@ class FurnitureModel {
     furnitureId = json["furnitureId"];
     name = json["name"];
     model = json["model"];
-    category = json["category"];
+    category=json["category"];
     print("before");
     print(shared);
     for (int i = 0; i < json["shared"].length; i++) {
@@ -35,22 +35,17 @@ class FurnitureModel {
     }
     print("after");
     print(shared);
-    if (json["ratings"] == null) {
-      ratings = [];
-    } else {
-      for (var rating in json["ratings"]) {
-        ratings.add(rating.toDouble());
-      }
+    for(var rating in json["ratings"]) {
+      ratings.add(rating.toDouble());
     }
   }
-
   Map<String, dynamic> toMap() {
     List<Map<String, dynamic>> temp = [];
-    for (int i = 0; i < shared.length; i++) {
+    for(int i = 0; i < shared.length; i++) {
       temp.add(shared[i].toMap());
     }
     return {
-      "category": category,
+      "category":category,
       "description": description,
       "furnitureId": furnitureId,
       "name": name,
@@ -64,7 +59,7 @@ class FurnitureModel {
     double sum = 0;
     print("Ratings");
     print(ratings);
-    for (double rating in ratings) {
+    for(double rating in ratings) {
       sum += rating;
     }
     double averageRating = sum / ratings.length;
@@ -73,4 +68,6 @@ class FurnitureModel {
     print(averageRating);
     return double.parse(averageRating.toStringAsFixed(0));
   }
+
+
 }
