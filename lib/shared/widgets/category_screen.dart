@@ -188,8 +188,8 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                                           TextButton(
                                             onPressed: () {
                                               print('Add to favorites');
-                                              int tempIndex = BlocProvider.of<HomeCubit>(context).furnitureList.indexWhere((element) => element.furnitureId == filteredFurniture[index].furnitureId);
-                                              BlocProvider.of<HomeCubit>(context).addOrRemoveFromFavorite(tempIndex);
+                                              // int tempIndex = BlocProvider.of<HomeCubit>(context).furnitureList.indexWhere((element) => element.furnitureId == filteredFurniture[index].furnitureId);
+                                              BlocProvider.of<HomeCubit>(context).addOrRemoveFromFavorite(filteredFurniture[index].furnitureId);
                                               BlocProvider.of<HomeCubit>(context).emit(AddOrRemoveFavoriteState());
                                             },
                                             child: filteredFurniture[index].isFavorite ? FavoriteIcon(iconLogo: Icons.favorite, iconColor: kAppBackgroundColor,) : FavoriteIcon(iconLogo: Icons.favorite_border_rounded, iconColor: kAppBackgroundColor,),

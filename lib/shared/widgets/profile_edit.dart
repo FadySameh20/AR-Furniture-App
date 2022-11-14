@@ -78,6 +78,15 @@ class _ProfileEditState extends State<ProfileEdit> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+          backgroundColor: Color.fromRGBO(191, 122, 47, 1),
+          leading: IconButton(onPressed: (){Navigator.pop(context);},icon: Icon(Icons.arrow_back_sharp),),
+
+          centerTitle: true,
+          title: Text(
+            "Edit Profile",
+            style: TextStyle(),
+          )),
       body: Container(
         padding: EdgeInsets.only(left: 15, top: 20, right: 15),
         child: GestureDetector(

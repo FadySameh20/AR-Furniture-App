@@ -174,9 +174,9 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                         right: 15.0,
                         child: GestureDetector(
                               onTap: () {
-                                int tempIndex = BlocProvider.of<HomeCubit>(context).furnitureList.indexWhere((element) => element.furnitureId == widget.selectedFurniture.furnitureId);
+                                // int tempIndex = BlocProvider.of<HomeCubit>(context).furnitureList.indexWhere((element) => element.furnitureId == widget.selectedFurniture.furnitureId);
                                 BlocProvider.of<HomeCubit>(context)
-                                    .addOrRemoveFromFavorite(tempIndex);
+                                    .addOrRemoveFromFavorite(widget.selectedFurniture.furnitureId);
                                 BlocProvider.of<HomeCubit>(context).emit(
                                     AddOrRemoveFavoriteState());
                               },
@@ -770,8 +770,8 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                                   right: 29.0,
                                   child: InkWell(
                                     onTap: () {
-                                      int tempIndex = BlocProvider.of<HomeCubit>(context).furnitureList.indexWhere((element) => element.furnitureId == BlocProvider.of<HomeCubit>(context).recommendedFurniture[index].furnitureId);
-                                      BlocProvider.of<HomeCubit>(context).addOrRemoveFromFavorite(tempIndex);
+                                      // int tempIndex = BlocProvider.of<HomeCubit>(context).furnitureList.indexWhere((element) => element.furnitureId == BlocProvider.of<HomeCubit>(context).recommendedFurniture[index].furnitureId);
+                                      BlocProvider.of<HomeCubit>(context).addOrRemoveFromFavorite(BlocProvider.of<HomeCubit>(context).recommendedFurniture[index].furnitureId);
                                       BlocProvider.of<HomeCubit>(context).emit(AddOrRemoveFavoriteState());
                                     },
                                     child: BlocProvider.of<HomeCubit>(context).recommendedFurniture[index].isFavorite ? FavoriteIcon(

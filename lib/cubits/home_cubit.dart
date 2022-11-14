@@ -615,7 +615,9 @@ class HomeCubit extends Cubit<HomeState> {
     // return "";
   }
 
-  addOrRemoveFromFavorite(index) async {
+  addOrRemoveFromFavorite(furnitureId) async {
+    int index = furnitureList
+        .indexWhere((element) => element.furnitureId == furnitureId);
     furnitureList[index].isFavorite = !furnitureList[index].isFavorite;
     emit(SuccessOffersState());
     if (furnitureList[index].isFavorite == true) {

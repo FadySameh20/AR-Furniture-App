@@ -226,8 +226,8 @@ class _SearchState extends State<Search> {
                                     children: [
                                       TextButton(
                                         onPressed: () {
-                                          int tempIndex = BlocProvider.of<HomeCubit>(context).furnitureList.indexWhere((element) => element.furnitureId == fur.furnitureId);
-                                          BlocProvider.of<HomeCubit>(context).addOrRemoveFromFavorite(tempIndex);
+                                          // int tempIndex = BlocProvider.of<HomeCubit>(context).furnitureList.indexWhere((element) => element.furnitureId == fur.furnitureId);
+                                          BlocProvider.of<HomeCubit>(context).addOrRemoveFromFavorite(fur.furnitureId);
                                           BlocProvider.of<HomeCubit>(context).emit(AddOrRemoveFavoriteState());
                                         },
                                         child: fur.isFavorite ? FavoriteIcon(iconLogo: Icons.favorite, iconColor: kAppBackgroundColor,) : FavoriteIcon(iconLogo: Icons.favorite_border_rounded, iconColor: kAppBackgroundColor,),

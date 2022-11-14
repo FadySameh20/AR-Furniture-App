@@ -20,6 +20,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
   @override
   Widget build(BuildContext context) {
     List<FurnitureModel> myFavorites=BlocProvider.of<HomeCubit>(context).furnitureList.where((element) => element.isFavorite==true).toList();
+    print("Mylist:${myFavorites.length}");
     return myFavorites.isEmpty?Center(child: Text("No Favorites Yet",style: Theme.of(context).textTheme.bodyText1?.copyWith(
       fontSize: 24
     ),),):Container(
@@ -90,7 +91,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
                       child: InkWell(
                         onTap: ()async{
                             setState(() {
-                              BlocProvider.of<HomeCubit>(context).addOrRemoveFromFavorite(index);
+                              BlocProvider.of<HomeCubit>(context).addOrRemoveFromFavorite(myFavorites[index].furnitureId);
                             });
                         },
                         child: Padding(
