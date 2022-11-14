@@ -166,8 +166,8 @@ class _CartScreenState extends State<CartScreen> {
                         onDismissed: (direction) {
                           BlocProvider.of<HomeCubit>(context).removeFromCart(
                               furnitureIds[index], furnitureColors[index]);
-                          subTotal =subTotal- (int.parse(
-                              furniturePrices[index])*int.parse(
+                          subTotal =subTotal- (double.parse(
+                              furniturePrices[index])*double.parse(
                               furnitureQuantities[index]));
                           tax = subTotal *
                               estimatingTax;
@@ -246,7 +246,7 @@ class _CartScreenState extends State<CartScreen> {
                                                           index]);
                                                       furnitureQuantities[index] =
                                                           quantity.toString();
-                                                      subTotal -= int.parse(
+                                                      subTotal -= double.parse(
                                                           furniturePrices[index]);
                                                       tax = subTotal *
                                                           estimatingTax;
@@ -315,7 +315,7 @@ class _CartScreenState extends State<CartScreen> {
                                                       quantity++;
                                                       furnitureQuantities[index] =
                                                           quantity.toString();
-                                                      subTotal += int.parse(
+                                                      subTotal += double.parse(
                                                           furniturePrices[index]);
                                                       tax = subTotal *
                                                           estimatingTax;
