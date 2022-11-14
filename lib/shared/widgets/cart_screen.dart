@@ -72,7 +72,7 @@ class _CartScreenState extends State<CartScreen> {
           furnitureQuantities.add(element.quantityCart);
           furnitureImages.add(element.image);
           availableQuantity.add(element.quantity);
-          furniturePrices.add(element.price);
+          furniturePrices.add((double.parse(element.price) -( (double.parse(element.discount)/100)*double.parse(element.price))).toStringAsFixed(2));
           furnitureColors.add(element.color);
           print("furnitureCOLORS");
           print(furnitureColors);
@@ -90,7 +90,7 @@ class _CartScreenState extends State<CartScreen> {
     });
     for (int i = 0; i < furniturePrices.length; i++) {
       subTotal +=
-          int.parse(furnitureQuantities[i]) * int.parse(furniturePrices[i]);
+          int.parse(furnitureQuantities[i]) * double.parse(furniturePrices[i]);
     }
 
     tax = subTotal * estimatingTax;
