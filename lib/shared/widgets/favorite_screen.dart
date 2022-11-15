@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:ffi';
 
 import 'package:ar_furniture_app/cubits/home_cubit.dart';
+import 'package:ar_furniture_app/cubits/home_states.dart';
 import 'package:ar_furniture_app/models/furniture_model.dart';
 import 'package:ar_furniture_app/shared/constants/constants.dart';
 import 'package:ar_furniture_app/shared/widgets/favorite_icon.dart';
@@ -19,24 +20,27 @@ class FavoriteScreen extends StatefulWidget {
 class _FavoriteScreenState extends State<FavoriteScreen> {
   @override
   Widget build(BuildContext context) {
-    List<FurnitureModel> myFavorites=BlocProvider.of<HomeCubit>(context).furnitureList.where((element) => element.isFavorite==true).toList();
-    print("Mylist:${myFavorites.length}");
-    return myFavorites.isEmpty?Center(child: Text("No Favorites Yet",style: Theme.of(context).textTheme.bodyText1?.copyWith(
-      fontSize: 24
-    ),),):Container(
-      // height: MediaQuery.of(context).size.height * 0.6,
-      // flex: 2,
-      child: ListView.builder(
-          itemCount: myFavorites.length,
-          itemBuilder: (context, index) {
-            List<Color> myColors=[];
-            myFavorites[index].shared.forEach((element) {
-              myColors.add(BlocProvider.of<HomeCubit>(context).getColorFromHex(element.color)!);
-            });
-            // BlocProvider.of<HomeCubit>(context).getColorFromHex()
-            return FavoriteItemWidget(myFavorites[index],myColors);
-          }),
-    );
+    return BlocConsumer<HomeCubit,HomeState>(builder: (context,index){
+      List<FurnitureModel> myFavorites=BlocProvider.of<HomeCubit>(context).furnitureList.where((element) => element.isFavorite==true).toList();
+      print("Mylist:${myFavorites.length}");
+      return myFavorites.isEmpty?Center(child: Text("No Favorites Yet",style: Theme.of(context).textTheme.bodyText1?.copyWith(
+          fontSize: 24
+      ),),):Container(
+        // height: MediaQuery.of(context).size.height * 0.6,
+        // flex: 2,
+        child: ListView.builder(
+            itemCount: myFavorites.length,
+            itemBuilder: (context, index) {
+              List<Color> myColors=[];
+              myFavorites[index].shared.forEach((element) {
+                myColors.add(BlocProvider.of<HomeCubit>(context).getColorFromHex(element.color)!);
+              });
+              // BlocProvider.of<HomeCubit>(context).getColorFromHex()
+              return FavoriteItemWidget(myFavorites[index],myColors);
+            }),
+      );
+    }, listener:(context,state){});
+
   }
 }
 
@@ -153,10 +157,12 @@ class _FavoriteItemWidgetState extends State<FavoriteItemWidget> {
             ),
             Align(
               alignment: Alignment.topRight,
-              child: InkWell(
+              child: GestureDetector(
+                // borderRadius: BorderRadius.circular(20),
                 onTap: ()async{
                   setState(() {
                     BlocProvider.of<HomeCubit>(context).addOrRemoveFromFavorite(widget.myFavorite.furnitureId);
+                    // BlocProvider.of<HomeCubit>(context).emit(CheckoutSuccessfully());
                   });
                 },
                 child: Padding(
