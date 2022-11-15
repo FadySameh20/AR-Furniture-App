@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:ar_furniture_app/cubits/home_cubit.dart';
+import 'package:ar_furniture_app/cubits/home_states.dart';
 import 'package:ar_furniture_app/shared/widgets/validations.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -80,7 +81,8 @@ class _ProfileEditState extends State<ProfileEdit> {
     return Scaffold(
       appBar: AppBar(
           backgroundColor: Color.fromRGBO(191, 122, 47, 1),
-          leading: IconButton(onPressed: (){Navigator.pop(context);},icon: Icon(Icons.arrow_back_sharp),),
+          leading: IconButton(onPressed: (){Navigator.pop(context);
+            },icon: Icon(Icons.arrow_back_sharp),),
 
           centerTitle: true,
           title: Text(

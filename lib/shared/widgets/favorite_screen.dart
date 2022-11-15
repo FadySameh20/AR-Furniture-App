@@ -29,82 +29,146 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
       child: ListView.builder(
           itemCount: myFavorites.length,
           itemBuilder: (context, index) {
-            return Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Material(
-                borderRadius: BorderRadius.circular(20),
-                // decoration: BoxDecoration(
-                //   borderRadius: BorderRadius.circular(20)
-
-                // ),
-                child: Stack(
-                  children: [
-                    Row(
-                      // mainAxisSize: MainAxisSize.max,
-                      children: [
-                        // Column(),
-                        Expanded(
-                            flex: 1,
-                            child: Padding(
-                              padding: const EdgeInsets.all(20.0),
-                              child: Image.asset(
-                                "assets/Item_1.png",
-                                fit: BoxFit.contain,
-                              ),
-                            )),
-
-                        Expanded(
-                          flex: 2,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                myFavorites[index].name,
-                                style: TextStyle(fontSize: 15),
-                              ),
-                              SizedBox(
-                                height: 10,
-                              ),
-                              Row(
-                                children: [
-                                  Spacer(),
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 10.0),
-                                    child: Text(
-                                      myFavorites[index].shared.first.price,
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 18),
-                                    ),
-                                  ),
-                                ],
-                              )
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                    Align(
-                      alignment: Alignment.topRight,
-                      child: InkWell(
-                        onTap: ()async{
-                            setState(() {
-                              BlocProvider.of<HomeCubit>(context).addOrRemoveFromFavorite(myFavorites[index].furnitureId);
-                            });
-                        },
-                        child: Padding(
-                          padding: const EdgeInsets.only(top:15.0,right:15.0),
-                          child: FavoriteIcon(iconLogo:Icons.favorite,iconColor: kAppBackgroundColor,),
-                        ),
-                      ),
-                    )
-                  ],
-                ),
-              ),
-            );
+            List<Color> myColors=[];
+            myFavorites[index].shared.forEach((element) {
+              myColors.add(BlocProvider.of<HomeCubit>(context).getColorFromHex(element.color)!);
+            });
+            // BlocProvider.of<HomeCubit>(context).getColorFromHex()
+            return FavoriteItemWidget(myFavorites[index],myColors);
           }),
     );
   }
 }
+
+class FavoriteItemWidget extends StatefulWidget {
+  FurnitureModel myFavorite;
+  List<Color> myColor;
+  FavoriteItemWidget(this.myFavorite, this.myColor);
+  @override
+  State<FavoriteItemWidget> createState() => _FavoriteItemWidgetState();
+}
+
+class _FavoriteItemWidgetState extends State<FavoriteItemWidget> {
+  int currentColorIndex=0;
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(10.0),
+      child: Material(
+        borderRadius: BorderRadius.circular(20),
+        // decoration: BoxDecoration(
+        //   borderRadius: BorderRadius.circular(20)
+
+        // ),
+        child: Stack(
+          children: [
+            Row(
+              // mainAxisSize: MainAxisSize.max,
+              children: [
+                // Column(),
+                Expanded(
+                    flex: 1,
+                    child: Padding(
+                      padding: const EdgeInsets.all(20.0),
+                      child: Image.asset(
+                        "assets/Item_1.png",
+                        fit: BoxFit.contain,
+                      ),
+                    )),
+
+                Expanded(
+                  flex: 2,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        widget.myFavorite.name,
+                        style: TextStyle(fontSize: 15),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Row(
+                        children: [
+                          Spacer(),
+
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              Text(
+                                (double.parse(widget.myFavorite.shared[currentColorIndex].price
+                                )).toStringAsFixed(2)+
+                                    ' L.E',
+                                style: TextStyle(
+                                  decoration: widget.myFavorite.shared[currentColorIndex].discount!="0"?TextDecoration.lineThrough:null,
+                                  fontSize: 18.0,
+                                  fontWeight: FontWeight.w600,
+                                  color: kAppBackgroundColor,
+                                ),
+                              ),
+                              SizedBox(width: 10,),
+                              if(widget.myFavorite.shared[currentColorIndex].discount!="0")
+
+                                Text(
+
+                                  '${(double.parse(widget.myFavorite.shared[currentColorIndex].price) -( (double.parse(widget.myFavorite.shared[currentColorIndex].discount)/100)*double.parse(widget.myFavorite.shared[currentColorIndex].price))).toStringAsFixed(2)} L.E',
+                                  style: TextStyle(
+                                    fontSize: 18.0,
+                                    fontWeight: FontWeight.w600,
+                                    color: kAppBackgroundColor,
+                                  ),
+                                )
+                            ],
+                          ),
+                        ],
+                      ),
+                      Container(
+                        height: 30,
+                        width: MediaQuery.of(context).size.width/3,
+                        // color: Colors.black,
+                        child:ListView.builder(scrollDirection: Axis.horizontal,itemCount: widget.myColor.length,itemBuilder: (context,index){
+                          return Padding(
+
+                            padding: const EdgeInsets.only(right:8.0),
+                            child: InkWell(
+                              onTap: (){
+                                setState(() {
+                                  currentColorIndex=index;
+                                });
+                              },
+                              child: CircleAvatar(
+                                radius: 15,
+                                backgroundColor: widget.myColor[index],
+                                child: index==currentColorIndex?Icon(Icons.check):null,
+                              ),
+                            ),
+                          );
+                        }),
+                      )
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            Align(
+              alignment: Alignment.topRight,
+              child: InkWell(
+                onTap: ()async{
+                  setState(() {
+                    BlocProvider.of<HomeCubit>(context).addOrRemoveFromFavorite(widget.myFavorite.furnitureId);
+                  });
+                },
+                child: Padding(
+                  padding: const EdgeInsets.only(top:15.0,right:15.0),
+                  child: FavoriteIcon(iconLogo:Icons.favorite,iconColor: kAppBackgroundColor,),
+                ),
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+}
+

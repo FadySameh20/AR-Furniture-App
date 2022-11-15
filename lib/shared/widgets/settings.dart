@@ -21,8 +21,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   var fNameController = TextEditingController();
   var lNameController = TextEditingController();
   var emailController = TextEditingController();
-  List<Widget> NavbarPages = [ProfileEdit(),FavoriteScreen()];
-
+  List<Widget> NavbarPages = [ProfileEdit(), FavoriteScreen()];
 
   // index 0 darkmode
   // index 1 notifications
@@ -47,29 +46,28 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   Padding settingsOption(String optionText, IconData optionIcon,
       [int switchIndex = 2]) {
-
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Column(
         children: [
           InkWell(
-            onTap: ()async {
-              if(optionText == "Edit Profile"){
-                Navigator.push(
+            onTap: () async {
+              if (optionText == "Edit Profile") {
+                await Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) =>  ProfileEdit()),
-                );
-              }
-              else if(optionText == "My Orders"){
-                if(BlocProvider.of<HomeCubit>(context).orders.isEmpty) {
+                  MaterialPageRoute(builder: (context) => ProfileEdit()),
+                ).then((value) {
+                  setState(() {});
+                });
+              } else if (optionText == "My Orders") {
+                if (BlocProvider.of<HomeCubit>(context).orders.isEmpty) {
                   await BlocProvider.of<HomeCubit>(context).getOrders();
                 }
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) =>  OrderScreen()),
+                  MaterialPageRoute(builder: (context) => OrderScreen()),
                 );
-              }
-              else if(optionText=="Logout"){
+              } else if (optionText == "Logout") {
                 context.read<HomeCubit>().logout(context);
               }
               // Navigator.push(
@@ -90,7 +88,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     ),
                   ),
                   borderRadius: BorderRadius.circular(10),
-                  color: const Color.fromRGBO(207,138,61, 1),
+                  color: const Color.fromRGBO(207, 138, 61, 1),
                 ),
                 SizedBox(
                   width: 8,
@@ -110,7 +108,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   Padding settingsOptionCategory(String categoryText) {
-
     return Padding(
       padding: const EdgeInsets.all(20.0),
       child: Row(
@@ -127,20 +124,21 @@ class _SettingsScreenState extends State<SettingsScreen> {
       ),
     );
   }
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    var temp = BlocProvider
-        .of<HomeCubit>(context)
+    var temp = BlocProvider.of<HomeCubit>(context)
         .cacheModel!
         .usersCachedModel
-        .where((element) =>
-    element.uid == FirebaseAuth.instance.currentUser!.uid);
+        .where(
+            (element) => element.uid == FirebaseAuth.instance.currentUser!.uid);
     UserModel userModel = temp.first.cachedUser;
     fNameController.text = userModel.fName;
     lNameController.text = userModel.lName;
     emailController.text = userModel.email;
   }
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -155,7 +153,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
               children: [
                 CircleAvatar(
                   backgroundColor: Colors.white,
-                  backgroundImage:  BlocProvider.of<HomeCubit>(context).cache.cachedUser.img!=""?NetworkImage(BlocProvider.of<HomeCubit>(context).cache.cachedUser.img):AssetImage("assets/profile.png") as ImageProvider,
+                  backgroundImage: BlocProvider.of<HomeCubit>(context)
+                              .cache
+                              .cachedUser
+                              .img !=
+                          ""
+                      ? NetworkImage(BlocProvider.of<HomeCubit>(context)
+                          .cache
+                          .cachedUser
+                          .img)
+                      : AssetImage("assets/profile.png") as ImageProvider,
                   radius: 50,
                 ),
                 SizedBox(
@@ -165,14 +172,25 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      fNameController.text+" "+lNameController.text,
+                      BlocProvider.of<HomeCubit>(context)
+                              .cache
+                              .cachedUser
+                              .fName +
+                          " " +
+                          BlocProvider.of<HomeCubit>(context)
+                              .cache
+                              .cachedUser
+                              .lName,
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 25,
                       ),
                     ),
                     Text(
-                      emailController.text,
+                      BlocProvider.of<HomeCubit>(context)
+                          .cache
+                          .cachedUser
+                          .email,
                       style: TextStyle(
                         fontSize: 15,
                       ),
