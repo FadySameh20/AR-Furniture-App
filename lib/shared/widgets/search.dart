@@ -357,18 +357,17 @@ class _SearchState extends State<Search> {
       setState(() => searchR = suggestions);
     }
   }
+
   Future<List<FurnitureModel>> addMoreData(List<FurnitureModel> suggestions1, String input) async {
     int moreFurnitureCount = filteredFurniture.length;
-
-    print("FURNITURE LIST:");
-    await BlocProvider.of<HomeCubit>(context).getSearchData(input);
+    if(BlocProvider.of<HomeCubit>(context).lastSearchbarName == input) {
+      print("get more dataaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+      print(input);
+      await BlocProvider.of<HomeCubit>(context).getMoreSearchData(input);
+    } else {
+      await BlocProvider.of<HomeCubit>(context).getSearchData(input);
+    }
     filteredFurniture = BlocProvider.of<HomeCubit>(context).furnitureList.toList();
-    print("hi");
-    filteredFurniture.forEach((element) {
-      print(element.name);
-    });
-    print("end");
-    print("FURNITURE LIST ENDEDDDD");
     if (moreFurnitureCount != filteredFurniture.length){
       int j;
       for(j=moreFurnitureCount; j<filteredFurniture.length; j++){
