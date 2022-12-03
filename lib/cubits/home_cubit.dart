@@ -58,8 +58,8 @@ class HomeCubit extends Cubit<HomeState> {
 
       await getFurniture(categories[i].name, limit: 3);
 
-
     }
+    await getFavorites();
   }
 
   setCache() async {
@@ -651,6 +651,7 @@ class HomeCubit extends Cubit<HomeState> {
     CacheHelper.setData(key: 'user', value: jsonEncode(cacheModel!.toMap()));
   }
 
+
   getCache() async {
     var temp = await CacheHelper.getData("user") ?? "";
     if (temp != "") {
@@ -691,6 +692,31 @@ class HomeCubit extends Cubit<HomeState> {
         .first;
 
     // return "";
+  }
+
+  getFavorites() async {
+    for (var elem in cache.cachedFavoriteIds) {
+      if (furnitureList.contains(elem)) {
+        continue;
+      } else {
+        for (var i = 0; i < categories.length; i++) {
+          await FirebaseFirestore.instance
+              .collection('category')
+              .doc(categories[i].name)
+              .collection("furniture")
+              .doc(elem)
+              .get()
+              .then((value) {
+            if (value.data != null) {
+              FurnitureModel fur =
+                  FurnitureModel.fromJson(value.data() as Map<String, dynamic>);
+              fur.isFavorite = true;
+              furnitureList.add(fur);
+            }
+          });
+        }
+      }
+    }
   }
 
   addOrRemoveFromFavorite(furnitureId) async {
