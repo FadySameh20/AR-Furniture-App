@@ -40,7 +40,7 @@ class OrderScreen extends StatelessWidget {
             print(shared[j].image);
             furniture["image"]=shared[j].image;
             furniture["price"] = shared[j].price;
-            furniture["quantity"]=shared[j].quantity;
+            furniture["quantity"]=shared[j].quantityCart;
             furniture["discount"]=shared[j].discount;
             print(key.split("|")[1]);
             furniture["name"]=key.split("|")[1];
