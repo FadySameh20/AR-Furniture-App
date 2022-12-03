@@ -89,6 +89,7 @@ class HomeCubit extends Cubit<HomeState> {
     int sizeFurniture = furnitureList.length;
     lastSearchbarName = searchbarName;
     moreFurnitureAvailable = true;
+    int flag = 0;
     await FirebaseFirestore.instance
         .collectionGroup("furniture")
         .where('name',
@@ -107,7 +108,13 @@ class HomeCubit extends Cubit<HomeState> {
         snapshot.docs.forEach((snap) {
           print(snap.data());
           FurnitureModel myFurniture = FurnitureModel.fromJson(snap.data());
-          if (!furnitureList.contains(myFurniture)) {
+          flag = 0;
+          furnitureList.forEach((element) {
+            if (element.furnitureId == myFurniture.furnitureId) {
+              flag = 1;
+            }
+          });
+          if (flag == 0) {
             furnitureList.add(myFurniture);
             if (favoritesId.contains(myFurniture.furnitureId)) {
               furnitureList.last.isFavorite = true;
@@ -135,6 +142,7 @@ class HomeCubit extends Cubit<HomeState> {
     } else {
       favoritesId = cache.cachedFavoriteIds;
     }
+    int flag = 0;
     int sizeFurniture = furnitureList.length;
     await FirebaseFirestore.instance
         .collectionGroup("furniture")
@@ -155,7 +163,13 @@ class HomeCubit extends Cubit<HomeState> {
         snapshot.docs.forEach((snap) {
           print(snap.data());
           FurnitureModel myFurniture = FurnitureModel.fromJson(snap.data());
-          if (!furnitureList.contains(myFurniture)) {
+          flag = 0;
+          furnitureList.forEach((element) {
+            if (element.furnitureId == myFurniture.furnitureId) {
+              flag = 1;
+            }
+          });
+          if (flag == 0) {
             furnitureList.add(myFurniture);
             if (favoritesId.contains(myFurniture.furnitureId)) {
               furnitureList.last.isFavorite = true;
@@ -194,6 +208,7 @@ class HomeCubit extends Cubit<HomeState> {
     } else {
       favoritesId = cache.cachedFavoriteIds;
     }
+    int flag = 0;
     print(favoritesId);
     if (limit == 0) {
       await FirebaseFirestore.instance
@@ -204,7 +219,13 @@ class HomeCubit extends Cubit<HomeState> {
           .then((value) {
         for (var element in value.docs) {
           FurnitureModel myFurniture = FurnitureModel.fromJson(element.data());
-          if (!furnitureList.contains(myFurniture)) {
+          flag = 0;
+          furnitureList.forEach((element) {
+            if (element.furnitureId == myFurniture.furnitureId) {
+              flag = 1;
+            }
+          });
+          if (flag == 0) {
             furnitureList.add(myFurniture);
             if (favoritesId.contains(myFurniture.furnitureId)) {
               furnitureList.last.isFavorite = true;
@@ -233,7 +254,13 @@ class HomeCubit extends Cubit<HomeState> {
                 snapshot.docs.forEach((snap) {
                   print("Snap" + lastDocMap[categoryName].get('furnitureId'));
                   FurnitureModel myFurniture = FurnitureModel.fromJson(snap.data());
-                  if (!furnitureList.contains(myFurniture)) {
+                  flag = 0;
+                  furnitureList.forEach((element) {
+                    if (element.furnitureId == myFurniture.furnitureId) {
+                      flag = 1;
+                    }
+                  });
+                  if (flag == 0) {
                     furnitureList.add(myFurniture);
                     if (favoritesId.contains(myFurniture.furnitureId)) {
                       furnitureList.last.isFavorite = true;
@@ -264,7 +291,13 @@ class HomeCubit extends Cubit<HomeState> {
                 print("Snap " + lastDocMap[categoryName].get('furnitureId'));
                 print(snap.data());
                 FurnitureModel myFurniture = FurnitureModel.fromJson(snap.data());
-                if (!furnitureList.contains(myFurniture)) {
+                flag = 0;
+                furnitureList.forEach((element) {
+                  if (element.furnitureId == myFurniture.furnitureId) {
+                    flag = 1;
+                  }
+                });
+                if (flag == 0) {
                   furnitureList.add(myFurniture);
                   if (favoritesId.contains(myFurniture.furnitureId)) {
                     furnitureList.last.isFavorite = true;
