@@ -778,6 +778,9 @@ class HomeCubit extends Cubit<HomeState> {
       });
     });
     print(orders);
+    orders.sort((a,b){
+      return b.time.compareTo(a.time);
+    });
   }
 
   createOrder(String appartmentNumber, String area, String buildingNumber,
@@ -798,6 +801,7 @@ class HomeCubit extends Cubit<HomeState> {
         mobileNumber: mobileNumber,
         streetName: streetName,
         order: orderMap);
+
     print("After creating OrderModel");
     print(orderModel.order);
     print("After printing orders");
@@ -813,7 +817,12 @@ class HomeCubit extends Cubit<HomeState> {
     });
     print("ya rbbb");
     if (orders.isNotEmpty) {
-      orders.add(orderModel);
+     await FirebaseFirestore.instance.collection("order").where("uid", isEqualTo: FirebaseAuth.instance.currentUser!.uid).orderBy("time", descending: true).limit(1).get().then((value){
+        value.docs.forEach((element) {
+          print(element);
+          orders.insert(0,OrderModel.fromJson(element.data()));
+        });
+      });
     }
   }
 
