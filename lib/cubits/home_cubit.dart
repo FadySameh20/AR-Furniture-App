@@ -576,7 +576,8 @@ class HomeCubit extends Cubit<HomeState> {
             print(orderedSharedList);
           }
         });
-        orderMap[key] = orderedSharedList;
+        String name=key+"|"+furnitureList.where((element) => element.furnitureId==key).first.name;
+        orderMap[name] = orderedSharedList;
       });
 
       print("Cart map");
@@ -780,9 +781,11 @@ class HomeCubit extends Cubit<HomeState> {
         .set(orderModel.toMap())
         .then((value) {
       print("Order made successfully");
+
     }).catchError((error) {
       print('errorOrder: ' + error.toString());
     });
+    print("ya rbbb");
     if (orders.isNotEmpty) {
       orders.add(orderModel);
     }
