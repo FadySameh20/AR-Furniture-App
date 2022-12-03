@@ -36,7 +36,9 @@ class HomeCubit extends Cubit<HomeState> {
   Map<String, dynamic> orderMap = {};
   List<OrderModel> orders = [];
   var cache;
-  DocumentSnapshot? _lastDocument;
+  DocumentSnapshot? _lastDocumentSearch;
+  String lastSearchbarName = "";
+  bool moreFurnitureAvailable = true;
   Map<String, dynamic> lastDocMap = {};
 
   getAllData() async {
@@ -77,27 +79,96 @@ class HomeCubit extends Cubit<HomeState> {
   }
 
   getSearchData(String searchbarName) async {
-    print("get search dataaaaaaaa");
-    print(furnitureList.map((e) => e.name).toList());
-    print("--------------------------------");
+    List favoritesId;
+    if (cache == "") {
+      favoritesId = [];
+    } else {
+      favoritesId = cache.cachedFavoriteIds;
+    }
+    print("ANA GET SEARCH DATA   $searchbarName");
+    int sizeFurniture = furnitureList.length;
+    lastSearchbarName = searchbarName;
+    moreFurnitureAvailable = true;
     await FirebaseFirestore.instance
         .collectionGroup("furniture")
-        .where('name', whereNotIn: furnitureList.map((e) => e.name).toList())
         .where('name',
-            isGreaterThanOrEqualTo: searchbarName,
-            isLessThanOrEqualTo: '$searchbarName\uf8ff')
-        .limit(4)
+        isGreaterThanOrEqualTo: searchbarName,
+        isLessThanOrEqualTo: '$searchbarName\uf8ff')
+        .orderBy('name')
+        .limit(6)
         .get()
-        .then((value) {
-      value.docs.forEach((element) {
-        print(element["name"]);
-        furnitureList.add(FurnitureModel.fromJson(element.data()));
-      });
-    });
-    print("Hellloooo");
-    print(furnitureList.length);
-    print(furnitureList.map((e) => e.name).toList());
-    print("get search data 5alset");
+        .then((snapshot) {
+      if(snapshot.docs.length < 6) {
+        moreFurnitureAvailable = false;
+      }
+      if (snapshot.docs.length != 0) {
+        _lastDocumentSearch = snapshot.docs.last;
+        print("searchhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh");
+        snapshot.docs.forEach((snap) {
+          print(snap.data());
+          FurnitureModel myFurniture = FurnitureModel.fromJson(snap.data());
+          if (!furnitureList.contains(myFurniture)) {
+            furnitureList.add(myFurniture);
+            if (favoritesId.contains(myFurniture.furnitureId)) {
+              furnitureList.last.isFavorite = true;
+            }
+          }
+        });
+        print("===========================================");
+      }
+    }).catchError((error) => print("Error: " + error.toString()));
+    print("ANA 5LAST GET SEARCH DATA   $searchbarName");
+    if (sizeFurniture == furnitureList.length) {
+      moreFurnitureAvailable = false;
+    }
+  }
+
+  getMoreSearchData (String searchbarName) async {
+    print("ANA GET MORE DATAAAAAAA  $searchbarName");
+    print(moreFurnitureAvailable);
+    if (moreFurnitureAvailable == false) {
+      return;
+    }
+    List favoritesId;
+    if (cache == "") {
+      favoritesId = [];
+    } else {
+      favoritesId = cache.cachedFavoriteIds;
+    }
+    int sizeFurniture = furnitureList.length;
+    await FirebaseFirestore.instance
+        .collectionGroup("furniture")
+        .where('name',
+        isGreaterThanOrEqualTo: searchbarName,
+        isLessThanOrEqualTo: '$searchbarName\uf8ff')
+        .orderBy('name')
+        .startAfter([_lastDocumentSearch?.data()])
+        .limit(6)
+        .get()
+        .then((snapshot) {
+      if(snapshot.docs.length < 6) {
+        moreFurnitureAvailable = false;
+      }
+      if (snapshot.docs.length != 0) {
+        _lastDocumentSearch = snapshot.docs.last;
+        print("searchhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh");
+        snapshot.docs.forEach((snap) {
+          print(snap.data());
+          FurnitureModel myFurniture = FurnitureModel.fromJson(snap.data());
+          if (!furnitureList.contains(myFurniture)) {
+            furnitureList.add(myFurniture);
+            if (favoritesId.contains(myFurniture.furnitureId)) {
+              furnitureList.last.isFavorite = true;
+            }
+          }
+        });
+        print("===========================================");
+      }
+    }).catchError((error) => print("Error: " + error.toString()));
+    print("ANA 5LAST GET MORE DATAAAAAAA  $searchbarName");
+    if (sizeFurniture == furnitureList.length) {
+      moreFurnitureAvailable = false;
+    }
   }
 
   getOffers() async {
@@ -133,9 +204,11 @@ class HomeCubit extends Cubit<HomeState> {
           .then((value) {
         for (var element in value.docs) {
           FurnitureModel myFurniture = FurnitureModel.fromJson(element.data());
-          furnitureList.add(myFurniture);
-          if (favoritesId.contains(myFurniture.furnitureId)) {
-            furnitureList.last.isFavorite = true;
+          if (!furnitureList.contains(myFurniture)) {
+            furnitureList.add(myFurniture);
+            if (favoritesId.contains(myFurniture.furnitureId)) {
+              furnitureList.last.isFavorite = true;
+            }
           }
         }
       });
@@ -160,9 +233,11 @@ class HomeCubit extends Cubit<HomeState> {
                 snapshot.docs.forEach((snap) {
                   print("Snap" + lastDocMap[categoryName].get('furnitureId'));
                   FurnitureModel myFurniture = FurnitureModel.fromJson(snap.data());
-                  furnitureList.add(myFurniture);
-                  if (favoritesId.contains(myFurniture.furnitureId)) {
-                    furnitureList.last.isFavorite = true;
+                  if (!furnitureList.contains(myFurniture)) {
+                    furnitureList.add(myFurniture);
+                    if (favoritesId.contains(myFurniture.furnitureId)) {
+                      furnitureList.last.isFavorite = true;
+                    }
                   }
             });
 
@@ -189,9 +264,11 @@ class HomeCubit extends Cubit<HomeState> {
                 print("Snap " + lastDocMap[categoryName].get('furnitureId'));
                 print(snap.data());
                 FurnitureModel myFurniture = FurnitureModel.fromJson(snap.data());
-                furnitureList.add(myFurniture);
-                if (favoritesId.contains(myFurniture.furnitureId)) {
-                  furnitureList.last.isFavorite = true;
+                if (!furnitureList.contains(myFurniture)) {
+                  furnitureList.add(myFurniture);
+                  if (favoritesId.contains(myFurniture.furnitureId)) {
+                    furnitureList.last.isFavorite = true;
+                  }
                 }
             });
 
@@ -499,7 +576,8 @@ class HomeCubit extends Cubit<HomeState> {
             print(orderedSharedList);
           }
         });
-        orderMap[key] = orderedSharedList;
+        String name=key+"|"+furnitureList.where((element) => element.furnitureId==key).first.name;
+        orderMap[name] = orderedSharedList;
       });
 
       print("Cart map");
@@ -729,9 +807,11 @@ class HomeCubit extends Cubit<HomeState> {
         .set(orderModel.toMap())
         .then((value) {
       print("Order made successfully");
+
     }).catchError((error) {
       print('errorOrder: ' + error.toString());
     });
+    print("ya rbbb");
     if (orders.isNotEmpty) {
       orders.add(orderModel);
     }

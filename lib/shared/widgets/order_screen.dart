@@ -28,53 +28,72 @@ class OrderScreen extends StatelessWidget {
           int quantity = 0;
           double totalPrice = 0;
           double subTotalPrice =0;
-          List<FurnitureModel> orderFurniture = [];
+          List<Map<String,dynamic>> orderFurniture = [];
           BlocProvider.of<HomeCubit>(context)
               .orders[index]
               .order
               .forEach((key, shared) {
+          for (int j = 0; j < shared.length; j++) {
+
+            Map<String,dynamic> furniture={};
+            print("lol");
+            print(shared[j].image);
+            furniture["image"]=shared[j].image;
+            furniture["price"] = shared[j].price;
+            furniture["quantity"]=shared[j].quantity;
+            furniture["discount"]=shared[j].discount;
+            print(key.split("|")[1]);
+            furniture["name"]=key.split("|")[1];
+            orderFurniture.add(furniture);
+            // quantity = json["quantity"];
+            // discount = json["discount"];
+            // // print(furniture.shared.first.colorName);
+            // // print(furniture.shared.length);
+            // orderFurniture.add(furniture);
+
+
+          }
             // FirebaseFirestore.instance.collectionGroup("category")
-            for (int i = 0;
-            i < BlocProvider.of<HomeCubit>(context).categories.length;
-            i++) {
-              FurnitureModel furniture;
-              int flag = 0;
-              FirebaseFirestore.instance
-                  .collection("category")
-                  .doc(BlocProvider.of<HomeCubit>(context).categories[i].name)
-                  .collection("furniture")
-                  .doc(key)
-                  .get()
-                  .then((value) {
-                if (value.data() != null) {
-                  for (int j = 0; j < shared.length; j++) {
-                    furniture = FurnitureModel.fromJson(
-                        value.data() as Map<String, dynamic>);
-                    furniture.shared=[];
-                    furniture.shared.add(shared[j]);
-
-                    // print(furniture.shared.first.colorName);
-                    // print(furniture.shared.length);
-                    orderFurniture.add(furniture);
-                    print("hahahah");
-                    print(shared[i].quantityCart);
-                    print(orderFurniture.last.name);
-                    print(orderFurniture.last.shared.last.quantityCart);
-
-                  }
-                  flag = 1;
-                }
-              });
-              if(flag==1){
-                break;
-              }
-            }
+            // for (int i = 0;
+            // i < BlocProvider.of<HomeCubit>(context).categories.length;
+            // i++) {
+            //   FurnitureModel furniture;
+            //   int flag = 0;
+            //   FirebaseFirestore.instance
+            //       .collection("category")
+            //       .doc(BlocProvider.of<HomeCubit>(context).categories[i].name)
+            //       .collection("furniture")
+            //       .doc(key)
+            //       .get()
+            //       .then((value) {
+            //     if (value.data() != null) {
+            //       for (int j = 0; j < shared.length; j++) {
+            //         furniture = FurnitureModel.fromJson(
+            //             value.data() as Map<String, dynamic>);
+            //         furniture.shared=[];
+            //         furniture.shared.add(shared[j]);
+            //
+            //         // print(furniture.shared.first.colorName);
+            //         // print(furniture.shared.length);
+            //         orderFurniture.add(furniture);
+            //         print("hahahah");
+            //         print(shared[i].quantityCart);
+            //         print(orderFurniture.last.name);
+            //         print(orderFurniture.last.shared.last.quantityCart);
+            //
+            //       }
+            //       flag = 1;
+            //     }
+            //   });
+            //   if(flag==1){
+            //     break;
+            //   }
+            // }
             shared.forEach((element) {
               if (element.quantityCart != null) {
                 quantity += int.parse(element.quantityCart);
                 subTotalPrice+= double.parse(element.quantityCart) *
                     double.parse(element.price);
-
               }
             });
 
@@ -160,6 +179,7 @@ class OrderScreen extends StatelessWidget {
                                   ),
                                   context: context,
                                   builder: (BuildContext context) {
+
                                     return OrderDetailsScreen(
                                         orderFurniture,
                                         BlocProvider.of<HomeCubit>(context)

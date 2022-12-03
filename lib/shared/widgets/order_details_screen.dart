@@ -6,7 +6,7 @@ import '../../models/furniture_model.dart';
 import '../../models/order_model.dart';
 
 class OrderDetailsScreen extends StatelessWidget {
-  List<FurnitureModel> furniture = [];
+  List<Map<String,dynamic>> furniture = [];
   OrderModel myOrder;
   OrderDetailsScreen(this.furniture,this.myOrder);
 
@@ -111,7 +111,7 @@ class OrderDetailsScreen extends StatelessWidget {
                                       .of(context)
                                       .size
                                       .height / 5.5,
-                                  child: Image.network(furniture[index].shared.first.image),
+                                  child: Image.network(furniture[index]["image"]),
                                   // color: Colors.purple,
                                 ),
                                 SizedBox(
@@ -127,7 +127,7 @@ class OrderDetailsScreen extends StatelessWidget {
                                           .width / 2.3,
                                       // color:Colors.red,
                                       child: Text(
-                                        furniture[index].name,
+                                        furniture[index]["name"],
                                         overflow: TextOverflow.ellipsis,
                                         maxLines: 1,
                                         style: GoogleFonts.raleway(
@@ -141,20 +141,48 @@ class OrderDetailsScreen extends StatelessWidget {
                                     SizedBox(
                                       height: 5,
                                     ),
-                                    Text(
-                                      "\$ ${furniture[index].shared.first.price}",
-                                      style: GoogleFonts.raleway(
-                                        textStyle: const TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                    )
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: [
+                                        Text(
+                                          (double.parse(furniture[index]["price"]
+                                          )).toStringAsFixed(2)+
+                                              ' L.E',
+                                          style: TextStyle(
+                                            decoration: furniture[index]["discount"]!="0"?TextDecoration.lineThrough:null,
+                                            fontSize: 15.0,
+                                            fontWeight: FontWeight.w600,
+                                            color: kAppBackgroundColor,
+                                          ),
+                                        ),
+                                        SizedBox(width: 10,),
+                                        if(furniture[index]["discount"]!="0")
+
+                                          Text(
+
+                                            '${(double.parse(furniture[index]["price"]) -( (double.parse(furniture[index]["discount"])/100)*double.parse(furniture[index]["price"]))).toStringAsFixed(2)} L.E',
+                                            style: TextStyle(
+                                              fontSize: 15.0,
+                                              fontWeight: FontWeight.w600,
+                                              color: kAppBackgroundColor,
+                                            ),
+                                          )
+                                      ],
+                                    ),
+                                    // Text(
+                                    //   "\$ ${furniture[index]["price"]}",
+                                    //   style: GoogleFonts.raleway(
+                                    //     textStyle: const TextStyle(
+                                    //         fontSize: 16,
+                                    //         fontWeight: FontWeight.bold),
+                                    //   ),
+                                    // )
                                   ],
                                 ),
                                 Spacer(),
                                 Padding(
                                   padding: const EdgeInsets.only(right:15.0),
-                                  child: Text("${furniture[index].shared.first.quantityCart}"),
+                                  child: Text("${furniture[index]["quantity"]}"),
                                 )
                               ],
                             );
