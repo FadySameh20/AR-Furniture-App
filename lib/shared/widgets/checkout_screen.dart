@@ -4,6 +4,7 @@ import 'package:ar_furniture_app/cubits/home_cubit.dart';
 import 'package:ar_furniture_app/cubits/home_states.dart';
 import 'package:ar_furniture_app/shared/cache/sharedpreferences.dart';
 import 'package:ar_furniture_app/shared/constants/constants.dart';
+import 'package:ar_furniture_app/shared/widgets/cart_screen.dart';
 import 'package:ar_furniture_app/shared/widgets/circle_avatar.dart';
 import 'package:ar_furniture_app/shared/widgets/validations.dart';
 import 'package:flutter/foundation.dart';
@@ -92,7 +93,41 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
             ),
           ),
         ).show();
-      } else if (state is CheckoutSuccessfully) {
+      } else if (state is ErrorInDiscount) {
+          Alert(
+            context: context,
+            type: AlertType.warning,
+            title: "Discount has changed",
+            desc: BlocProvider.of<HomeCubit>(context)
+                .changedDiscountList
+                .join('\n\n'),
+            buttons: [
+              DialogButton(
+                child: Text(
+                  "Return to cart screen",
+                  style: TextStyle(color: Colors.white, fontSize: 20),
+                ),
+                onPressed: () {
+                  Navigator.pop(context);
+                  Navigator.pop(context);
+                  Navigator.pop(context);
+                  Navigator.push(context,MaterialPageRoute(builder: (context)=>CartScreen(furnitureList: BlocProvider.of<HomeCubit>(context).furnitureList, cartMap: BlocProvider.of<HomeCubit>(context).cache.cartMap)));
+                },
+                color: kAppBackgroundColor,
+              ),
+            ],
+            style: AlertStyle(
+              animationType: AnimationType.fromTop,
+              animationDuration: Duration(milliseconds: 400),
+              titleStyle: TextStyle(
+                color: Colors.red,
+              ),
+              descStyle: TextStyle(
+                fontSize: 17,
+              ),
+            ),
+          ).show();
+      } else if (state is OrderMadeSuccessfully) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text('PLaced order successfully !'),
         ));

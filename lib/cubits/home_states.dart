@@ -36,7 +36,9 @@ class UpdateUserDataErrorData extends HomeState{
 
 class AddedToCartSuccessfully extends HomeState{}
 
-class CheckoutSuccessfully extends HomeState{}
+class OrderMadeSuccessfully extends HomeState{}
 
 class ErrorInCheckout extends HomeState{}
+
+class ErrorInDiscount extends HomeState{}
 
