@@ -67,7 +67,8 @@ class _CartScreenState extends State<CartScreen> {
     print(widget.cartMap);
     widget.cartMap.forEach((key, value) {
       value.forEach((element) {
-
+        print("lol");
+        print(element.quantityCart);
         if (int.parse(element.quantityCart) > 0) {
           furnitureQuantities.add(element.quantityCart);
           furnitureImages.add(element.image);
@@ -163,8 +164,8 @@ class _CartScreenState extends State<CartScreen> {
                         key: UniqueKey(),
                         // Provide a function that tells the app
                         // what to do after an item has been swiped away
-                        onDismissed: (direction) {
-                          BlocProvider.of<HomeCubit>(context).removeFromCart(
+                        onDismissed: (direction)async {
+                          await BlocProvider.of<HomeCubit>(context).removeFromCart(
                               furnitureIds[index], furnitureColors[index]);
                           subTotal =subTotal- (double.parse(
                               furniturePrices[index])*double.parse(
@@ -176,7 +177,12 @@ class _CartScreenState extends State<CartScreen> {
                           // Remove the item from the data source.
                           setState(() {
                             furnitureNames.removeAt(index);
-
+                            furnitureQuantities.removeAt(index);
+                            furnitureColors.removeAt(index);
+                            furnitureIds.removeAt(index);
+                            furnitureImages.removeAt(index);
+                            furniturePrices.removeAt(index);
+                            availableQuantity.removeAt(index);
                           });
 
                           // Then show a snackbar.

@@ -89,6 +89,10 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
             backgroundColor: Color.fromRGBO(191, 122, 47, 1),
             actions: [
               IconButton(onPressed: () {
+                print("ya rbbb");
+                print( BlocProvider
+                    .of<HomeCubit>(context)
+                    .cache.cartMap);
                 Navigator.push(context, MaterialPageRoute(builder: (context) =>
                     CartScreen(furnitureList: BlocProvider
                         .of<HomeCubit>(context)
@@ -626,7 +630,7 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                                   print("Blue: " + selectedColor!.blue.toRadixString(16).padLeft(2, '0').toString().toUpperCase());
                                   String color = "#" + selectedColor!.red.toRadixString(16).padLeft(2, '0').toString().toUpperCase() + selectedColor!.green.toRadixString(16).padLeft(2, '0').toString().toUpperCase() + selectedColor!.blue.toRadixString(16).padLeft(2, '0').toString().toUpperCase();
                                   print(color);
-                                  BlocProvider.of<HomeCubit>(context).addToCart(
+                                  await BlocProvider.of<HomeCubit>(context).addToCart(
                                       widget.selectedFurniture.furnitureId,
                                       color, quantity);
 
@@ -660,6 +664,12 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                                   // CacheHelper.setMap(
                                   //     key: 'cart', value: json.encode(cartMap));
                                   //}
+                                  print("ya rbbb");
+                                  print( BlocProvider
+                                      .of<HomeCubit>(context)
+                                      .cache.cartMap);
+
+
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
