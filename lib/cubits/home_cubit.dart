@@ -548,6 +548,7 @@ class HomeCubit extends Cubit<HomeState> {
       String floorNumber,
       String mobileNumber,
       String streetName) async {
+    emit(LoadingMakeOrder());
     bool flag = false;
     bool discountFlag = false;
     Map<String, List<int>> availableQuantity = {};

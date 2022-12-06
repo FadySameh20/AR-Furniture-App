@@ -238,108 +238,107 @@ class _HomePageState extends State<HomePage> {
                               itemBuilder: (context, index) {
                                 return Padding(
                                   padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                                  child: Container(
-                                    width: MediaQuery.of(context).size.width / 1.7,
-                                    child: Stack(
-                                      clipBehavior: Clip.none,
-                                      children: [
-                                        Container(
-                                          clipBehavior: Clip.antiAliasWithSaveLayer,
-                                          decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.circular(20)),
-                                          child: Image.asset("assets/recommended_chair.jpg"),
-                                        ),
-                                        Positioned(
-                                          // alignment: Alignment.bottomCenter,
-                                          top: 80,
-                                          left: 5,
-                                          child: Container(
-                                            height: MediaQuery.of(context).size.height / 7,
-                                            width: MediaQuery.of(context).size.width / 1.8,
+                                  child: GestureDetector(
+                                    onTap: (){
+                                      List<Color?> availableColors = [];
+                                      availableColors = BlocProvider.of<HomeCubit>(context).getAvailableColorsOfFurniture(BlocProvider.of<HomeCubit>(context).furnitureList[index]);
+                                      BlocProvider.of<HomeCubit>(context).getFurnitureRecommendation(BlocProvider.of<HomeCubit>(context).furnitureList[index], 0);
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(builder: (context) => SelectedFurnitureScreen(selectedFurniture: BlocProvider.of<HomeCubit>(context).furnitureList[index], availableColors: availableColors)),
+                                      );
+                                    },
+                                    child: Container(
+                                      width: MediaQuery.of(context).size.width / 1.7,
+                                      child: Stack(
+                                        clipBehavior: Clip.none,
+                                        children: [
+                                          Container(
+                                            clipBehavior: Clip.antiAliasWithSaveLayer,
                                             decoration: BoxDecoration(
-                                              borderRadius: BorderRadius.circular(20),
-                                              color: Colors.white,
-                                            ),
-                                            child: Column(
-                                              children: [
-                                                Padding(
-                                                  padding: const EdgeInsets.only(left: 12.0),
-                                                  child: Row(
-                                                    children:  [
-                                                      Text(
-                                                        BlocProvider.of<HomeCubit>(context).furnitureList[index].name,
-                                                        style: TextStyle(
-                                                            fontWeight: FontWeight.bold,
-                                                            fontSize: 17),
-                                                      ),
-                                                    ],
+                                                borderRadius: BorderRadius.circular(20)),
+                                            child: Image.asset("assets/recommended_chair.jpg"),
+                                          ),
+                                          Positioned(
+                                            // alignment: Alignment.bottomCenter,
+                                            top: 80,
+                                            left: 5,
+                                            child: Container(
+                                              height: MediaQuery.of(context).size.height / 7,
+                                              width: MediaQuery.of(context).size.width / 1.8,
+                                              decoration: BoxDecoration(
+                                                borderRadius: BorderRadius.circular(20),
+                                                color: Colors.white,
+                                              ),
+                                              child: Column(
+                                                children: [
+                                                  Padding(
+                                                    padding: const EdgeInsets.only(left: 12.0),
+                                                    child: Row(
+                                                      children:  [
+                                                        Text(
+                                                          BlocProvider.of<HomeCubit>(context).furnitureList[index].name,
+                                                          style: TextStyle(
+                                                              fontWeight: FontWeight.bold,
+                                                              fontSize: 17),
+                                                        ),
+                                                      ],
+                                                    ),
                                                   ),
-                                                ),
-                                                SizedBox(
-                                                  height: 10,
-                                                ),
-                                                Padding(
-                                                  padding: const EdgeInsets.only(left: 12.0),
-                                                  child: Row(
-                                                    children: const [
-                                                      Icon(
-                                                        Icons.star,
-                                                        color: Colors.yellow,
-                                                        size: 20,
-                                                      ),
-                                                      Icon(
-                                                        Icons.star,
-                                                        color: Colors.yellow,
-                                                        size: 20,
-                                                      ),
-                                                      Icon(
-                                                        Icons.star,
-                                                        color: Colors.yellow,
-                                                        size: 20,
-                                                      ),
-                                                      Icon(
-                                                        Icons.star,
-                                                        color: Colors.yellow,
-                                                        size: 20,
-                                                      ),
-                                                      Icon(
-                                                        Icons.star,
-                                                        color: Colors.grey,
-                                                        size: 20,
-                                                      )
-                                                    ],
+                                                  SizedBox(
+                                                    height: 10,
                                                   ),
-                                                ),
-                                                Padding(
-                                                  padding: const EdgeInsets.symmetric(
-                                                      horizontal: 12.0),
-                                                  child: Row(
-                                                    children: [
-                                                       Text(
-                                                        BlocProvider.of<HomeCubit>(context).furnitureList[index].shared.first.price,
-                                                        style: TextStyle(
-                                                            fontWeight: FontWeight.bold,
-                                                            fontSize: 17),
-                                                      ),
-                                                      const Spacer(),
-                                                      InkWell(
-                                                        onTap: () async{
-                                                          context.read<HomeCubit>().addOrRemoveFromFavorite(BlocProvider.of<HomeCubit>(context).furnitureList[index].furnitureId);
-                                                          context.read<HomeCubit>().emit(SuccessOffersState());
-                                                          },
-                                                        child: FavoriteIcon(
-                                                            iconLogo:
-                                                            BlocProvider.of<HomeCubit>(context).furnitureList[index].isFavorite==false? Icons.favorite_border_rounded:Icons.favorite),
-                                                      ),
+                                                  Padding(
+                                                    padding: const EdgeInsets.only(left: 12.0),
+                                                    child: Row(
+                                                      children:  [
+                                                        // if
+                                                        ... List.generate(BlocProvider.of<HomeCubit>(context).furnitureList[index].calculateAverageRating().toString()!="NaN"?BlocProvider.of<HomeCubit>(context).furnitureList[index].calculateAverageRating().toInt():0, (index) => Icon(
+                                                          Icons.star,
+                                                          color: Colors.yellow,
+                                                          size: 20,
+                                                        ),).toList(),
+                                                        ... List.generate(BlocProvider.of<HomeCubit>(context).furnitureList[index].calculateAverageRating().toString()!="NaN"?5-BlocProvider.of<HomeCubit>(context).furnitureList[index].calculateAverageRating().toInt():5, (index) => Icon(
+                                                          Icons.star,
+                                                          color: Colors.grey,
+                                                          size: 20,
+                                                        ),).toList()
 
-                                                    ],
+
+                                                      ],
+                                                    ),
                                                   ),
-                                                ),
-                                              ],
+                                                  Padding(
+                                                    padding: const EdgeInsets.symmetric(
+                                                        horizontal: 12.0),
+                                                    child: Row(
+                                                      children: [
+                                                         Text(
+                                                          BlocProvider.of<HomeCubit>(context).furnitureList[index].shared.first.price,
+                                                          style: TextStyle(
+                                                              fontWeight: FontWeight.bold,
+                                                              fontSize: 17),
+                                                        ),
+                                                        const Spacer(),
+                                                        InkWell(
+                                                          onTap: () async{
+                                                            context.read<HomeCubit>().addOrRemoveFromFavorite(BlocProvider.of<HomeCubit>(context).furnitureList[index].furnitureId);
+                                                            context.read<HomeCubit>().emit(SuccessOffersState());
+                                                            },
+                                                          child: FavoriteIcon(
+                                                              iconLogo:
+                                                              BlocProvider.of<HomeCubit>(context).furnitureList[index].isFavorite==false? Icons.favorite_border_rounded:Icons.favorite),
+                                                        ),
+
+                                                      ],
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                      ],
+                                        ],
+                                      ),
                                     ),
                                   ),
                                 );

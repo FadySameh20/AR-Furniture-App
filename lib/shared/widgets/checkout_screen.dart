@@ -269,7 +269,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                       Row(
                         children: [
                           Expanded(
-                              child: ElevatedButton(
+                              child: state is LoadingMakeOrder?Center(child: CircularProgressIndicator(),): ElevatedButton(
                                   style: ElevatedButton.styleFrom(
                                     padding:
                                         EdgeInsets.symmetric(vertical: 10),
