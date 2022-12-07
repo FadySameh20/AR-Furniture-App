@@ -275,10 +275,10 @@ class _HomePageState extends State<HomePage> {
                                   height: 20,
                                 ),
                                 Row(
-                                  children: [
-                                    const Padding(
+                                  children: const [
+                                    Padding(
                                       padding:
-                                          EdgeInsets.symmetric(horizontal: 20),
+                                      EdgeInsets.symmetric(horizontal: 20),
                                       child: Text(
                                         "Categories",
                                         style: TextStyle(
@@ -286,20 +286,34 @@ class _HomePageState extends State<HomePage> {
                                             fontSize: 20),
                                       ),
                                     ),
-                                    const Spacer(),
-                                    TextButton(
-                                      onPressed: () {
-                                        setState(() {
-                                          _navigationController.value = 3;
-                                        });
-                                      },
-                                      child: const Text(
-                                        "View All",
-                                        style: TextStyle(color: Colors.black),
-                                      ),
-                                    )
                                   ],
                                 ),
+                                // Row(
+                                //   children: [
+                                //     const Padding(
+                                //       padding:
+                                //       EdgeInsets.symmetric(horizontal: 20),
+                                //       child: Text(
+                                //         "Categories",
+                                //         style: TextStyle(
+                                //             fontWeight: FontWeight.bold,
+                                //             fontSize: 20),
+                                //       ),
+                                //     ),
+                                //     const Spacer(),
+                                //     TextButton(
+                                //       onPressed: () {
+                                //         setState(() {
+                                //           _navigationController.value = 3;
+                                //         });
+                                //       },
+                                //       child: const Text(
+                                //         "View All",
+                                //         style: TextStyle(color: Colors.black),
+                                //       ),
+                                //     )
+                                //   ],
+                                // ),
                                 CategoriesScroller(),
                                 SizedBox(
                                   height: 10,
@@ -572,7 +586,7 @@ class _HomePageState extends State<HomePage> {
                     selectedPos: selectedPos,
                     barHeight: bottomNavBarHeight,
                     barBackgroundColor: Colors.white,
-                    backgroundBoxShadow: <BoxShadow>[
+                    backgroundBoxShadow: const <BoxShadow>[
                       BoxShadow(color: Colors.black45, blurRadius: 10.0),
                     ],
                     animationDuration: Duration(milliseconds: 300),
