@@ -32,6 +32,7 @@ class HomeCubit extends Cubit<HomeState> {
 
   List<String> removeIds = [];
   List<String> unavailableQuantityFurniture = [];
+  List<String> changedDiscountList = [];
   List<FurnitureModel> recommendedFurniture = [];
   Map<String, dynamic> orderMap = {};
   List<OrderModel> orders = [];
@@ -89,6 +90,7 @@ class HomeCubit extends Cubit<HomeState> {
     int sizeFurniture = furnitureList.length;
     lastSearchbarName = searchbarName;
     moreFurnitureAvailable = true;
+    int flag = 0;
     await FirebaseFirestore.instance
         .collectionGroup("furniture")
         .where('name',
@@ -107,7 +109,13 @@ class HomeCubit extends Cubit<HomeState> {
         snapshot.docs.forEach((snap) {
           print(snap.data());
           FurnitureModel myFurniture = FurnitureModel.fromJson(snap.data());
-          if (!furnitureList.contains(myFurniture)) {
+          flag = 0;
+          furnitureList.forEach((element) {
+            if (element.furnitureId == myFurniture.furnitureId) {
+              flag = 1;
+            }
+          });
+          if (flag == 0) {
             furnitureList.add(myFurniture);
             if (favoritesId.contains(myFurniture.furnitureId)) {
               furnitureList.last.isFavorite = true;
@@ -135,6 +143,7 @@ class HomeCubit extends Cubit<HomeState> {
     } else {
       favoritesId = cache.cachedFavoriteIds;
     }
+    int flag = 0;
     int sizeFurniture = furnitureList.length;
     await FirebaseFirestore.instance
         .collectionGroup("furniture")
@@ -155,7 +164,13 @@ class HomeCubit extends Cubit<HomeState> {
         snapshot.docs.forEach((snap) {
           print(snap.data());
           FurnitureModel myFurniture = FurnitureModel.fromJson(snap.data());
-          if (!furnitureList.contains(myFurniture)) {
+          flag = 0;
+          furnitureList.forEach((element) {
+            if (element.furnitureId == myFurniture.furnitureId) {
+              flag = 1;
+            }
+          });
+          if (flag == 0) {
             furnitureList.add(myFurniture);
             if (favoritesId.contains(myFurniture.furnitureId)) {
               furnitureList.last.isFavorite = true;
@@ -194,6 +209,7 @@ class HomeCubit extends Cubit<HomeState> {
     } else {
       favoritesId = cache.cachedFavoriteIds;
     }
+    int flag = 0;
     print(favoritesId);
     if (limit == 0) {
       await FirebaseFirestore.instance
@@ -204,7 +220,13 @@ class HomeCubit extends Cubit<HomeState> {
           .then((value) {
         for (var element in value.docs) {
           FurnitureModel myFurniture = FurnitureModel.fromJson(element.data());
-          if (!furnitureList.contains(myFurniture)) {
+          flag = 0;
+          furnitureList.forEach((element) {
+            if (element.furnitureId == myFurniture.furnitureId) {
+              flag = 1;
+            }
+          });
+          if (flag == 0) {
             furnitureList.add(myFurniture);
             if (favoritesId.contains(myFurniture.furnitureId)) {
               furnitureList.last.isFavorite = true;
@@ -233,7 +255,13 @@ class HomeCubit extends Cubit<HomeState> {
                 snapshot.docs.forEach((snap) {
                   print("Snap" + lastDocMap[categoryName].get('furnitureId'));
                   FurnitureModel myFurniture = FurnitureModel.fromJson(snap.data());
-                  if (!furnitureList.contains(myFurniture)) {
+                  flag = 0;
+                  furnitureList.forEach((element) {
+                    if (element.furnitureId == myFurniture.furnitureId) {
+                      flag = 1;
+                    }
+                  });
+                  if (flag == 0) {
                     furnitureList.add(myFurniture);
                     if (favoritesId.contains(myFurniture.furnitureId)) {
                       furnitureList.last.isFavorite = true;
@@ -264,7 +292,13 @@ class HomeCubit extends Cubit<HomeState> {
                 print("Snap " + lastDocMap[categoryName].get('furnitureId'));
                 print(snap.data());
                 FurnitureModel myFurniture = FurnitureModel.fromJson(snap.data());
-                if (!furnitureList.contains(myFurniture)) {
+                flag = 0;
+                furnitureList.forEach((element) {
+                  if (element.furnitureId == myFurniture.furnitureId) {
+                    flag = 1;
+                  }
+                });
+                if (flag == 0) {
                   furnitureList.add(myFurniture);
                   if (favoritesId.contains(myFurniture.furnitureId)) {
                     furnitureList.last.isFavorite = true;
@@ -467,7 +501,7 @@ class HomeCubit extends Cubit<HomeState> {
     // chosenFurnitureColor.quantityCart = cartQuantity.toString();
     furnitureList[index].shared[selectedIndex].quantityCart =
         cartQuantity.toString();
-    emit(AddedToCartSuccessfully());
+
     // var cachedtemp = cacheModel!.cachedModel.where(
     //     (element) => element.uid == FirebaseAuth.instance.currentUser!.uid);
     // CachedUserModel cachedModel;
@@ -475,8 +509,24 @@ class HomeCubit extends Cubit<HomeState> {
     print("Before");
     print(cache.cartMap);
     if (!cache.cartMap.keys.contains(furnitureId)) {
-      cache.cartMap[furnitureId] = furnitureList[index].shared;
+      // Map<String,dynamic> tempMap1=jsonDecode(jsonEncode(furnitureList[index].shared[j].toMap()));
+      // Map<String,dynamic> tempMap2=jsonDecode(jsonEncode(furnitureList[index].shared[j].toMap()));
+      // furnitureList[index].shared[j]=SharedModel.fromJson(tempMap1);
+      // cache.cartMap[key][j]=SharedModel.fromJson(tempMap2);
+      cache.cartMap[furnitureId]=[];
+      print("test");
+      for(int i=0;i<furnitureList[index].shared.length;i++) {
+        cache.cartMap[furnitureId].add(SharedModel.fromJson(furnitureList[index].shared[i].toMap()));
+
+      }
+      cache.cartMap[furnitureId][selectedIndex].quantityCart=cartQuantity.toString();
+      // cache.cartMap[furnitureId].add(SharedModel.fromJson(furnitureList[index].shared[selectedIndex].toMap()));
+      // cache.cartMap[furnitureId][selectedIndex].quantityCart=cartQuantity.toString();
+      print(cache.cartMap[furnitureId]);
+      print(cache.cartMap);
+      emit(AddedToCartSuccessfully());
     } else {
+      // cache.cartMap[furnitureId].add(SharedModel.fromJson(furnitureList[index].shared[selectedIndex].toMap()));
       cache.cartMap[furnitureId][selectedIndex].quantityCart =
           cartQuantity.toString();
       cache.cartMap[furnitureId][selectedIndex].quantity =
@@ -498,11 +548,14 @@ class HomeCubit extends Cubit<HomeState> {
       String floorNumber,
       String mobileNumber,
       String streetName) async {
+    emit(LoadingMakeOrder());
     bool flag = false;
+    bool discountFlag = false;
     Map<String, List<int>> availableQuantity = {};
+    Map<String, List<double>> currentDiscounts = {};
     String categoryName = "";
     unavailableQuantityFurniture = [];
-
+    
     for (String key in cache.cartMap.keys) {
       categoryName = furnitureList
           .where((element) => element.furnitureId == key)
@@ -516,10 +569,12 @@ class HomeCubit extends Cubit<HomeState> {
           .doc(key)
           .get()
           .then((value) {
+            currentDiscounts[key] = [];
         availableQuantity[key] = [];
         for (int i = 0; i < value.data()!["shared"].length; i++) {
           availableQuantity[key]!
               .add(int.parse(value.data()!["shared"][i]["quantity"]));
+          currentDiscounts[key]!.add(double.parse(value.data()!["shared"][i]["discount"]));
         }
         print('availablequantity list');
         print(availableQuantity);
@@ -529,6 +584,7 @@ class HomeCubit extends Cubit<HomeState> {
 
       for (int j = 0; j < cache.cartMap[key].length; j++) {
         print(availableQuantity[key]![j]);
+        
         if (int.parse(cache.cartMap[key][j].quantityCart) >
             availableQuantity[key]![j]) {
           flag = true;
@@ -584,52 +640,88 @@ class HomeCubit extends Cubit<HomeState> {
       print(cache.cartMap);
       print("Order Map");
       print(orderMap);
-      await createOrder(appartmentNumber, area, buildingNumber, floorNumber, mobileNumber, streetName);
+      // await createOrder(appartmentNumber, area, buildingNumber, floorNumber, mobileNumber, streetName);
 
 
-      cache.cartMap.forEach((key, value) async {
-        int index =
-            furnitureList.indexWhere((element) => element.furnitureId == key);
-
-        bool isSharedModelChanged = false;
-
-        for (int j = 0; j < value.length; j++) {
-          if (int.parse(value[j].quantityCart) > 0) {
-            isSharedModelChanged = true;
-            isCacheChanged = true;
-            furnitureList[index].shared[j].quantity =
-                (availableQuantity[key]![j] - int.parse(value[j].quantityCart))
-                    .toString();
-            cache.cartMap[key][j].quantity =
-                (availableQuantity[key]![j] - int.parse(value[j].quantityCart))
-                    .toString();
-            cache.cartMap[key][j].quantityCart = "0";
-            furnitureList[index].shared[j].quantityCart = "0";
-            print("Cache quantity value");
-            print(cache.cartMap[key][j].quantity);
+      for (String key in cache.cartMap.keys) {
+        for (int j = 0; j < cache.cartMap[key].length; j++) {
+          print("Discount in cache " + cache.cartMap[key][j].discount.toString());
+          print("Discount in Firestore " + currentDiscounts[key]![j].toString());
+          if (double.parse(cache.cartMap[key][j].discount) !=
+              currentDiscounts[key]![j]) {
+            discountFlag = true;
+            FurnitureModel furniture = furnitureList
+                .where((element) => element.furnitureId == key)
+                .first;
+            changedDiscountList.add("Discount of " + furniture.name + " has changed !");
+            cache.cartMap[key][j].discount = currentDiscounts[key]![j].toString();
           }
         }
-
-        if (isSharedModelChanged) {
-          await FirebaseFirestore.instance
-              .collection('category')
-              .doc(categoryName)
-              .collection("furniture")
-              .doc(key)
-              .update({"shared": furnitureList[index].toMap()["shared"]})
-              .then((value) => print("Placed order successfully !"))
-              .catchError((error) => print("Error: " + error.toString()));
-        }
-      });
-
-      if (isCacheChanged) {
-        cache.cartMap.clear();
-        print("Cart after clearing");
-        print(cache.cartMap);
-        CacheHelper.setData(
-            key: 'user', value: jsonEncode(cacheModel!.toMap()));
-        emit(CheckoutSuccessfully());
       }
+
+      if(!discountFlag) {
+        cache.cartMap.forEach((key, value) async {
+          int index =
+          furnitureList.indexWhere((element) => element.furnitureId == key);
+
+          bool isSharedModelChanged = false;
+
+          for (int j = 0; j < value.length; j++) {
+            if (int.parse(value[j].quantityCart) > 0) {
+              isSharedModelChanged = true;
+              isCacheChanged = true;
+              furnitureList[index].shared[j].quantity =
+                  (availableQuantity[key]![j] - int.parse(value[j].quantityCart))
+                      .toString();
+              String tempDiscount = cache.cartMap[key][j].discount;
+              // Map<String,dynamic> tempMap1=jsonDecode(jsonEncode(furnitureList[index].shared[j].toMap()));
+              // Map<String,dynamic> tempMap2=jsonDecode(jsonEncode(furnitureList[index].shared[j].toMap()));
+              // furnitureList[index].shared[j]=SharedModel.fromJson(tempMap1);
+              // cache.cartMap[key][j]=SharedModel.fromJson(tempMap2);
+              furnitureList[index].shared[j].discount = currentDiscounts[key]![j].toString();
+              cache.cartMap[key][j].discount = tempDiscount;
+              cache.cartMap[key][j].quantity =
+                  (availableQuantity[key]![j] - int.parse(value[j].quantityCart))
+                      .toString();
+              cache.cartMap[key][j].quantityCart = "0";
+              furnitureList[index].shared[j].quantityCart = "0";
+              print("Cache quantity value");
+              print(cache.cartMap[key][j].quantity);
+            }
+          }
+
+          if (isSharedModelChanged) {
+            await FirebaseFirestore.instance
+                .collection('category')
+                .doc(categoryName)
+                .collection("furniture")
+                .doc(key)
+                .update({"shared": furnitureList[index].toMap()["shared"]})
+                .then((value) => print("Placed order successfully !"))
+                .catchError((error) => print("Error: " + error.toString()));
+          }
+        });
+
+        if (isCacheChanged) {
+          cache.cartMap.clear();
+          print("Cart after clearing");
+          print(cache.cartMap);
+          CacheHelper.setData(
+              key: 'user', value: jsonEncode(cacheModel!.toMap()));
+          // emit(CheckoutSuccessfully());
+        }
+      }
+
+      if(discountFlag) {
+        print("Error in discount");
+        emit(ErrorInDiscount());
+      } else {
+        print("Orderrrr made");
+        await createOrder(appartmentNumber, area, buildingNumber, floorNumber, mobileNumber, streetName);
+        emit(OrderMadeSuccessfully());
+      }
+      
+      
     } else {
       emit(ErrorInCheckout());
     }

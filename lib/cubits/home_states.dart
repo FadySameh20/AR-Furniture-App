@@ -9,7 +9,7 @@ class SuccessOffersState extends HomeState{}
 class ErrorOffersState extends HomeState{}
 
 class AddOrRemoveFavoriteState extends HomeState{}
-
+class LoadingMakeOrder extends HomeState{}
 
 class UpdatePasswordSuccessState extends HomeState{}
 
@@ -36,7 +36,11 @@ class UpdateUserDataErrorData extends HomeState{
 
 class AddedToCartSuccessfully extends HomeState{}
 
-class CheckoutSuccessfully extends HomeState{}
+class OrderMadeSuccessfully extends HomeState{}
 
 class ErrorInCheckout extends HomeState{}
+
+class ErrorInDiscount extends HomeState{}
+
+class UpdatedCategoriesScroller extends HomeState{}
 

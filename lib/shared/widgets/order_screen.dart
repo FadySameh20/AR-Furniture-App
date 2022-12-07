@@ -93,7 +93,7 @@ class OrderScreen extends StatelessWidget {
               if (element.quantityCart != null) {
                 quantity += int.parse(element.quantityCart);
                 subTotalPrice+= double.parse(element.quantityCart) *
-                    double.parse(element.price);
+                    (double.parse(element.price) - (double.parse(element.discount)/100)*double.parse(element.price));
               }
             });
 
