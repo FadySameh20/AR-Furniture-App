@@ -388,7 +388,7 @@ class _HomePageState extends State<HomePage> {
                                                         .size
                                                         .width /
                                                         2.2,
-                                                    // height: 200,
+                                                    height: 170,
                                                     clipBehavior: Clip
                                                         .antiAliasWithSaveLayer,
                                                     decoration: BoxDecoration(
