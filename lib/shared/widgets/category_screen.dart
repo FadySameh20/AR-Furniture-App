@@ -63,7 +63,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
           children: [
             CategoriesScroller(),
             Expanded(
-              child: Stack(
+              child: CategoriesScroller.selectedCategoryName==""?Center(child: Text("Please select a category to filter with!",style: Theme.of(context).textTheme.bodyLarge!.copyWith(fontSize: 20),),):Stack(
                 children: [
                   Container(
                     margin: EdgeInsets.only(top: 90),

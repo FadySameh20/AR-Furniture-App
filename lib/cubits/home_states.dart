@@ -42,3 +42,5 @@ class ErrorInCheckout extends HomeState{}
 
 class ErrorInDiscount extends HomeState{}
 
+class UpdatedCategoriesScroller extends HomeState{}
+

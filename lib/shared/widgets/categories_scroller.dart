@@ -13,7 +13,7 @@ class CategoriesScroller extends StatefulWidget {
   //   "assets/drawers.png"
   // ];
   static String selectedCategoryName="";
-  static int selectedCategoryIndex = 0;
+  static int selectedCategoryIndex = -1;
 
   @override
   State<CategoriesScroller> createState() => _CategoriesScrollerState();
@@ -21,17 +21,17 @@ class CategoriesScroller extends StatefulWidget {
 
 class _CategoriesScrollerState extends State<CategoriesScroller> {
 
-  @override
-  void initState() {
-    // TODO: implement initState
-    CategoriesScroller.selectedCategoryName=BlocProvider.of<HomeCubit>(context).categories.first.name;
-    super.initState();
-  }
+  // @override
+  // void initState() {
+  //   // TODO: implement initState
+  //   // CategoriesScroller.selectedCategoryName=BlocProvider.of<HomeCubit>(context).categories.first.name;
+  //   super.initState();
+  // }
   @override
   Widget build(BuildContext context) {
     print("hahahaha");
     print(CategoriesScroller.selectedCategoryName);
-
+    print(CategoriesScroller.selectedCategoryIndex);
     return Container(
       margin: EdgeInsets.only(top: 15.0),
       height: MediaQuery.of(context).size.height > 700
@@ -47,31 +47,10 @@ class _CategoriesScrollerState extends State<CategoriesScroller> {
               child: InkWell(
                 onTap: () {
                   setState(() {
-                    CategoriesScroller.selectedCategoryName=BlocProvider.of<HomeCubit>(context).categories[index].name;
+                    CategoriesScroller.selectedCategoryName= BlocProvider.of<HomeCubit>(context).categories[index].name;
                     CategoriesScroller.selectedCategoryIndex = index;
                   });
-                  BlocProvider.of<HomeCubit>(context).emit(SuccessOffersState());
-                  // BlocProvider.of<HomeCubit>(context).furnitureList.clear();
-                  // print("Categories");
-                  // print(BlocProvider.of<HomeCubit>(context).returnedCategory);
-                  // if(!BlocProvider.of<HomeCubit>(context).returnedCategory.contains(BlocProvider.of<HomeCubit>(context).categories[index].name)) {
-                  //   print("Insideeeee");
-                  //   BlocProvider.of<HomeCubit>(context).getFurniture(
-                  //       BlocProvider
-                  //           .of<HomeCubit>(context)
-                  //           .categories[index].name);
-                  // } else {
-                  //   // BlocProvider.of<HomeCubit>(context).getFurniture(
-                  //   //     BlocProvider
-                  //   //         .of<HomeCubit>(context)
-                  //   //         .categories[index].name, limit: 2);
-                  //   print("Category already here");
-                  //   BlocProvider.of<HomeCubit>(context).emit(SuccessOffersState());
-                  // }
-                  // print("List");
-                  // // BlocProvider.of<HomeCubit>(context).emit(SuccessOffersState());
-                  // // BlocProvider.of<HomeCubit>(context).emit(SuccessOffersState());
-                  // print(BlocProvider.of<HomeCubit>(context).furnitureList);
+                  BlocProvider.of<HomeCubit>(context).emit(UpdatedCategoriesScroller());
                 },
                 child: Container(
                   height: 30,
