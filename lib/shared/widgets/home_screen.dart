@@ -249,12 +249,14 @@ class _HomePageState extends State<HomePage> {
                                                 width: MediaQuery.of(context)
                                                     .size
                                                     .width,
+
                                                 margin:
                                                     const EdgeInsets.symmetric(
                                                         horizontal: 5.0),
                                                 clipBehavior:
                                                     Clip.antiAliasWithSaveLayer,
                                                 decoration: BoxDecoration(
+
                                                     borderRadius:
                                                         BorderRadius.circular(
                                                             20),
@@ -365,23 +367,32 @@ class _HomePageState extends State<HomePage> {
                                             child: Stack(
                                               clipBehavior: Clip.none,
                                               children: [
-                                                Container(
-                                                  clipBehavior: Clip
-                                                      .antiAliasWithSaveLayer,
-                                                  decoration: BoxDecoration(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              20)),
-                                                  child: Image.network(
+                                                Align(
+                                                  alignment: Alignment.topCenter,
+                                                  child: Container(
+                                                    width: MediaQuery.of(context)
+                                                        .size
+                                                        .width /
+                                                        2.2,
+                                                    // height: 200,
+                                                    clipBehavior: Clip
+                                                        .antiAliasWithSaveLayer,
+                                                    decoration: BoxDecoration(
+                                                      // color:Colors.black,
+                                                        borderRadius:
+                                                            BorderRadius.circular(
+                                                                20)),
+                                                    child: Image.network(
 
-                                                      BlocProvider.of<HomeCubit>(
-                                                          context)
-                                                          .furnitureList[
-                                                      index].shared.first.image),
+                                                        BlocProvider.of<HomeCubit>(
+                                                            context)
+                                                            .furnitureList[
+                                                        index].shared.first.image,fit: BoxFit.contain,),
+                                                  ),
                                                 ),
                                                 Positioned(
                                                   // alignment: Alignment.bottomCenter,
-                                                  top: 80,
+                                                  top: 170,
                                                   left: 5,
                                                   child: Container(
                                                     height:
@@ -548,9 +559,7 @@ class _HomePageState extends State<HomePage> {
                                             .length,
                                   ),
                                 ),
-                                SizedBox(
-                                  height: 40,
-                                ),
+
                               ],
                             ),
                           ),
@@ -568,10 +577,19 @@ class _HomePageState extends State<HomePage> {
                     ],
                     animationDuration: Duration(milliseconds: 300),
                     selectedCallback: (int? selectedPos) {
+                      if(selectedPos==3){
+                        if(CategoriesScroller.selectedCategoryIndex==-1){
+                          setState(() {
+                            CategoriesScroller.selectedCategoryIndex=0;
+                            CategoriesScroller.selectedCategoryName=BlocProvider.of<HomeCubit>(context).categories.first.name;
+                          });
+                        }
+                      }
                       setState(() {
                         this.selectedPos = selectedPos ?? 0;
                         print(_navigationController.value);
                       });
+
                     },
                   ))
             ],
