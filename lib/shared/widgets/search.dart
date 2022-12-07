@@ -8,6 +8,7 @@ import 'package:ar_furniture_app/shared/widgets/selected_furnitue_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../constants/constants.dart';
+import 'circle_avatar.dart';
 
 
 List<FurnitureModel> filteredFurniture = [];
@@ -19,15 +20,19 @@ class Search extends StatefulWidget {
 class _SearchState extends State<Search> {
   //const Search({Key? key}) : super(key: key);
   List<FurnitureModel> searchR = filteredFurniture;
+  List<FurnitureModel> tempSearchR = filteredFurniture;
   bool viewSuggestions = false;
   int flag = 0;
   ScrollController _scrollController = ScrollController();
   TextEditingController _searchController = TextEditingController();
 
   // filter
-  RangeValues currentRangeValues = const RangeValues(40, 80);
+  RangeValues currentRangeValues = const RangeValues(0, 500);
   Map<Color,bool> colors = {};
   var arguments;
+  bool requestPriceFilter = false;
+  bool requestColorFilter = false;
+  int colorFlag = 0;
 
   // recently viewed
   List<String> recentlyViewed = [];
@@ -43,8 +48,14 @@ class _SearchState extends State<Search> {
           List<FurnitureModel> addSearchData = await addMoreData(searchR, _searchController.text.toLowerCase());
           if (addSearchData.length > lengthSearchR){
             setState(() {
-              searchR = addSearchData;
+              searchR = [...addSearchData];
+              tempSearchR = [...addSearchData];
             });
+            if(checkFilter()) {
+              setState(() {
+                searchR = applyFilter();
+              });
+            }
           }
         }
       }
@@ -105,32 +116,15 @@ class _SearchState extends State<Search> {
                     child: IconButton(
                       icon: const Icon(Icons.filter_list, color: Colors.white, size: 25,),
                       onPressed: () async{
-                        for (FurnitureModel element in searchR) {
-                          List<Color?> availableColors = BlocProvider.of<HomeCubit>(context).getAvailableColorsOfFurniture(element);
-                          for (var valColor in availableColors) {
-                            if(!colors.containsKey(valColor)) {
-                              colors[valColor!] = false;
-                            }
-                          }
-                        }
                         arguments = await Navigator.push(context, MaterialPageRoute(builder: (context)=>SearchFilterScreen(currentRangeValues, colors)));
-                        setState(() async {
-                          await searchItem(_searchController.text.toLowerCase());
+                        setState(() {
                           currentRangeValues = arguments["priceFilterRange"];
                           colors = arguments["colors"];
-                          searchR = searchR.where((element) => int.parse(element.shared[0].price) >= currentRangeValues.start && int.parse(element.shared[0].price) <= currentRangeValues.end).toList();
-                          int colorFlag = 0 ;
-                          for (FurnitureModel element in searchR) {
-                            colorFlag = 0;
-                            List<Color?> availableColorsFilter = BlocProvider.of<HomeCubit>(context).getAvailableColorsOfFurniture(element);
-                            for (var element in availableColorsFilter) {
-                              if (colors.containsKey(element) && colors[element] == true) {
-                                colorFlag = 1;
-                              }
-                            }
-                            if (colorFlag == 0) {
-                              searchR.remove(element);
-                            }
+                          checkFilter();
+                          if(checkFilter()) {
+                            searchR = applyFilter();
+                          }else {
+                            searchR = [...tempSearchR];
                           }
                         });
                         print("====================================");
@@ -142,6 +136,52 @@ class _SearchState extends State<Search> {
                   ),
                 ],
               ),
+              if(viewSuggestions == true &&(requestColorFilter == true || requestPriceFilter == true))
+                Container(
+                  height: MediaQuery.of(context).size.height > 350
+                      ? MediaQuery.of(context).size.height * 0.1
+                      : MediaQuery.of(context).size.height * 0.05,
+                  child: ListView(
+                    scrollDirection: Axis.horizontal,
+                    children: [
+                      if(requestColorFilter == true)
+                      Padding(
+                        padding: const EdgeInsets.all(6.0),
+                        child: ClipOval(
+                          child: Container(
+                            color: Colors.grey.shade400,
+                            child: Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: Center(
+                                child: Row(
+                                  children: [
+                                    Text("Color: "),
+                                    ...colors.entries.where((element) => element.value == true).map((e) => CustomCircleAvatar(radius: MediaQuery.of(context).size.height > 350 ? 10.0 : 5.0, CavatarColor: e.key))
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      if(requestPriceFilter == true)
+                      Padding(
+                        padding: const EdgeInsets.all(6.0),
+                        child: ClipOval(
+                          child: Container(
+                            color: Colors.grey.shade400,
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Center(
+                                child: Text("Price: ${currentRangeValues.start.round()} - ${currentRangeValues.end.round()}"),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               if(viewSuggestions == true)
               searchR.isEmpty? const Center(
                 child: Text("No Items To Show"),
@@ -332,6 +372,10 @@ class _SearchState extends State<Search> {
     if (query == ''){
       setState(() => viewSuggestions = false);
     }else{
+      if(colorFlag == 0) {
+        getAvailableColors(0);
+        colorFlag = 1;
+      }
       setState(() => viewSuggestions = true);
       final input = query.toLowerCase();
       List<FurnitureModel> suggestions = filteredFurniture.where((fur) {
@@ -341,21 +385,28 @@ class _SearchState extends State<Search> {
       if (suggestions.length < 4){
         suggestions = await addMoreData(suggestions,input);
       }
-      setState(() => searchR = suggestions);
+      setState(() {
+        searchR = [...suggestions];
+        tempSearchR = [...suggestions];
+      });
+      if(requestColorFilter == true || requestPriceFilter == true) {
+        setState(() {
+          searchR = applyFilter();
+        });
+      }
     }
   }
 
   Future<List<FurnitureModel>> addMoreData(List<FurnitureModel> suggestions1, String input) async {
     int moreFurnitureCount = filteredFurniture.length;
     if(BlocProvider.of<HomeCubit>(context).lastSearchbarName == input) {
-      print("get more dataaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
-      print(input);
       await BlocProvider.of<HomeCubit>(context).getMoreSearchData(input);
     } else {
       await BlocProvider.of<HomeCubit>(context).getSearchData(input);
     }
     filteredFurniture = BlocProvider.of<HomeCubit>(context).furnitureList.toList();
     if (moreFurnitureCount != filteredFurniture.length){
+      getAvailableColors(moreFurnitureCount);
       int j;
       for(j=moreFurnitureCount; j<filteredFurniture.length; j++){
         final searchTitle = filteredFurniture[j].name.toLowerCase();
@@ -365,5 +416,80 @@ class _SearchState extends State<Search> {
       }
     }
     return suggestions1;
+  }
+
+  void getAvailableColors(int start) {
+    int i;
+    FurnitureModel element;
+    for (i=start; i<filteredFurniture.length; i++) {
+      element = filteredFurniture[i];
+      List<Color?> availableColors = BlocProvider.of<HomeCubit>(context).getAvailableColorsOfFurniture(element);
+      for (var valColor in availableColors) {
+        if(!colors.containsKey(valColor)) {
+          setState(() {
+            colors[valColor!] = false;
+          });
+        }
+      }
+    }
+  }
+
+  bool checkFilter() {
+    print("gowaaaa filter");
+    if(colors.containsValue(true)){
+      setState(() {
+        requestColorFilter = true;
+      });
+    }else {
+      setState(() {
+        requestColorFilter = false;
+      });
+    }
+    print("check filter price");
+    print(currentRangeValues.start.round());
+    print(currentRangeValues.end.round());
+    if(currentRangeValues.start.round() != 0 || currentRangeValues.end.round() != 500) {
+      setState(() {
+        requestPriceFilter = true;
+      });
+    }
+    else {
+      setState(() {
+        requestPriceFilter = false;
+      });
+    }
+    if(requestPriceFilter == true || requestColorFilter == true) {
+      return true;
+    }
+    return false;
+  }
+
+  List<FurnitureModel> applyFilter() {
+    print("ANA APPLY FILTER");
+    searchR = [...tempSearchR];
+    if(requestPriceFilter == true) {
+      searchR = searchR.where((element) => int.parse(element.shared[0].price) >= currentRangeValues.start && int.parse(element.shared[0].price) <= currentRangeValues.end).toList();
+    }
+    if(requestColorFilter == true) {
+      List<Color> tempColors=[];
+      colors.forEach((key, value) {
+        if(value==true){
+          tempColors.add(key);
+        }
+      });
+      print("TEST print");
+      print(tempColors);
+      searchR=searchR.where((element) {
+        List<Color?> availableColorsFilter =BlocProvider.of<HomeCubit>(context).getAvailableColorsOfFurniture(element);
+        bool isFound=availableColorsFilter.where((element) => tempColors.contains(element)).isNotEmpty;
+        print(isFound);
+        print("ya rb");
+        if(isFound){
+            return true;
+          }
+       return false;
+      }).toList();
+    }
+    return searchR;
   }
 }
