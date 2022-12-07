@@ -10,7 +10,7 @@ class FurnitureModel {
   late String category;
   List<SharedModel> shared = [];
   bool isFavorite = false;
-  List<double> ratings = [];
+  Map<String, dynamic> ratings = {};
 
   FurnitureModel({
     this.description,
@@ -35,13 +35,8 @@ class FurnitureModel {
     }
     print("after");
     print(shared);
-    if (json["ratings"] == null) {
-      ratings = [];
-    } else {
-      for (var rating in json["ratings"]) {
-        ratings.add(rating.toDouble());
-      }
-    }
+
+    ratings = json["ratings"];
   }
 
   Map<String, dynamic> toMap() {
@@ -64,7 +59,7 @@ class FurnitureModel {
     double sum = 0;
     print("Ratings");
     print(ratings);
-    for (double rating in ratings) {
+    for (double rating in ratings.values) {
       sum += rating;
     }
     double averageRating = sum / ratings.length;

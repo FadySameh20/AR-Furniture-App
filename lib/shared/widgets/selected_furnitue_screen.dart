@@ -10,6 +10,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
@@ -35,6 +36,7 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
   int selectedColorIndex = 0;
 
   Color? selectedColor;
+  double selectedRating = 1.0;
 
 
   // Map<String, dynamic> cartMap = {};
@@ -347,7 +349,7 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                                       SizedBox(height: 20.0,),
                                       RatingBar.builder(
                                         itemSize: 30.0,
-                                        initialRating: 1,
+                                        initialRating: widget.selectedFurniture.ratings[FirebaseAuth.instance.currentUser!.uid] == null ? 1 : widget.selectedFurniture.ratings[FirebaseAuth.instance.currentUser!.uid],
                                         minRating: 1,
                                         direction: Axis.horizontal,
                                         // allowHalfRating: true,
@@ -362,9 +364,11 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                                             ),
                                         onRatingUpdate: (rating) {
                                             print("Rating: " + rating.toString());
-                                            setState(() {
-                                              widget.selectedFurniture.ratings.add(rating);
-                                            });
+                                            selectedRating = rating;
+                                            // setState(() {
+                                            //   // widget.selectedFurniture.ratings.add(rating);
+                                            //   widget.selectedFurniture.ratings[FirebaseAuth.instance.currentUser!.uid] = rating;
+                                            // });
                                         },
                                       ),
                                     ],
@@ -376,6 +380,7 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                                         style: TextStyle(color: Colors.white, fontSize: 20),
                                       ),
                                       onPressed: () async {
+                                        widget.selectedFurniture.ratings[FirebaseAuth.instance.currentUser!.uid] = selectedRating;
                                         await  FirebaseFirestore.instance.collection('category').doc(widget.selectedFurniture.category).collection("furniture").doc(widget.selectedFurniture.furnitureId).update({"ratings": widget.selectedFurniture.ratings});
                                         setState(() {});
                                         Navigator.pop(context);
