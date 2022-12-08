@@ -1,13 +1,14 @@
 import 'package:ar_furniture_app/shared/constants/constants.dart';
-import 'package:ar_furniture_app/shared/widgets/categories_scroller.dart';
 import 'package:ar_furniture_app/shared/widgets/circle_avatar.dart';
 import 'package:flutter/material.dart';
+import 'package:ar_furniture_app/models/name_model.dart';
 
 
 class SearchFilterScreen extends StatefulWidget {
   RangeValues rangeValues;
   Map<Color,bool> availableColors;
-  SearchFilterScreen(this.rangeValues, this.availableColors,{super.key});
+  Map<CategoryItem,bool> categories;
+  SearchFilterScreen(this.rangeValues, this.availableColors, this.categories,{super.key});
   @override
   State<SearchFilterScreen> createState() => _SearchFilterScreenState();
 }
@@ -62,7 +63,67 @@ class _SearchFilterScreenState extends State<SearchFilterScreen> {
                   ),
                 ),
               ),
-              CategoriesScroller(),
+              Container(
+                margin: EdgeInsets.only(top: 15.0),
+                height: MediaQuery.of(context).size.height > 700
+                    ? MediaQuery.of(context).size.height * 0.15
+                    : MediaQuery.of(context).size.height * 0.175,
+                child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: widget.categories.length,
+                    itemBuilder: (context, index) {
+                      return Padding(
+                        padding:
+                        const EdgeInsets.only(bottom: 15.0, left: 15, right: 15),
+                        child: InkWell(
+                          onTap: () {
+                            setState(() {
+                              widget.categories.update(widget.categories.keys.elementAt(index), (value) => !widget.categories.values.elementAt(index));
+                            });
+                          },
+                          child: Container(
+                            height: 30,
+                            width: 70,
+                            decoration: BoxDecoration(
+                                color: widget.categories.values.elementAt(index)? kAppBackgroundColor
+                                    : Colors.white,
+                                borderRadius: BorderRadius.circular(50)),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Expanded(
+                                      child: CircleAvatar(
+                                        radius: 25,
+                                        backgroundColor: Colors.grey[300],
+                                        // radius: 10,
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(7.0),
+                                          child: Image.network(
+                                            widget.categories.keys.elementAt(index).image,
+                                            fit: BoxFit.fill,
+                                          ),
+                                        ),
+                                      )),
+                                  const SizedBox(
+                                    height: 5,
+                                  ),
+                                  Text(
+                                    widget.categories.keys.elementAt(index).name,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                        color:
+                                        widget.categories.values.elementAt(index) ? Colors.white : Colors.black),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+                    }),
+              ),
               const Text(
                 'Color',
                 style: TextStyle(
@@ -97,7 +158,7 @@ class _SearchFilterScreenState extends State<SearchFilterScreen> {
                   backgroundColor: kAppBackgroundColor,
                 ),
                 onPressed: (){
-                  Navigator.pop(context, {'priceFilterRange':widget.rangeValues, 'categoryName':CategoriesScroller.selectedCategoryName, 'colors':widget.availableColors});
+                  Navigator.pop(context, {'priceFilterRange':widget.rangeValues, 'categories':widget.categories, 'colors':widget.availableColors});
                 },
                 child: const Text("Apply"),
               ),

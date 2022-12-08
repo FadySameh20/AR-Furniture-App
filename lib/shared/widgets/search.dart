@@ -1,6 +1,7 @@
 import 'package:ar_furniture_app/cubits/home_cubit.dart';
 import 'package:ar_furniture_app/cubits/home_states.dart';
 import 'package:ar_furniture_app/models/furniture_model.dart';
+import 'package:ar_furniture_app/models/name_model.dart';
 import 'package:ar_furniture_app/shared/widgets/SearchFilterScreen.dart';
 import 'package:ar_furniture_app/shared/widgets/categories_scroller.dart';
 import 'package:ar_furniture_app/shared/widgets/favorite_icon.dart';
@@ -29,9 +30,11 @@ class _SearchState extends State<Search> {
   // filter
   RangeValues currentRangeValues = const RangeValues(0, 500);
   Map<Color,bool> colors = {};
+  Map<CategoryItem,bool> categories = {};
   var arguments;
   bool requestPriceFilter = false;
   bool requestColorFilter = false;
+  bool requestCategoryFilter = false;
   int colorFlag = 0;
 
   // recently viewed
@@ -44,17 +47,24 @@ class _SearchState extends State<Search> {
     _scrollController.addListener(() async {
       if (_scrollController.position.atEdge) {
         if (_scrollController.position.pixels != 0) {
-          int lengthSearchR = searchR.length;
-          List<FurnitureModel> addSearchData = await addMoreData(searchR, _searchController.text.toLowerCase());
+          int lengthSearchR = tempSearchR.length;
+          List<FurnitureModel> addSearchData = await addMoreData(tempSearchR, _searchController.text.toLowerCase());
           if (addSearchData.length > lengthSearchR){
             setState(() {
               searchR = [...addSearchData];
               tempSearchR = [...addSearchData];
             });
-            if(checkFilter()) {
-              setState(() {
+            if(requestColorFilter == true || requestPriceFilter == true || requestCategoryFilter == true) {
+              setState((){
                 searchR = applyFilter();
               });
+              while(searchR.length < 4 && BlocProvider.of<HomeCubit>(context).moreFurnitureAvailable == true){
+                addSearchData = await addMoreData(tempSearchR, _searchController.text.toLowerCase());
+                setState((){
+                  tempSearchR = [...addSearchData];
+                  searchR = applyFilter();
+                });
+              }
             }
           }
         }
@@ -116,17 +126,46 @@ class _SearchState extends State<Search> {
                     child: IconButton(
                       icon: const Icon(Icons.filter_list, color: Colors.white, size: 25,),
                       onPressed: () async{
-                        arguments = await Navigator.push(context, MaterialPageRoute(builder: (context)=>SearchFilterScreen(currentRangeValues, colors)));
-                        setState(() {
-                          currentRangeValues = arguments["priceFilterRange"];
-                          colors = arguments["colors"];
-                          checkFilter();
-                          if(checkFilter()) {
-                            searchR = applyFilter();
-                          }else {
-                            searchR = [...tempSearchR];
-                          }
+                        if(colorFlag == 0) {
+                          getAvailableColors(0);
+                          BlocProvider.of<HomeCubit>(context).categories.forEach((element) {
+                            if(!categories.containsKey(element)) {
+                              categories[element] = false;
+                            }
+                          });
+                          colorFlag = 1;
+                        }
+                        categories.forEach((key, value) {
+                          print(key.name);
+                          print(value);
                         });
+                        print("---------------------------------");
+                        arguments = await Navigator.push(context, MaterialPageRoute(builder: (context)=>SearchFilterScreen(currentRangeValues, colors, categories)));
+                        if(arguments != null) {
+                          setState((){
+                            currentRangeValues = arguments["priceFilterRange"];
+                            colors = arguments["colors"];
+                            categories = arguments["categories"];
+                            checkFilter();
+                          });
+                          if(requestColorFilter == true || requestPriceFilter == true || requestCategoryFilter == true) {
+                            searchR = applyFilter();
+                            List<FurnitureModel> suggestions = [];
+                            // get more data if filter results less than 4
+                            // break when there is no more furniture available
+                            while(searchR.length < 4 && BlocProvider.of<HomeCubit>(context).moreFurnitureAvailable == true){
+                              suggestions = await addMoreData(tempSearchR, _searchController.text.toLowerCase());
+                              setState((){
+                                tempSearchR = [...suggestions];
+                                searchR = applyFilter();
+                              });
+                            }
+                          }else {
+                            setState(() {
+                              searchR = [...tempSearchR];
+                            });
+                          }
+                        }
                         print("====================================");
                       },
                     ),
@@ -136,7 +175,7 @@ class _SearchState extends State<Search> {
                   ),
                 ],
               ),
-              if(viewSuggestions == true &&(requestColorFilter == true || requestPriceFilter == true))
+              if(viewSuggestions == true &&(requestColorFilter == true || requestPriceFilter == true || requestCategoryFilter == true))
                 Container(
                   height: MediaQuery.of(context).size.height > 350
                       ? MediaQuery.of(context).size.height * 0.1
@@ -155,7 +194,10 @@ class _SearchState extends State<Search> {
                               child: Center(
                                 child: Row(
                                   children: [
-                                    Text("Color: "),
+                                    const Text("Color: ",
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                    ),),
                                     ...colors.entries.where((element) => element.value == true).map((e) => CustomCircleAvatar(radius: MediaQuery.of(context).size.height > 350 ? 10.0 : 5.0, CavatarColor: e.key))
                                   ],
                                 ),
@@ -173,12 +215,35 @@ class _SearchState extends State<Search> {
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: Center(
-                                child: Text("Price: ${currentRangeValues.start.round()} - ${currentRangeValues.end.round()}"),
+                                child: Text("Price: ${currentRangeValues.start.round()} - ${currentRangeValues.end.round()}", style: const TextStyle(fontWeight: FontWeight.bold,),),
                               ),
                             ),
                           ),
                         ),
                       ),
+                      if(requestCategoryFilter == true)
+                        Padding(
+                          padding: const EdgeInsets.all(6.0),
+                          child: ClipOval(
+                            child: Container(
+                              color: Colors.grey.shade400,
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Center(
+                                  child: Row(
+                                    children: [
+                                      const Text("Category: ",
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                        ),),
+                                      ...categories.entries.where((element) => element.value == true).map((e) => Text("${e.key.name}   ")),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
                     ],
                   ),
                 ),
@@ -372,10 +437,6 @@ class _SearchState extends State<Search> {
     if (query == ''){
       setState(() => viewSuggestions = false);
     }else{
-      if(colorFlag == 0) {
-        getAvailableColors(0);
-        colorFlag = 1;
-      }
       setState(() => viewSuggestions = true);
       final input = query.toLowerCase();
       List<FurnitureModel> suggestions = filteredFurniture.where((fur) {
@@ -389,10 +450,17 @@ class _SearchState extends State<Search> {
         searchR = [...suggestions];
         tempSearchR = [...suggestions];
       });
-      if(requestColorFilter == true || requestPriceFilter == true) {
+      if(requestColorFilter == true || requestPriceFilter == true || requestCategoryFilter == true) {
         setState(() {
           searchR = applyFilter();
         });
+        while(searchR.length < 4 && BlocProvider.of<HomeCubit>(context).moreFurnitureAvailable == true){
+          suggestions = await addMoreData(suggestions,input);
+          setState(() {
+            tempSearchR = [...suggestions];
+            searchR = applyFilter();
+          });
+        }
       }
     }
   }
@@ -426,16 +494,13 @@ class _SearchState extends State<Search> {
       List<Color?> availableColors = BlocProvider.of<HomeCubit>(context).getAvailableColorsOfFurniture(element);
       for (var valColor in availableColors) {
         if(!colors.containsKey(valColor)) {
-          setState(() {
-            colors[valColor!] = false;
-          });
+          colors[valColor!] = false;
         }
       }
     }
   }
 
   bool checkFilter() {
-    print("gowaaaa filter");
     if(colors.containsValue(true)){
       setState(() {
         requestColorFilter = true;
@@ -445,9 +510,6 @@ class _SearchState extends State<Search> {
         requestColorFilter = false;
       });
     }
-    print("check filter price");
-    print(currentRangeValues.start.round());
-    print(currentRangeValues.end.round());
     if(currentRangeValues.start.round() != 0 || currentRangeValues.end.round() != 500) {
       setState(() {
         requestPriceFilter = true;
@@ -458,7 +520,16 @@ class _SearchState extends State<Search> {
         requestPriceFilter = false;
       });
     }
-    if(requestPriceFilter == true || requestColorFilter == true) {
+    if(categories.containsValue(true)){
+      setState(() {
+        requestCategoryFilter = true;
+      });
+    }else {
+      setState(() {
+        requestCategoryFilter = false;
+      });
+    }
+    if(requestPriceFilter == true || requestColorFilter == true || requestCategoryFilter == true) {
       return true;
     }
     return false;
@@ -471,24 +542,29 @@ class _SearchState extends State<Search> {
       searchR = searchR.where((element) => int.parse(element.shared[0].price) >= currentRangeValues.start && int.parse(element.shared[0].price) <= currentRangeValues.end).toList();
     }
     if(requestColorFilter == true) {
-      List<Color> tempColors=[];
+      List<Color> tempColors = [];
       colors.forEach((key, value) {
-        if(value==true){
+        if(value == true){
           tempColors.add(key);
         }
       });
-      print("TEST print");
-      print(tempColors);
-      searchR=searchR.where((element) {
-        List<Color?> availableColorsFilter =BlocProvider.of<HomeCubit>(context).getAvailableColorsOfFurniture(element);
+      searchR = searchR.where((element) {
+        List<Color?> availableColorsFilter = BlocProvider.of<HomeCubit>(context).getAvailableColorsOfFurniture(element);
         bool isFound=availableColorsFilter.where((element) => tempColors.contains(element)).isNotEmpty;
-        print(isFound);
-        print("ya rb");
         if(isFound){
             return true;
-          }
+        }
        return false;
       }).toList();
+    }
+    if(requestCategoryFilter == true){
+      List<String> tempCategory = [];
+      categories.forEach((key, value) {
+        if(value == true){
+          tempCategory.add(key.name);
+        }
+      });
+      searchR = searchR.where((element) => tempCategory.contains(element.category)).toList();
     }
     return searchR;
   }
