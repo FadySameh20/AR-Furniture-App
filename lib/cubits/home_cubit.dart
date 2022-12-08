@@ -7,6 +7,7 @@ import 'package:ar_furniture_app/models/furniture_model.dart';
 import 'package:ar_furniture_app/models/offers_model.dart';
 import 'package:ar_furniture_app/models/shared_model.dart';
 import 'package:ar_furniture_app/shared/cache/sharedpreferences.dart';
+import 'package:ar_furniture_app/shared/widgets/home_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -61,7 +62,7 @@ class HomeCubit extends Cubit<HomeState> {
 
     }
     await getFavorites();
-    emit(LoadedHomeScreen());
+    HomePage.recommendedItems=furnitureList.length;
   }
 
   setCache() async {
@@ -819,6 +820,8 @@ class HomeCubit extends Cubit<HomeState> {
         }
       }
     }
+    print("yyyyyyyyyyyyyyyy");
+
   }
 
   addOrRemoveFromFavorite(furnitureId) async {
