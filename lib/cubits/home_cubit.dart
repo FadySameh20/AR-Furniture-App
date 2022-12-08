@@ -61,6 +61,7 @@ class HomeCubit extends Cubit<HomeState> {
 
     }
     await getFavorites();
+    emit(LoadedHomeScreen());
   }
 
   setCache() async {
