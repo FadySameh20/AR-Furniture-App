@@ -236,7 +236,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                                     width: MediaQuery.of(context).size.width * 0.45,
                                     child: Image.network(
                                       filteredFurniture[index].shared[selectedColorIndex].image,
-                                      fit: BoxFit.cover,
+                                      fit: BoxFit.contain,
                                     ),
                                   ),
                                 ),

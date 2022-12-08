@@ -67,12 +67,13 @@ class _CartScreenState extends State<CartScreen> {
     print(widget.cartMap);
     widget.cartMap.forEach((key, value) {
       value.forEach((element) {
-
+        print("lol");
+        print(element.quantityCart);
         if (int.parse(element.quantityCart) > 0) {
           furnitureQuantities.add(element.quantityCart);
           furnitureImages.add(element.image);
           availableQuantity.add(element.quantity);
-          furniturePrices.add(element.price);
+          furniturePrices.add((double.parse(element.price) -( (double.parse(element.discount)/100)*double.parse(element.price))).toStringAsFixed(2));
           furnitureColors.add(element.color);
           print("furnitureCOLORS");
           print(furnitureColors);
@@ -90,7 +91,7 @@ class _CartScreenState extends State<CartScreen> {
     });
     for (int i = 0; i < furniturePrices.length; i++) {
       subTotal +=
-          int.parse(furnitureQuantities[i]) * int.parse(furniturePrices[i]);
+          int.parse(furnitureQuantities[i]) * double.parse(furniturePrices[i]);
     }
 
     tax = subTotal * estimatingTax;
@@ -163,11 +164,11 @@ class _CartScreenState extends State<CartScreen> {
                         key: UniqueKey(),
                         // Provide a function that tells the app
                         // what to do after an item has been swiped away
-                        onDismissed: (direction) {
-                          BlocProvider.of<HomeCubit>(context).removeFromCart(
+                        onDismissed: (direction)async {
+                          await BlocProvider.of<HomeCubit>(context).removeFromCart(
                               furnitureIds[index], furnitureColors[index]);
-                          subTotal =subTotal- (int.parse(
-                              furniturePrices[index])*int.parse(
+                          subTotal =subTotal- (double.parse(
+                              furniturePrices[index])*double.parse(
                               furnitureQuantities[index]));
                           tax = subTotal *
                               estimatingTax;
@@ -176,7 +177,12 @@ class _CartScreenState extends State<CartScreen> {
                           // Remove the item from the data source.
                           setState(() {
                             furnitureNames.removeAt(index);
-
+                            furnitureQuantities.removeAt(index);
+                            furnitureColors.removeAt(index);
+                            furnitureIds.removeAt(index);
+                            furnitureImages.removeAt(index);
+                            furniturePrices.removeAt(index);
+                            availableQuantity.removeAt(index);
                           });
 
                           // Then show a snackbar.
@@ -246,7 +252,7 @@ class _CartScreenState extends State<CartScreen> {
                                                           index]);
                                                       furnitureQuantities[index] =
                                                           quantity.toString();
-                                                      subTotal -= int.parse(
+                                                      subTotal -= double.parse(
                                                           furniturePrices[index]);
                                                       tax = subTotal *
                                                           estimatingTax;
@@ -315,7 +321,7 @@ class _CartScreenState extends State<CartScreen> {
                                                       quantity++;
                                                       furnitureQuantities[index] =
                                                           quantity.toString();
-                                                      subTotal += int.parse(
+                                                      subTotal += double.parse(
                                                           furniturePrices[index]);
                                                       tax = subTotal *
                                                           estimatingTax;

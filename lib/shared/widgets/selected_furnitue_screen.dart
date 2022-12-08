@@ -10,6 +10,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
@@ -35,6 +36,7 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
   int selectedColorIndex = 0;
 
   Color? selectedColor;
+  double selectedRating = 1.0;
 
 
   // Map<String, dynamic> cartMap = {};
@@ -89,6 +91,10 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
             backgroundColor: Color.fromRGBO(191, 122, 47, 1),
             actions: [
               IconButton(onPressed: () {
+                print("ya rbbb");
+                print( BlocProvider
+                    .of<HomeCubit>(context)
+                    .cache.cartMap);
                 Navigator.push(context, MaterialPageRoute(builder: (context) =>
                     CartScreen(furnitureList: BlocProvider
                         .of<HomeCubit>(context)
@@ -162,11 +168,14 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                         //   backgroundColor: kAppBackgroundColorLowOpacity,
                         // ),
                       ),
-                      Align(
-                        alignment: Alignment.center,
-                        child: Container(
-                          color: Colors.transparent,
-                          child: Image.network(widget.selectedFurniture.shared[selectedColorIndex].image),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 20.0),
+                        child: Align(
+                          alignment: Alignment.center,
+                          child: Container(
+                            color: Colors.transparent,
+                            child: Image.network(widget.selectedFurniture.shared[selectedColorIndex].image),
+                          ),
                         ),
                       ),
                       Positioned(
@@ -343,7 +352,7 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                                       SizedBox(height: 20.0,),
                                       RatingBar.builder(
                                         itemSize: 30.0,
-                                        initialRating: 1,
+                                        initialRating: widget.selectedFurniture.ratings[FirebaseAuth.instance.currentUser!.uid] == null ? 1 : widget.selectedFurniture.ratings[FirebaseAuth.instance.currentUser!.uid],
                                         minRating: 1,
                                         direction: Axis.horizontal,
                                         // allowHalfRating: true,
@@ -358,9 +367,11 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                                             ),
                                         onRatingUpdate: (rating) {
                                             print("Rating: " + rating.toString());
-                                            setState(() {
-                                              widget.selectedFurniture.ratings.add(rating);
-                                            });
+                                            selectedRating = rating;
+                                            // setState(() {
+                                            //   // widget.selectedFurniture.ratings.add(rating);
+                                            //   widget.selectedFurniture.ratings[FirebaseAuth.instance.currentUser!.uid] = rating;
+                                            // });
                                         },
                                       ),
                                     ],
@@ -372,6 +383,7 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                                         style: TextStyle(color: Colors.white, fontSize: 20),
                                       ),
                                       onPressed: () async {
+                                        widget.selectedFurniture.ratings[FirebaseAuth.instance.currentUser!.uid] = selectedRating;
                                         await  FirebaseFirestore.instance.collection('category').doc(widget.selectedFurniture.category).collection("furniture").doc(widget.selectedFurniture.furnitureId).update({"ratings": widget.selectedFurniture.ratings});
                                         setState(() {});
                                         Navigator.pop(context);
@@ -626,7 +638,7 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                                   print("Blue: " + selectedColor!.blue.toRadixString(16).padLeft(2, '0').toString().toUpperCase());
                                   String color = "#" + selectedColor!.red.toRadixString(16).padLeft(2, '0').toString().toUpperCase() + selectedColor!.green.toRadixString(16).padLeft(2, '0').toString().toUpperCase() + selectedColor!.blue.toRadixString(16).padLeft(2, '0').toString().toUpperCase();
                                   print(color);
-                                  BlocProvider.of<HomeCubit>(context).addToCart(
+                                  await BlocProvider.of<HomeCubit>(context).addToCart(
                                       widget.selectedFurniture.furnitureId,
                                       color, quantity);
 
@@ -660,6 +672,12 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                                   // CacheHelper.setMap(
                                   //     key: 'cart', value: json.encode(cartMap));
                                   //}
+                                  print("ya rbbb");
+                                  print( BlocProvider
+                                      .of<HomeCubit>(context)
+                                      .cache.cartMap);
+
+
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
@@ -757,9 +775,17 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                                     ),
                                     child: Column(
                                       children: [
+                                        SizedBox(height: 20.0,),
                                         Expanded(
-                                          child: Image.network(BlocProvider.of<HomeCubit>(context).recommendedFurniture[index].shared[0].image),
+                                          child: Container(
+                                            width: MediaQuery.of(context).size.width * 0.34,
+                                            child: Image.network(
+                                                BlocProvider.of<HomeCubit>(context).recommendedFurniture[index].shared[0].image,
+                                                fit: BoxFit.contain,
+                                            ),
+                                          ),
                                         ),
+                                        SizedBox(height: 10,),
                                         Text(BlocProvider.of<HomeCubit>(context).recommendedFurniture[index].name),
                                       ],
                                     ),
