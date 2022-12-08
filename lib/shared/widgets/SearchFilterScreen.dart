@@ -5,30 +5,19 @@ import 'package:flutter/material.dart';
 
 
 class SearchFilterScreen extends StatefulWidget {
+  RangeValues rangeValues;
+  Map<Color,bool> availableColors;
+  SearchFilterScreen(this.rangeValues, this.availableColors,{super.key});
   @override
   State<SearchFilterScreen> createState() => _SearchFilterScreenState();
 }
 
 class _SearchFilterScreenState extends State<SearchFilterScreen> {
   //const SearchFilterScreen({Key? key}) : super(key: key);
-  List<Color> colors = [
-    Colors.teal,
-    Colors.red,
-    Colors.yellow,
-    Colors.blue,
-  ];
-  List<bool> isCheck = [false, false, false, false];
-  int flag = 1;
-  Map<String, bool> priceFilter = {};
+  List<Color> selectedColors = [];
 
   @override
   Widget build(BuildContext context) {
-    final arguments = (ModalRoute.of(context)?.settings.arguments ?? <String, dynamic>{}) as Map;
-    if(flag == 1) {
-      priceFilter = arguments['priceFilter'];
-      flag = 0;
-    }
-
     return Scaffold(
       appBar: AppBar(
         title: const Text("Filter"),
@@ -39,7 +28,6 @@ class _SearchFilterScreenState extends State<SearchFilterScreen> {
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: Column(
-            //crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const Text(
                 'Price',
@@ -49,38 +37,20 @@ class _SearchFilterScreenState extends State<SearchFilterScreen> {
                   fontSize: 20,
                 ),
               ),
-              ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: priceFilter.length,
-                  itemBuilder: (context, index) {
-                    return Container(
-                      width: double.infinity,
-                      margin: const EdgeInsets.only(top: 10),
-                      padding: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 10.0),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(priceFilter.keys.elementAt(index), style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15.0),),
-                          SizedBox(
-                            height: 25,
-                            child: Checkbox(value: priceFilter.values.elementAt(index),
-                                activeColor: kAppBackgroundColor,
-                                onChanged: (bool? newValue){
-                                  setState(() {
-                                    priceFilter.update(priceFilter.keys.elementAt(index), (value) => !priceFilter.values.elementAt(index));
-                                  });
-                                }
-                            ),
-                          ),
-                        ],
-                      ),
-                    );
-                  },
-              ),
+              RangeSlider(
+                  values: widget.rangeValues,
+                  min: 0,
+                  max: 500,
+                  divisions: 10,
+                  labels: RangeLabels(
+                      widget.rangeValues.start.round().toString(),
+                      widget.rangeValues.end.round().toString()
+                  ),
+                  onChanged: (RangeValues values) {
+                    setState(() {
+                      widget.rangeValues = values;
+                    });
+                  }),
               const Padding(
                 padding: EdgeInsets.only(top: 10.0),
                 child: Text(
@@ -108,28 +78,28 @@ class _SearchFilterScreenState extends State<SearchFilterScreen> {
                 mainAxisSpacing: 10.0,
                 crossAxisSpacing: 5.0,
                 reverse: false,
-                children: List.generate(colors.length, (index) {
+                children: List.generate(widget.availableColors.length, (index) {
                   return Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [InkWell(
                         onTap: (){
                           setState(() {
-                            isCheck[index] = !isCheck[index];
+                            widget.availableColors.update(widget.availableColors.keys.elementAt(index), (value) => !widget.availableColors.values.elementAt(index));
                           });
                         },
-                        child: CustomCircleAvatar(radius: MediaQuery.of(context).size.height > 350 ? 25.0 : 20.0, CavatarColor: colors[index], icon: isCheck[index] == true? const Icon(Icons.check, size: 30, color: Colors.white,):null),
+                        child: CustomCircleAvatar(radius: MediaQuery.of(context).size.height > 350 ? 25.0 : 20.0, CavatarColor: widget.availableColors.keys.elementAt(index), icon: widget.availableColors.values.elementAt(index) == true? const Icon(Icons.check, size: 30, color: Colors.white,):null),
                     ),
                   ]);
                 }),
               ),
               ElevatedButton(
-                child: Text("Apply"),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: kAppBackgroundColor,
                 ),
                 onPressed: (){
-                  Navigator.pop(context, {'priceFilter':priceFilter, 'categoryName':CategoriesScroller.selectedCategoryName});
+                  Navigator.pop(context, {'priceFilterRange':widget.rangeValues, 'categoryName':CategoriesScroller.selectedCategoryName, 'colors':widget.availableColors});
                 },
+                child: const Text("Apply"),
               ),
             ],
           ),

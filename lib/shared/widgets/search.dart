@@ -1,12 +1,14 @@
 import 'package:ar_furniture_app/cubits/home_cubit.dart';
 import 'package:ar_furniture_app/cubits/home_states.dart';
 import 'package:ar_furniture_app/models/furniture_model.dart';
+import 'package:ar_furniture_app/shared/widgets/SearchFilterScreen.dart';
 import 'package:ar_furniture_app/shared/widgets/categories_scroller.dart';
 import 'package:ar_furniture_app/shared/widgets/favorite_icon.dart';
 import 'package:ar_furniture_app/shared/widgets/selected_furnitue_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../constants/constants.dart';
+import 'circle_avatar.dart';
 
 
 List<FurnitureModel> filteredFurniture = [];
@@ -18,15 +20,19 @@ class Search extends StatefulWidget {
 class _SearchState extends State<Search> {
   //const Search({Key? key}) : super(key: key);
   List<FurnitureModel> searchR = filteredFurniture;
+  List<FurnitureModel> tempSearchR = filteredFurniture;
   bool viewSuggestions = false;
   int flag = 0;
   ScrollController _scrollController = ScrollController();
   TextEditingController _searchController = TextEditingController();
 
   // filter
-  //Map<String, bool> priceFilter = {'EGP 0 - 4999': false, 'EGP 5000 - 9999': false, 'EGP 10000 - 14999': false, 'EGP 15000 - 19999': false, 'EGP 20000 +': false};
-  Map<String, bool> priceFilter = {'EGP 0 - 50': false, 'EGP 200 - 299': false, 'EGP 300 - 399': false, 'EGP 400 - 499': false, 'EGP 500 +': false};
+  RangeValues currentRangeValues = const RangeValues(0, 500);
+  Map<Color,bool> colors = {};
   var arguments;
+  bool requestPriceFilter = false;
+  bool requestColorFilter = false;
+  int colorFlag = 0;
 
   // recently viewed
   List<String> recentlyViewed = [];
@@ -42,8 +48,14 @@ class _SearchState extends State<Search> {
           List<FurnitureModel> addSearchData = await addMoreData(searchR, _searchController.text.toLowerCase());
           if (addSearchData.length > lengthSearchR){
             setState(() {
-              searchR = addSearchData;
+              searchR = [...addSearchData];
+              tempSearchR = [...addSearchData];
             });
+            if(checkFilter()) {
+              setState(() {
+                searchR = applyFilter();
+              });
+            }
           }
         }
       }
@@ -104,58 +116,15 @@ class _SearchState extends State<Search> {
                     child: IconButton(
                       icon: const Icon(Icons.filter_list, color: Colors.white, size: 25,),
                       onPressed: () async{
-                        print(priceFilter);
-                        arguments = await Navigator.pushNamed(context, '/filter', arguments: {'priceFilter': priceFilter});
-                        print("====================================");
-                        // print(priceFilter.keys.elementAt(0).split(' '));
-                        // print(priceFilter.keys.elementAt(0).split(' ')[3]);
-                        // print(int.tryParse(priceFilter.keys.elementAt(0).split(' ')[3]));
-                        // print(priceFilter.keys.elementAt(priceFilter.length-1).split(' '));
-
-                        // List<FurnitureModel> applyFilters = [];
-                        priceFilter.forEach((key, value) {
-                          if(value == true){
-                            print(key +  "   " + value.toString());
-                            if(key.split(' ').length == 4){
-                              print("yessssss");
-                              print(searchR.length);
-                              searchR.forEach((element) {
-                                print(element.name);
-                              });
-                              print("after filter");
-                              setState(() {
-                              searchR = searchR.where((element) => int.parse(element.shared[0].price) >= int.parse(key.split(' ')[1]) && int.parse(element.shared[0].price) <= int.parse(key.split(' ')[3])).toList();
-                              });
-                              searchR.forEach((element) {
-                                print(element.name);
-                              });
-                              // searchR.forEach((element) {
-                              //   if (!applyFilters.contains(element)) {
-                              //     for (var element1 in element.shared) {
-                              //       if (int.parse(element1.price) >= int.parse(key.split(' ')[1]) && int.parse(element1.price) <= int.parse(key.split(' ')[3])) {
-                              //         applyFilters.add(element);
-                              //         print(element.name);
-                              //         break;
-                              //       }
-                              //     }
-                              //   }
-                              // });
-                            }
-                            //print("apply filter length");
-                            //print(applyFilters.length);
-                            // else if (key.split(' ').length == 3) {
-                            //   print(key.split(' ')[1]);
-                            //   searchR.forEach((element) {
-                            //     if (!applyFilters.contains(element)) {
-                            //       for (var element1 in element.shared) {
-                            //         if (int.parse(element1.price) >= int.parse(key.split(' ')[1])) {
-                            //           applyFilters.add(element);
-                            //           break;
-                            //         }
-                            //       }
-                            //     }
-                            //   });
-                            // }
+                        arguments = await Navigator.push(context, MaterialPageRoute(builder: (context)=>SearchFilterScreen(currentRangeValues, colors)));
+                        setState(() {
+                          currentRangeValues = arguments["priceFilterRange"];
+                          colors = arguments["colors"];
+                          checkFilter();
+                          if(checkFilter()) {
+                            searchR = applyFilter();
+                          }else {
+                            searchR = [...tempSearchR];
                           }
                         });
                         print("====================================");
@@ -167,6 +136,52 @@ class _SearchState extends State<Search> {
                   ),
                 ],
               ),
+              if(viewSuggestions == true &&(requestColorFilter == true || requestPriceFilter == true))
+                Container(
+                  height: MediaQuery.of(context).size.height > 350
+                      ? MediaQuery.of(context).size.height * 0.1
+                      : MediaQuery.of(context).size.height * 0.05,
+                  child: ListView(
+                    scrollDirection: Axis.horizontal,
+                    children: [
+                      if(requestColorFilter == true)
+                      Padding(
+                        padding: const EdgeInsets.all(6.0),
+                        child: ClipOval(
+                          child: Container(
+                            color: Colors.grey.shade400,
+                            child: Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: Center(
+                                child: Row(
+                                  children: [
+                                    Text("Color: "),
+                                    ...colors.entries.where((element) => element.value == true).map((e) => CustomCircleAvatar(radius: MediaQuery.of(context).size.height > 350 ? 10.0 : 5.0, CavatarColor: e.key))
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      if(requestPriceFilter == true)
+                      Padding(
+                        padding: const EdgeInsets.all(6.0),
+                        child: ClipOval(
+                          child: Container(
+                            color: Colors.grey.shade400,
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Center(
+                                child: Text("Price: ${currentRangeValues.start.round()} - ${currentRangeValues.end.round()}"),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               if(viewSuggestions == true)
               searchR.isEmpty? const Center(
                 child: Text("No Items To Show"),
@@ -174,13 +189,13 @@ class _SearchState extends State<Search> {
                 builder: (context,constraints) {
                   return Container(
                     height: MediaQuery.of(context).size.height-(160+ MediaQuery.of(context).padding.top+AppBar(
-                        backgroundColor: Color.fromRGBO(191, 122, 47, 1),
-                        leading: FlutterLogo(),
+                        backgroundColor: const Color.fromRGBO(191, 122, 47, 1),
+                        leading: const FlutterLogo(),
                         actions: [
                           IconButton(onPressed: () {context.read<HomeCubit>().logout(context);}, icon: Icon(Icons.shopping_cart))
                         ],
                         centerTitle: true,
-                        title: Text(
+                        title: const Text(
                           "Home",
                           style: TextStyle(),
                         )).preferredSize.height),
@@ -209,7 +224,7 @@ class _SearchState extends State<Search> {
                               );
                             },
                             child: Container(
-                              padding: EdgeInsets.all(12.0),
+                              padding: const EdgeInsets.all(12.0),
                               width: MediaQuery.of(context).size.width > 200
                                   ? MediaQuery.of(context).size.width * 0.45
                                   : MediaQuery.of(context).size.width * 0.3,
@@ -226,17 +241,16 @@ class _SearchState extends State<Search> {
                                     children: [
                                       TextButton(
                                         onPressed: () {
-                                          // int tempIndex = BlocProvider.of<HomeCubit>(context).furnitureList.indexWhere((element) => element.furnitureId == fur.furnitureId);
                                           BlocProvider.of<HomeCubit>(context).addOrRemoveFromFavorite(fur.furnitureId);
                                           BlocProvider.of<HomeCubit>(context).emit(AddOrRemoveFavoriteState());
                                         },
-                                        child: fur.isFavorite ? FavoriteIcon(iconLogo: Icons.favorite, iconColor: kAppBackgroundColor,) : FavoriteIcon(iconLogo: Icons.favorite_border_rounded, iconColor: kAppBackgroundColor,),
                                         style: TextButton.styleFrom(
                                           padding: EdgeInsets.zero,
                                           tapTargetSize:
                                           MaterialTapTargetSize.shrinkWrap,
-                                          minimumSize: Size(0, 0),
+                                          minimumSize: const Size(0, 0),
                                         ),
+                                        child: fur.isFavorite ? FavoriteIcon(iconLogo: Icons.favorite, iconColor: kAppBackgroundColor,) : FavoriteIcon(iconLogo: Icons.favorite_border_rounded, iconColor: kAppBackgroundColor,),
                                       ),
                                     ],
                                   ),
@@ -247,44 +261,44 @@ class _SearchState extends State<Search> {
                                   ),
                                   Text(
                                     fur.name,
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                       fontSize: 18,
                                       fontWeight: FontWeight.bold,
                                     ),
                                   ),
-                                  Spacer(),
+                                  const Spacer(),
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       Text(
-                                        fur.shared[0].price + "  EGP",
-                                        style: TextStyle(
+                                        "${fur.shared[0].price}  EGP",
+                                        style: const TextStyle(
                                           color: kAppBackgroundColor,
                                           fontWeight: FontWeight.bold,
                                           fontSize: 16,
                                         ),
                                       ),
-                                      Spacer(),
+                                      const Spacer(),
                                       TextButton(
                                         onPressed: () {
                                           BlocProvider.of<HomeCubit>(context).addToCart(fur.furnitureId, fur.shared[0].color, 1);
-                                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                                             content: Text('Added to cart successfully !'),
                                           ));
                                         },
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Icon(
-                                            Icons.add_shopping_cart,
-                                            color: Colors.white,
-                                          ),
-                                        ),
                                         style: TextButton.styleFrom(
                                           backgroundColor: kAppBackgroundColor,
                                           padding: EdgeInsets.zero,
                                           tapTargetSize:
                                           MaterialTapTargetSize.shrinkWrap,
                                           minimumSize: Size(0, 0),
+                                        ),
+                                        child: const Padding(
+                                          padding: EdgeInsets.all(8.0),
+                                          child: Icon(
+                                            Icons.add_shopping_cart,
+                                            color: Colors.white,
+                                          ),
                                         ),
                                       ),
                                     ],
@@ -299,7 +313,7 @@ class _SearchState extends State<Search> {
                 }
               ),
               if(viewSuggestions == false)
-                Text(
+                const Text(
                   "Categories",
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
@@ -323,13 +337,26 @@ class _SearchState extends State<Search> {
               if(viewSuggestions == false)
                 Container(
                   height: MediaQuery.of(context).size.height > 350
-                      ? MediaQuery.of(context).size.height * 0.45
-                      : MediaQuery.of(context).size.height * 0.3,
+                      ? MediaQuery.of(context).size.height * 0.1
+                      : MediaQuery.of(context).size.height * 0.05,
                   child: ListView.builder(
                     scrollDirection: Axis.horizontal,
                     itemCount: recentlyViewed.length,
                     itemBuilder: (context, index){
-                      return Text(recentlyViewed[index]);
+                      return Padding(
+                        padding: const EdgeInsets.all(6.0),
+                        child: ClipOval(
+                          child: Container(
+                            color: Colors.grey.shade400,
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Center(
+                                child: Text(recentlyViewed[index]),
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
                     },
                   ),
                 ),
@@ -345,6 +372,10 @@ class _SearchState extends State<Search> {
     if (query == ''){
       setState(() => viewSuggestions = false);
     }else{
+      if(colorFlag == 0) {
+        getAvailableColors(0);
+        colorFlag = 1;
+      }
       setState(() => viewSuggestions = true);
       final input = query.toLowerCase();
       List<FurnitureModel> suggestions = filteredFurniture.where((fur) {
@@ -354,21 +385,28 @@ class _SearchState extends State<Search> {
       if (suggestions.length < 4){
         suggestions = await addMoreData(suggestions,input);
       }
-      setState(() => searchR = suggestions);
+      setState(() {
+        searchR = [...suggestions];
+        tempSearchR = [...suggestions];
+      });
+      if(requestColorFilter == true || requestPriceFilter == true) {
+        setState(() {
+          searchR = applyFilter();
+        });
+      }
     }
   }
 
   Future<List<FurnitureModel>> addMoreData(List<FurnitureModel> suggestions1, String input) async {
     int moreFurnitureCount = filteredFurniture.length;
     if(BlocProvider.of<HomeCubit>(context).lastSearchbarName == input) {
-      print("get more dataaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
-      print(input);
       await BlocProvider.of<HomeCubit>(context).getMoreSearchData(input);
     } else {
       await BlocProvider.of<HomeCubit>(context).getSearchData(input);
     }
     filteredFurniture = BlocProvider.of<HomeCubit>(context).furnitureList.toList();
     if (moreFurnitureCount != filteredFurniture.length){
+      getAvailableColors(moreFurnitureCount);
       int j;
       for(j=moreFurnitureCount; j<filteredFurniture.length; j++){
         final searchTitle = filteredFurniture[j].name.toLowerCase();
@@ -378,5 +416,80 @@ class _SearchState extends State<Search> {
       }
     }
     return suggestions1;
+  }
+
+  void getAvailableColors(int start) {
+    int i;
+    FurnitureModel element;
+    for (i=start; i<filteredFurniture.length; i++) {
+      element = filteredFurniture[i];
+      List<Color?> availableColors = BlocProvider.of<HomeCubit>(context).getAvailableColorsOfFurniture(element);
+      for (var valColor in availableColors) {
+        if(!colors.containsKey(valColor)) {
+          setState(() {
+            colors[valColor!] = false;
+          });
+        }
+      }
+    }
+  }
+
+  bool checkFilter() {
+    print("gowaaaa filter");
+    if(colors.containsValue(true)){
+      setState(() {
+        requestColorFilter = true;
+      });
+    }else {
+      setState(() {
+        requestColorFilter = false;
+      });
+    }
+    print("check filter price");
+    print(currentRangeValues.start.round());
+    print(currentRangeValues.end.round());
+    if(currentRangeValues.start.round() != 0 || currentRangeValues.end.round() != 500) {
+      setState(() {
+        requestPriceFilter = true;
+      });
+    }
+    else {
+      setState(() {
+        requestPriceFilter = false;
+      });
+    }
+    if(requestPriceFilter == true || requestColorFilter == true) {
+      return true;
+    }
+    return false;
+  }
+
+  List<FurnitureModel> applyFilter() {
+    print("ANA APPLY FILTER");
+    searchR = [...tempSearchR];
+    if(requestPriceFilter == true) {
+      searchR = searchR.where((element) => int.parse(element.shared[0].price) >= currentRangeValues.start && int.parse(element.shared[0].price) <= currentRangeValues.end).toList();
+    }
+    if(requestColorFilter == true) {
+      List<Color> tempColors=[];
+      colors.forEach((key, value) {
+        if(value==true){
+          tempColors.add(key);
+        }
+      });
+      print("TEST print");
+      print(tempColors);
+      searchR=searchR.where((element) {
+        List<Color?> availableColorsFilter =BlocProvider.of<HomeCubit>(context).getAvailableColorsOfFurniture(element);
+        bool isFound=availableColorsFilter.where((element) => tempColors.contains(element)).isNotEmpty;
+        print(isFound);
+        print("ya rb");
+        if(isFound){
+            return true;
+          }
+       return false;
+      }).toList();
+    }
+    return searchR;
   }
 }
