@@ -132,10 +132,8 @@ class _HomePageState extends State<HomePage> {
                 IconButton(onPressed: () {}, icon: Icon(Icons.shopping_cart))
               ],
               centerTitle: true,
-              title: Text(
-                "Home",
-                style: TextStyle(),
-              )),
+              title: selectedPos == 0 ? Text("Home",) : selectedPos == 1 ? Text("Favorites",) : selectedPos == 2 ? Text("Search",) : selectedPos == 3 ? Text("Categories",) : Text("Profile",),
+          ),
           body: Stack(
             children: <Widget>[
               Padding(

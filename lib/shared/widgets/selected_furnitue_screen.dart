@@ -168,11 +168,14 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                         //   backgroundColor: kAppBackgroundColorLowOpacity,
                         // ),
                       ),
-                      Align(
-                        alignment: Alignment.center,
-                        child: Container(
-                          color: Colors.transparent,
-                          child: Image.network(widget.selectedFurniture.shared[selectedColorIndex].image),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 20.0),
+                        child: Align(
+                          alignment: Alignment.center,
+                          child: Container(
+                            color: Colors.transparent,
+                            child: Image.network(widget.selectedFurniture.shared[selectedColorIndex].image),
+                          ),
                         ),
                       ),
                       Positioned(
@@ -772,9 +775,17 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                                     ),
                                     child: Column(
                                       children: [
+                                        SizedBox(height: 20.0,),
                                         Expanded(
-                                          child: Image.network(BlocProvider.of<HomeCubit>(context).recommendedFurniture[index].shared[0].image),
+                                          child: Container(
+                                            width: MediaQuery.of(context).size.width * 0.34,
+                                            child: Image.network(
+                                                BlocProvider.of<HomeCubit>(context).recommendedFurniture[index].shared[0].image,
+                                                fit: BoxFit.contain,
+                                            ),
+                                          ),
                                         ),
+                                        SizedBox(height: 10,),
                                         Text(BlocProvider.of<HomeCubit>(context).recommendedFurniture[index].name),
                                       ],
                                     ),

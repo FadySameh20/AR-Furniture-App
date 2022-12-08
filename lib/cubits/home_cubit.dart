@@ -787,8 +787,17 @@ class HomeCubit extends Cubit<HomeState> {
   }
 
   getFavorites() async {
+    bool flag = false;
+
     for (var elem in cache.cachedFavoriteIds) {
-      if (furnitureList.contains(elem)) {
+      flag = false;
+      for(int i = 0; i < furnitureList.length; i++) {
+        if(furnitureList[i].furnitureId == elem) {
+          flag = true;
+          break;
+        }
+      }
+      if (flag) {
         continue;
       } else {
         for (var i = 0; i < categories.length; i++) {
@@ -799,7 +808,7 @@ class HomeCubit extends Cubit<HomeState> {
               .doc(elem)
               .get()
               .then((value) {
-            if (value.data != null) {
+            if (value.data() != null) {
               FurnitureModel fur =
                   FurnitureModel.fromJson(value.data() as Map<String, dynamic>);
               fur.isFavorite = true;
