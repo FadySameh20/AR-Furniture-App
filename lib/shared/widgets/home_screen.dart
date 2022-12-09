@@ -1,10 +1,7 @@
-import 'dart:convert';
 
 import 'package:ar_furniture_app/cubits/home_cubit.dart';
 import 'package:ar_furniture_app/models/furniture_model.dart';
-import 'package:ar_furniture_app/shared/cache/sharedpreferences.dart';
 import 'package:ar_furniture_app/shared/widgets/favorite_icon.dart';
-import 'package:ar_furniture_app/shared/widgets/profile_edit.dart';
 import 'package:ar_furniture_app/shared/widgets/search.dart';
 import 'package:ar_furniture_app/shared/widgets/selected_furnitue_screen.dart';
 import 'package:ar_furniture_app/shared/widgets/settings.dart';
@@ -12,17 +9,16 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:circular_bottom_navigation/circular_bottom_navigation.dart';
 import 'package:circular_bottom_navigation/tab_item.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../cubits/home_states.dart';
-import '../constants/constants.dart';
 import 'categories_scroller.dart';
 import 'category_screen.dart';
 import 'favorite_screen.dart';
 
 class HomePage extends StatefulWidget {
+  static int recommendedItems=0;
   @override
   State<HomePage> createState() => _HomePageState();
 }
@@ -51,27 +47,27 @@ class _HomePageState extends State<HomePage> {
     TabItem(
       Icons.home,
       "Home",
-      Color.fromRGBO(191, 122, 47, 1),
+      const Color.fromRGBO(191, 122, 47, 1),
     ),
     TabItem(
       Icons.favorite,
       "Favorite",
-      Color.fromRGBO(191, 122, 47, 1),
+      const Color.fromRGBO(191, 122, 47, 1),
     ),
     TabItem(
       Icons.search,
       "Search",
-      Color.fromRGBO(191, 122, 47, 1),
+      const Color.fromRGBO(191, 122, 47, 1),
     ),
     TabItem(
       Icons.category,
       "Categories",
-      Color.fromRGBO(191, 122, 47, 1),
+      const Color.fromRGBO(191, 122, 47, 1),
     ),
     TabItem(
       Icons.person,
       "Profile",
-      Color.fromRGBO(191, 122, 47, 1),
+      const Color.fromRGBO(191, 122, 47, 1),
     ),
   ]);
 
@@ -80,6 +76,7 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+
     _navigationController = CircularBottomNavigationController(selectedPos);
   }
 
@@ -94,21 +91,22 @@ class _HomePageState extends State<HomePage> {
       listener: (context, state) {
         if (state is UpdateUserDataSuccessData) {
           ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text("User data updated Successfully")));
+              const SnackBar(content: Text("User data updated Successfully")));
         }
         if (state is UpdateEmailSuccessState) {
           ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text("User Email updated Successfully")));
+              const SnackBar(content: Text("User Email updated Successfully")));
         }
         if (state is UpdateEmailErrorState) {
           ScaffoldMessenger.of(context)
-              .showSnackBar(SnackBar(content: Text("Failed to update Email")));
+              .showSnackBar(const SnackBar(content: Text("Failed to update Email")));
         }
         if (state is UpdatePasswordErrorState) {
           ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text("Failed to update password")));
+              const SnackBar(content: Text("Failed to update password")));
         }
-        if (state is UpdatedCategoriesScroller && (selectedPos == 0||selectedPos==2)) {
+        if (state is UpdatedCategoriesScroller &&
+            (selectedPos == 0 || selectedPos == 2)) {
           setState(() {
             _navigationController.value = 3;
           });
@@ -116,32 +114,31 @@ class _HomePageState extends State<HomePage> {
       },
       builder: (context, state) {
         print(selectedPos);
-        if( selectedPos != 3) {
+        if (selectedPos != 3) {
           CategoriesScroller.selectedCategoryName = "";
-          CategoriesScroller.selectedCategoryIndex=-1;
+          CategoriesScroller.selectedCategoryIndex = -1;
         }
+        if (selectedPos == 0) {}
         // print(FirebaseAuth.instance.currentUser!.uid);
         return Scaffold(
           // backgroundColor: Color(0xE9E89235),
           // backgroundColor: Colors.grey[300],
-          backgroundColor: Color.fromRGBO(242, 246, 249, 1),
+          backgroundColor: const Color.fromRGBO(242, 246, 249, 1),
           appBar: AppBar(
-              backgroundColor: Color.fromRGBO(191, 122, 47, 1),
-              leading: FlutterLogo(),
+              backgroundColor: const Color.fromRGBO(191, 122, 47, 1),
+              leading: const FlutterLogo(),
               actions: [
-                IconButton(onPressed: () {}, icon: Icon(Icons.shopping_cart))
+                IconButton(onPressed: () {}, icon: const Icon(Icons.shopping_cart))
               ],
               centerTitle: true,
-              title: Text(
-                "Home",
-                style: TextStyle(),
-              )),
+              title: selectedPos == 0 ? const Text("Home",) : selectedPos == 1 ? const Text("Favorites",) : selectedPos == 2 ? const Text("Search",) : selectedPos == 3 ? const Text("Categories",) : const Text("Profile",),
+          ),
           body: Stack(
             children: <Widget>[
               Padding(
                 padding: EdgeInsets.only(bottom: bottomNavBarHeight),
                 child: state is InitialHomeState
-                    ? Center(
+                    ? const Center(
                         child: CircularProgressIndicator(),
                       )
                     : selectedPos != 0
@@ -249,14 +246,12 @@ class _HomePageState extends State<HomePage> {
                                                 width: MediaQuery.of(context)
                                                     .size
                                                     .width,
-
                                                 margin:
                                                     const EdgeInsets.symmetric(
                                                         horizontal: 5.0),
                                                 clipBehavior:
                                                     Clip.antiAliasWithSaveLayer,
                                                 decoration: BoxDecoration(
-
                                                     borderRadius:
                                                         BorderRadius.circular(
                                                             20),
@@ -278,7 +273,7 @@ class _HomePageState extends State<HomePage> {
                                   children: const [
                                     Padding(
                                       padding:
-                                      EdgeInsets.symmetric(horizontal: 20),
+                                          EdgeInsets.symmetric(horizontal: 20),
                                       child: Text(
                                         "Categories",
                                         style: TextStyle(
@@ -315,7 +310,7 @@ class _HomePageState extends State<HomePage> {
                                 //   ],
                                 // ),
                                 CategoriesScroller(),
-                                SizedBox(
+                                const SizedBox(
                                   height: 10,
                                 ),
                                 Row(
@@ -332,7 +327,7 @@ class _HomePageState extends State<HomePage> {
                                     ),
                                   ],
                                 ),
-                                SizedBox(
+                                const SizedBox(
                                   height: 10,
                                 ),
                                 Container(
@@ -382,26 +377,32 @@ class _HomePageState extends State<HomePage> {
                                               clipBehavior: Clip.none,
                                               children: [
                                                 Align(
-                                                  alignment: Alignment.topCenter,
+                                                  alignment:
+                                                      Alignment.topCenter,
                                                   child: Container(
-                                                    width: MediaQuery.of(context)
-                                                        .size
-                                                        .width /
-                                                        2.2,
+                                                    width:
+                                                        MediaQuery.of(context)
+                                                                .size
+                                                                .width /
+                                                            2.2,
                                                     height: 170,
                                                     clipBehavior: Clip
                                                         .antiAliasWithSaveLayer,
                                                     decoration: BoxDecoration(
-                                                      // color:Colors.black,
+                                                        // color:Colors.black,
                                                         borderRadius:
-                                                            BorderRadius.circular(
-                                                                20)),
+                                                            BorderRadius
+                                                                .circular(20)),
                                                     child: Image.network(
-
-                                                        BlocProvider.of<HomeCubit>(
-                                                            context)
-                                                            .furnitureList[
-                                                        index].shared.first.image,fit: BoxFit.contain,),
+                                                      BlocProvider.of<
+                                                                  HomeCubit>(
+                                                              context)
+                                                          .furnitureList[index]
+                                                          .shared
+                                                          .first
+                                                          .image,
+                                                      fit: BoxFit.contain,
+                                                    ),
                                                   ),
                                                 ),
                                                 Positioned(
@@ -441,7 +442,7 @@ class _HomePageState extends State<HomePage> {
                                                                     .furnitureList[
                                                                         index]
                                                                     .name,
-                                                                style: TextStyle(
+                                                                style: const TextStyle(
                                                                     fontWeight:
                                                                         FontWeight
                                                                             .bold,
@@ -451,7 +452,7 @@ class _HomePageState extends State<HomePage> {
                                                             ],
                                                           ),
                                                         ),
-                                                        SizedBox(
+                                                        const SizedBox(
                                                           height: 10,
                                                         ),
                                                         Padding(
@@ -476,7 +477,7 @@ class _HomePageState extends State<HomePage> {
                                                                         .calculateAverageRating()
                                                                         .toInt()
                                                                     : 0,
-                                                                (index) => Icon(
+                                                                (index) => const Icon(
                                                                   Icons.star,
                                                                   color: Colors
                                                                       .yellow,
@@ -496,7 +497,7 @@ class _HomePageState extends State<HomePage> {
                                                                             .calculateAverageRating()
                                                                             .toInt()
                                                                     : 5,
-                                                                (index) => Icon(
+                                                                (index) => const Icon(
                                                                   Icons.star,
                                                                   color: Colors
                                                                       .grey,
@@ -523,7 +524,7 @@ class _HomePageState extends State<HomePage> {
                                                                     .shared
                                                                     .first
                                                                     .price,
-                                                                style: TextStyle(
+                                                                style: const TextStyle(
                                                                     fontWeight:
                                                                         FontWeight
                                                                             .bold,
@@ -568,12 +569,9 @@ class _HomePageState extends State<HomePage> {
                                       );
                                     },
                                     itemCount:
-                                        BlocProvider.of<HomeCubit>(context)
-                                            .furnitureList
-                                            .length,
+                                       HomePage.recommendedItems,
                                   ),
                                 ),
-
                               ],
                             ),
                           ),
@@ -589,13 +587,17 @@ class _HomePageState extends State<HomePage> {
                     backgroundBoxShadow: const <BoxShadow>[
                       BoxShadow(color: Colors.black45, blurRadius: 10.0),
                     ],
-                    animationDuration: Duration(milliseconds: 300),
+                    animationDuration: const Duration(milliseconds: 300),
                     selectedCallback: (int? selectedPos) {
-                      if(selectedPos==3){
-                        if(CategoriesScroller.selectedCategoryIndex==-1){
+                      if (selectedPos == 3) {
+                        if (CategoriesScroller.selectedCategoryIndex == -1) {
                           setState(() {
-                            CategoriesScroller.selectedCategoryIndex=0;
-                            CategoriesScroller.selectedCategoryName=BlocProvider.of<HomeCubit>(context).categories.first.name;
+                            CategoriesScroller.selectedCategoryIndex = 0;
+                            CategoriesScroller.selectedCategoryName =
+                                BlocProvider.of<HomeCubit>(context)
+                                    .categories
+                                    .first
+                                    .name;
                           });
                         }
                       }
@@ -603,7 +605,6 @@ class _HomePageState extends State<HomePage> {
                         this.selectedPos = selectedPos ?? 0;
                         print(_navigationController.value);
                       });
-
                     },
                   ))
             ],

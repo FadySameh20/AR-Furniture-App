@@ -44,3 +44,4 @@ class ErrorInDiscount extends HomeState{}
 
 class UpdatedCategoriesScroller extends HomeState{}
 
+class LoadedHomeScreen extends HomeState{}

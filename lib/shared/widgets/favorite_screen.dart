@@ -85,9 +85,13 @@ class _FavoriteItemWidgetState extends State<FavoriteItemWidget> {
                       flex: 1,
                       child: Padding(
                         padding: const EdgeInsets.all(20.0),
-                        child: Image.asset(
-                          "assets/Item_1.png",
-                          fit: BoxFit.contain,
+                        child: Container(
+                          width: MediaQuery.of(context).size.width/3,
+                          height: MediaQuery.of(context).size.height/10,
+                          child: Image.network(
+                            widget.myFavorite.shared[currentColorIndex].image,
+                            fit: BoxFit.contain,
+                          ),
                         ),
                       )),
 

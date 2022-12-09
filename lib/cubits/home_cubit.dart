@@ -7,6 +7,7 @@ import 'package:ar_furniture_app/models/furniture_model.dart';
 import 'package:ar_furniture_app/models/offers_model.dart';
 import 'package:ar_furniture_app/models/shared_model.dart';
 import 'package:ar_furniture_app/shared/cache/sharedpreferences.dart';
+import 'package:ar_furniture_app/shared/widgets/home_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -61,6 +62,7 @@ class HomeCubit extends Cubit<HomeState> {
 
     }
     await getFavorites();
+    HomePage.recommendedItems=furnitureList.length;
   }
 
   setCache() async {
@@ -787,8 +789,17 @@ class HomeCubit extends Cubit<HomeState> {
   }
 
   getFavorites() async {
+    bool flag = false;
+
     for (var elem in cache.cachedFavoriteIds) {
-      if (furnitureList.contains(elem)) {
+      flag = false;
+      for(int i = 0; i < furnitureList.length; i++) {
+        if(furnitureList[i].furnitureId == elem) {
+          flag = true;
+          break;
+        }
+      }
+      if (flag) {
         continue;
       } else {
         for (var i = 0; i < categories.length; i++) {
@@ -799,7 +810,7 @@ class HomeCubit extends Cubit<HomeState> {
               .doc(elem)
               .get()
               .then((value) {
-            if (value.data != null) {
+            if (value.data() != null) {
               FurnitureModel fur =
                   FurnitureModel.fromJson(value.data() as Map<String, dynamic>);
               fur.isFavorite = true;
@@ -809,6 +820,8 @@ class HomeCubit extends Cubit<HomeState> {
         }
       }
     }
+    print("yyyyyyyyyyyyyyyy");
+
   }
 
   addOrRemoveFromFavorite(furnitureId) async {
