@@ -211,6 +211,16 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                           child: const Icon(Icons.camera)
                         ),
                       ),
+                      Positioned(
+                        top: 15.0,
+                        left: 15.0,
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.push(context,MaterialPageRoute(builder: (context)=>ObjectGesturesWidget(["https://firebasestorage.googleapis.com/v0/b/pharmacy-management-syst-17e25.appspot.com/o/couch.glb?alt=media&token=0eb2f7ca-a894-4c22-9510-f699980fe6ec"])));
+                          },
+                          child: const Icon(Icons.camera, color: kAppBackgroundColor,)
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -475,7 +485,7 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                                         icon: index == selectedColorIndex
                                             ? Icon(
                                           Icons.check,
-                                          color: Colors.white,
+                                          color: Colors.black,
                                           size: MediaQuery
                                               .of(context)
                                               .size
