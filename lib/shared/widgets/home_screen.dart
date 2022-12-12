@@ -13,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../cubits/home_states.dart';
+import 'cart_screen.dart';
 import 'categories_scroller.dart';
 import 'category_screen.dart';
 import 'favorite_screen.dart';
@@ -128,7 +129,22 @@ class _HomePageState extends State<HomePage> {
               backgroundColor: const Color.fromRGBO(191, 122, 47, 1),
               leading: const FlutterLogo(),
               actions: [
-                IconButton(onPressed: () {}, icon: const Icon(Icons.shopping_cart))
+                IconButton(
+                    onPressed: () {
+                      print("ya rbbb");
+                      print(BlocProvider.of<HomeCubit>(context).cache.cartMap);
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => CartScreen(
+                                  furnitureList:
+                                  BlocProvider.of<HomeCubit>(context)
+                                      .furnitureList,
+                                  cartMap: BlocProvider.of<HomeCubit>(context)
+                                      .cache
+                                      .cartMap)));
+                    },
+                    icon: Icon(Icons.shopping_cart))
               ],
               centerTitle: true,
               title: selectedPos == 0 ? const Text("Home",) : selectedPos == 1 ? const Text("Favorites",) : selectedPos == 2 ? const Text("Search",) : selectedPos == 3 ? const Text("Categories",) : const Text("Profile",),

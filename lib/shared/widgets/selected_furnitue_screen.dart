@@ -38,7 +38,6 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
   Color? selectedColor;
   double selectedRating = 1.0;
 
-
   // Map<String, dynamic> cartMap = {};
 
   // List<ColorSwatch> availableColors = [
@@ -67,10 +66,10 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
   // }
 
   @override
-
   void initState() {
     selectedColor = widget.availableColors[0];
   }
+
   //
   // Future<void> isFavorite() async {
   //   List<String> favorites = await CacheHelper.getData("favorites") ?? [];
@@ -90,18 +89,22 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
           appBar: AppBar(
             backgroundColor: Color.fromRGBO(191, 122, 47, 1),
             actions: [
-              IconButton(onPressed: () {
-                print("ya rbbb");
-                print( BlocProvider
-                    .of<HomeCubit>(context)
-                    .cache.cartMap);
-                Navigator.push(context, MaterialPageRoute(builder: (context) =>
-                    CartScreen(furnitureList: BlocProvider
-                        .of<HomeCubit>(context)
-                        .furnitureList, cartMap: BlocProvider
-                        .of<HomeCubit>(context)
-                        .cache.cartMap)));
-              }, icon: Icon(Icons.shopping_cart))
+              IconButton(
+                  onPressed: () {
+                    print("ya rbbb");
+                    print(BlocProvider.of<HomeCubit>(context).cache.cartMap);
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => CartScreen(
+                                furnitureList:
+                                    BlocProvider.of<HomeCubit>(context)
+                                        .furnitureList,
+                                cartMap: BlocProvider.of<HomeCubit>(context)
+                                    .cache
+                                    .cartMap)));
+                  },
+                  icon: Icon(Icons.shopping_cart))
             ],
             centerTitle: true,
             title: Text(
@@ -113,51 +116,21 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Expanded(
-                flex: MediaQuery
-                    .of(context)
-                    .size
-                    .height > 700 ? 1 : 2,
+                flex: MediaQuery.of(context).size.height > 700 ? 1 : 2,
                 child: Container(
                   child: Stack(
                     children: [
                       Positioned(
-                        top: MediaQuery
-                            .of(context)
-                            .size
-                            .height > 700
-                            ? -MediaQuery
-                            .of(context)
-                            .size
-                            .height * 0.31
-                            : -MediaQuery
-                            .of(context)
-                            .size
-                            .height * 0.36,
-                        left: MediaQuery
-                            .of(context)
-                            .size
-                            .height > 700
-                            ? -MediaQuery
-                            .of(context)
-                            .size
-                            .height * 0.182
-                            : -MediaQuery
-                            .of(context)
-                            .size
-                            .height * 0.155,
-                       child: CustomCircleAvatar(
-                          radius: MediaQuery
-                              .of(context)
-                              .size
-                              .height > 700
-                              ? MediaQuery
-                              .of(context)
-                              .size
-                              .width * 0.5
-                              : MediaQuery
-                              .of(context)
-                              .size
-                              .width * 0.45,
+                        top: MediaQuery.of(context).size.height > 700
+                            ? -MediaQuery.of(context).size.height * 0.31
+                            : -MediaQuery.of(context).size.height * 0.36,
+                        left: MediaQuery.of(context).size.height > 700
+                            ? -MediaQuery.of(context).size.height * 0.182
+                            : -MediaQuery.of(context).size.height * 0.155,
+                        child: CustomCircleAvatar(
+                          radius: MediaQuery.of(context).size.height > 700
+                              ? MediaQuery.of(context).size.width * 0.5
+                              : MediaQuery.of(context).size.width * 0.45,
                           CavatarColor: kAppBackgroundColorLowOpacity,
                         ),
 
@@ -174,7 +147,8 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                           alignment: Alignment.center,
                           child: Container(
                             color: Colors.transparent,
-                            child: Image.network(widget.selectedFurniture.shared[selectedColorIndex].image),
+                            child: Image.network(widget.selectedFurniture
+                                .shared[selectedColorIndex].image),
                           ),
                         ),
                       ),
@@ -182,39 +156,34 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                         top: 15.0,
                         right: 15.0,
                         child: GestureDetector(
-                              onTap: () {
-                                // int tempIndex = BlocProvider.of<HomeCubit>(context).furnitureList.indexWhere((element) => element.furnitureId == widget.selectedFurniture.furnitureId);
-                                BlocProvider.of<HomeCubit>(context)
-                                    .addOrRemoveFromFavorite(widget.selectedFurniture.furnitureId);
-                                BlocProvider.of<HomeCubit>(context).emit(
-                                    AddOrRemoveFavoriteState());
-                              },
-                              child: widget.selectedFurniture.isFavorite
-                                  ? FavoriteIcon(
-                                iconLogo: Icons.favorite,
-                                iconColor: kAppBackgroundColor,
-                              )
-                                  : FavoriteIcon(
-                                iconLogo: Icons.favorite_border_rounded,
-                                iconColor: kAppBackgroundColor,
-                              ),
-                            ),
+                          onTap: () {
+                            // int tempIndex = BlocProvider.of<HomeCubit>(context).furnitureList.indexWhere((element) => element.furnitureId == widget.selectedFurniture.furnitureId);
+                            BlocProvider.of<HomeCubit>(context)
+                                .addOrRemoveFromFavorite(
+                                    widget.selectedFurniture.furnitureId);
+                            BlocProvider.of<HomeCubit>(context)
+                                .emit(AddOrRemoveFavoriteState());
+                          },
+                          child: widget.selectedFurniture.isFavorite
+                              ? FavoriteIcon(
+                                  iconLogo: Icons.favorite,
+                                  iconColor: kAppBackgroundColor,
+                                )
+                              : FavoriteIcon(
+                                  iconLogo: Icons.favorite_border_rounded,
+                                  iconColor: kAppBackgroundColor,
+                                ),
+                        ),
                       ),
                     ],
                   ),
                 ),
               ),
               SizedBox(
-                height: MediaQuery
-                    .of(context)
-                    .size
-                    .height > 700 ? 20.0 : 1.0,
+                height: MediaQuery.of(context).size.height > 700 ? 20.0 : 1.0,
               ),
               Expanded(
-                flex: MediaQuery
-                    .of(context)
-                    .size
-                    .height > 700 ? 3 : 6,
+                flex: MediaQuery.of(context).size.height > 700 ? 3 : 6,
                 child: Padding(
                   padding: const EdgeInsets.only(left: 15.0, right: 15.0),
                   child: Column(
@@ -223,8 +192,8 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                       Expanded(
                         flex: 3,
                         child: ListTile(
-                          contentPadding: EdgeInsets.only(
-                              left: 0.0, right: 0.0),
+                          contentPadding:
+                              EdgeInsets.only(left: 0.0, right: 0.0),
                           title: Padding(
                             padding: const EdgeInsets.only(bottom: 5.0),
                             child: Text(
@@ -240,49 +209,57 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                           subtitle: widget.selectedFurniture.description == null
                               ? null
                               : Text(
-                            widget.selectedFurniture.description!,
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                                fontSize: 14.0,
-                                fontWeight: FontWeight.w400,
-                                fontStyle: FontStyle.italic),
-                          ),
+                                  widget.selectedFurniture.description!,
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                      fontSize: 14.0,
+                                      fontWeight: FontWeight.w400,
+                                      fontStyle: FontStyle.italic),
+                                ),
                           trailing: Padding(
                             padding: EdgeInsets.only(bottom: 22.0, right: 0),
                             child: Container(
-                              width: MediaQuery.of(context).size.width/1.5,
+                              width: MediaQuery.of(context).size.width / 1.5,
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
                                   Text(
-                                    (double.parse(widget.selectedFurniture
-                                        .shared[selectedColorIndex]
-                                        .price)).toStringAsFixed(2)+
+                                    (double.parse(widget
+                                                .selectedFurniture
+                                                .shared[selectedColorIndex]
+                                                .price))
+                                            .toStringAsFixed(2) +
                                         ' L.E',
                                     style: TextStyle(
-                                      decoration: widget.selectedFurniture.shared[selectedColorIndex].discount!="0"?TextDecoration.lineThrough:null,
+                                      decoration: widget
+                                                  .selectedFurniture
+                                                  .shared[selectedColorIndex]
+                                                  .discount !=
+                                              "0"
+                                          ? TextDecoration.lineThrough
+                                          : null,
                                       fontSize: 18.0,
                                       fontWeight: FontWeight.w600,
                                       color: kAppBackgroundColor,
                                     ),
                                   ),
-                                  SizedBox(width: 10,),
-                                  if(widget.selectedFurniture.shared[selectedColorIndex].discount!="0")
-
-                                    Text(
-
-                                      '${(double.parse(widget.selectedFurniture
-                                        .shared[selectedColorIndex]
-                                        .price) -( (double.parse(widget.selectedFurniture.shared[selectedColorIndex].discount)/100)*double.parse(widget.selectedFurniture
+                                  SizedBox(
+                                    width: 10,
+                                  ),
+                                  if (widget
+                                          .selectedFurniture
                                           .shared[selectedColorIndex]
-                                          .price))).toStringAsFixed(2)} L.E',
-                                    style: TextStyle(
-                                      fontSize: 18.0,
-                                      fontWeight: FontWeight.w600,
-                                      color: kAppBackgroundColor,
-                                    ),
-                                  )
+                                          .discount !=
+                                      "0")
+                                    Text(
+                                      '${(double.parse(widget.selectedFurniture.shared[selectedColorIndex].price) - ((double.parse(widget.selectedFurniture.shared[selectedColorIndex].discount) / 100) * double.parse(widget.selectedFurniture.shared[selectedColorIndex].price))).toStringAsFixed(2)} L.E',
+                                      style: TextStyle(
+                                        fontSize: 18.0,
+                                        fontWeight: FontWeight.w600,
+                                        color: kAppBackgroundColor,
+                                      ),
+                                    )
                                 ],
                               ),
                             ),
@@ -290,11 +267,9 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                         ),
                       ),
                       SizedBox(
-                        height:
-                        MediaQuery
-                            .of(context)
-                            .size
-                            .height > 700 ? 10.0 : 15.0,
+                        height: MediaQuery.of(context).size.height > 700
+                            ? 10.0
+                            : 15.0,
                       ),
                       Expanded(
                         flex: 2,
@@ -302,22 +277,24 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                           children: [
                             RatingBar.builder(
                               itemSize: 20.0,
-                              initialRating:
-                              widget.selectedFurniture
-                                  .calculateAverageRating()
-                                  .toString() == "NaN" ? 0.0: widget.selectedFurniture.calculateAverageRating(),
+                              initialRating: widget.selectedFurniture
+                                          .calculateAverageRating()
+                                          .toString() ==
+                                      "NaN"
+                                  ? 0.0
+                                  : widget.selectedFurniture
+                                      .calculateAverageRating(),
                               //minRating: 1,
                               direction: Axis.horizontal,
                               // allowHalfRating: true,
                               ignoreGestures: true,
                               itemCount: 5,
-                              itemPadding: EdgeInsets.symmetric(
-                                  horizontal: 1.0),
-                              itemBuilder: (context, _) =>
-                                  Icon(
-                                    Icons.star,
-                                    color: Colors.amber,
-                                  ),
+                              itemPadding:
+                                  EdgeInsets.symmetric(horizontal: 1.0),
+                              itemBuilder: (context, _) => Icon(
+                                Icons.star,
+                                color: Colors.amber,
+                              ),
                               onRatingUpdate: (rating) {
                                 //   print("Rating: " + rating.toString());
                                 //   setState(() {
@@ -330,10 +307,13 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                             ),
                             Text(
                               widget.selectedFurniture
-                                  .calculateAverageRating()
-                                  .toString() == "NaN" ? "No ratings yet": widget.selectedFurniture
-                                  .calculateAverageRating()
-                                  .toString(),
+                                          .calculateAverageRating()
+                                          .toString() ==
+                                      "NaN"
+                                  ? "No ratings yet"
+                                  : widget.selectedFurniture
+                                      .calculateAverageRating()
+                                      .toString(),
                             ),
                             Spacer(),
                             InkWell(
@@ -342,17 +322,40 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                                   context: context,
                                   //type: AlertType.success,
                                   //title: "Rating",
-                                  desc: BlocProvider.of<HomeCubit>(context).unavailableQuantityFurniture.join('\n\n'),
+                                  desc: BlocProvider.of<HomeCubit>(context)
+                                      .unavailableQuantityFurniture
+                                      .join('\n\n'),
                                   content: Column(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Icon(Icons.rate_review, size: 50.0, color: kAppBackgroundColor,),
-                                      SizedBox(height: 20.0,),
-                                      Text("Rating", style: TextStyle(fontSize: 23.0, letterSpacing: 0.8),),
-                                      SizedBox(height: 20.0,),
+                                      Icon(
+                                        Icons.rate_review,
+                                        size: 50.0,
+                                        color: kAppBackgroundColor,
+                                      ),
+                                      SizedBox(
+                                        height: 20.0,
+                                      ),
+                                      Text(
+                                        "Rating",
+                                        style: TextStyle(
+                                            fontSize: 23.0, letterSpacing: 0.8),
+                                      ),
+                                      SizedBox(
+                                        height: 20.0,
+                                      ),
                                       RatingBar.builder(
                                         itemSize: 30.0,
-                                        initialRating: widget.selectedFurniture.ratings[FirebaseAuth.instance.currentUser!.uid] == null ? 1 : widget.selectedFurniture.ratings[FirebaseAuth.instance.currentUser!.uid],
+                                        initialRating: widget.selectedFurniture
+                                                        .ratings[
+                                                    FirebaseAuth.instance
+                                                        .currentUser!.uid] ==
+                                                null
+                                            ? 1
+                                            : widget.selectedFurniture.ratings[
+                                                FirebaseAuth
+                                                    .instance.currentUser!.uid],
                                         minRating: 1,
                                         direction: Axis.horizontal,
                                         // allowHalfRating: true,
@@ -360,18 +363,17 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                                         itemCount: 5,
                                         itemPadding: EdgeInsets.symmetric(
                                             horizontal: 1.0),
-                                        itemBuilder: (context, _) =>
-                                            Icon(
-                                              Icons.star,
-                                              color: Colors.amber,
-                                            ),
+                                        itemBuilder: (context, _) => Icon(
+                                          Icons.star,
+                                          color: Colors.amber,
+                                        ),
                                         onRatingUpdate: (rating) {
-                                            print("Rating: " + rating.toString());
-                                            selectedRating = rating;
-                                            // setState(() {
-                                            //   // widget.selectedFurniture.ratings.add(rating);
-                                            //   widget.selectedFurniture.ratings[FirebaseAuth.instance.currentUser!.uid] = rating;
-                                            // });
+                                          print("Rating: " + rating.toString());
+                                          selectedRating = rating;
+                                          // setState(() {
+                                          //   // widget.selectedFurniture.ratings.add(rating);
+                                          //   widget.selectedFurniture.ratings[FirebaseAuth.instance.currentUser!.uid] = rating;
+                                          // });
                                         },
                                       ),
                                     ],
@@ -380,20 +382,34 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                                     DialogButton(
                                       child: Text(
                                         "Rate",
-                                        style: TextStyle(color: Colors.white, fontSize: 20),
+                                        style: TextStyle(
+                                            color: Colors.white, fontSize: 20),
                                       ),
                                       onPressed: () async {
-                                        widget.selectedFurniture.ratings[FirebaseAuth.instance.currentUser!.uid] = selectedRating;
-                                        await  FirebaseFirestore.instance.collection('category').doc(widget.selectedFurniture.category).collection("furniture").doc(widget.selectedFurniture.furnitureId).update({"ratings": widget.selectedFurniture.ratings});
+                                        widget.selectedFurniture.ratings[
+                                            FirebaseAuth.instance.currentUser!
+                                                .uid] = selectedRating;
+                                        await FirebaseFirestore.instance
+                                            .collection('category')
+                                            .doc(widget
+                                                .selectedFurniture.category)
+                                            .collection("furniture")
+                                            .doc(widget
+                                                .selectedFurniture.furnitureId)
+                                            .update({
+                                          "ratings":
+                                              widget.selectedFurniture.ratings
+                                        });
                                         setState(() {});
                                         Navigator.pop(context);
-                                      } ,
+                                      },
                                       color: kAppBackgroundColor,
                                     ),
                                   ],
                                   style: AlertStyle(
                                     animationType: AnimationType.fromTop,
-                                    animationDuration: Duration(milliseconds: 400),
+                                    animationDuration:
+                                        Duration(milliseconds: 400),
                                     titleStyle: TextStyle(
                                       color: Colors.red,
                                     ),
@@ -414,11 +430,9 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                         ),
                       ),
                       SizedBox(
-                        height:
-                        MediaQuery
-                            .of(context)
-                            .size
-                            .height > 700 ? 10.0 : 1.0,
+                        height: MediaQuery.of(context).size.height > 700
+                            ? 10.0
+                            : 1.0,
                       ),
                       Expanded(
                         flex: 2,
@@ -443,36 +457,34 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                                       setState(() {
                                         selectedColorIndex = index;
 
-                                        selectedColor = widget.availableColors[index];
+                                        selectedColor =
+                                            widget.availableColors[index];
 
                                         //   chosenColor = availableColors[index];
                                       });
                                     },
                                     child: Padding(
-                                      padding: const EdgeInsets.only(
-                                          right: 8.0),
+                                      padding:
+                                          const EdgeInsets.only(right: 8.0),
                                       child: CustomCircleAvatar(
                                         radius:
-                                        MediaQuery
-                                            .of(context)
-                                            .size
-                                            .height > 700
-                                            ? 15.0
-                                            : 12.0,
-                                        CavatarColor: widget
-                                            .availableColors[index],
+                                            MediaQuery.of(context).size.height >
+                                                    700
+                                                ? 15.0
+                                                : 12.0,
+                                        CavatarColor:
+                                            widget.availableColors[index],
                                         icon: index == selectedColorIndex
                                             ? Icon(
-                                          Icons.check,
-                                          color: Colors.white,
-                                          size: MediaQuery
-                                              .of(context)
-                                              .size
-                                              .height >
-                                              700
-                                              ? 22.0
-                                              : 18.0,
-                                        )
+                                                Icons.check,
+                                                color: Colors.black,
+                                                size: MediaQuery.of(context)
+                                                            .size
+                                                            .height >
+                                                        700
+                                                    ? 22.0
+                                                    : 18.0,
+                                              )
                                             : null,
                                       ),
                                       // child:CircleAvatar(
@@ -503,11 +515,9 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                         ),
                       ),
                       SizedBox(
-                        height:
-                        MediaQuery
-                            .of(context)
-                            .size
-                            .height > 700 ? 15.0 : 10.0,
+                        height: MediaQuery.of(context).size.height > 700
+                            ? 15.0
+                            : 10.0,
                       ),
                       Expanded(
                         flex: 2,
@@ -521,15 +531,15 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                               ),
                             ),
                             SizedBox(
-                              width: MediaQuery
-                                  .of(context)
-                                  .size
-                                  .height > 700
+                              width: MediaQuery.of(context).size.height > 700
                                   ? 30.0
                                   : 32.0,
                             ),
                             InkWell(
                               onTap: () {
+                                if (int.parse(widget.selectedFurniture
+                                        .shared[selectedColorIndex].quantity) ==
+                                    0) return;
                                 setState(() {
                                   if (quantity > 1) {
                                     quantity--;
@@ -537,19 +547,19 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                                 });
                               },
                               child: CustomCircleAvatar(
-                                radius: MediaQuery
-                                    .of(context)
-                                    .size
-                                    .height > 700
+                                radius: MediaQuery.of(context).size.height > 700
                                     ? 15.0
                                     : 12.0,
-                                CavatarColor: kAppBackgroundColor,
+                                CavatarColor: int.parse(widget
+                                            .selectedFurniture
+                                            .shared[selectedColorIndex]
+                                            .quantity) >
+                                        0
+                                    ? kAppBackgroundColor
+                                    : Colors.grey,
                                 icon: Icon(
                                   Icons.remove,
-                                  size: MediaQuery
-                                      .of(context)
-                                      .size
-                                      .height > 700
+                                  size: MediaQuery.of(context).size.height > 700
                                       ? 22.0
                                       : 18.0,
                                   color: Colors.white,
@@ -559,23 +569,39 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                             SizedBox(
                               width: 10.0,
                             ),
-                            Text(
-                              quantity.toString(),
-                              style: TextStyle(
-                                fontSize: MediaQuery
-                                    .of(context)
-                                    .size
-                                    .height > 700
-                                    ? 20.0
-                                    : 18.0,
-                                fontWeight: FontWeight.w600,
-                              ),
-                            ),
+                            int.parse(widget.selectedFurniture
+                                        .shared[selectedColorIndex].quantity) >
+                                    0
+                                ? Text(
+                                    quantity.toString(),
+                                    style: TextStyle(
+                                      fontSize:
+                                          MediaQuery.of(context).size.height >
+                                                  700
+                                              ? 20.0
+                                              : 18.0,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  )
+                                : Text(
+                                    "0",
+                                    style: TextStyle(
+                                      fontSize:
+                                          MediaQuery.of(context).size.height >
+                                                  700
+                                              ? 20.0
+                                              : 18.0,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
                             SizedBox(
                               width: 10.0,
                             ),
                             InkWell(
                               onTap: () {
+                                if (int.parse(widget.selectedFurniture
+                                        .shared[selectedColorIndex].quantity) ==
+                                    0) return;
                                 if (quantity + 1 <=
                                     int.parse(widget.selectedFurniture
                                         .shared[selectedColorIndex].quantity)) {
@@ -585,19 +611,19 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                                 }
                               },
                               child: CustomCircleAvatar(
-                                radius: MediaQuery
-                                    .of(context)
-                                    .size
-                                    .height > 700
+                                radius: MediaQuery.of(context).size.height > 700
                                     ? 15.0
                                     : 12.0,
-                                CavatarColor: kAppBackgroundColor,
+                                CavatarColor: int.parse(widget
+                                            .selectedFurniture
+                                            .shared[selectedColorIndex]
+                                            .quantity) >
+                                        0
+                                    ? kAppBackgroundColor
+                                    : Colors.grey,
                                 icon: Icon(
                                   Icons.add,
-                                  size: MediaQuery
-                                      .of(context)
-                                      .size
-                                      .height > 700
+                                  size: MediaQuery.of(context).size.height > 700
                                       ? 22.0
                                       : 18.0,
                                   color: Colors.white,
@@ -605,164 +631,230 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                               ),
                             ),
                             Spacer(),
-                            Text(
-                              "(Available Quantity: " +
-                                  widget.selectedFurniture
-                                      .shared[selectedColorIndex].quantity +
-                                  ")",
-                              style: TextStyle(
-                                fontSize: 14.0,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
+                            int.parse(widget.selectedFurniture
+                                        .shared[selectedColorIndex].quantity) >
+                                    0
+                                ? Text(
+                                    "(Available Quantity: " +
+                                        widget
+                                            .selectedFurniture
+                                            .shared[selectedColorIndex]
+                                            .quantity +
+                                        ")",
+                                    style: TextStyle(
+                                      fontSize: 14.0,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  )
+                                : Text(
+                                    "Out of stock !",
+                                    style: TextStyle(
+                                      fontSize: 14.0,
+                                      fontWeight: FontWeight.w500,
+                                      color: Colors.red,
+                                    ),
+                                  ),
                           ],
                         ),
                       ),
                       SizedBox(
-                        height:
-                        MediaQuery
-                            .of(context)
-                            .size
-                            .height > 700 ? 15.0 : 10.0,
+                        height: MediaQuery.of(context).size.height > 700
+                            ? 15.0
+                            : 10.0,
                       ),
                       Expanded(
                         flex: 3,
                         child: Center(
                           child: ElevatedButton(
-                                onPressed: () async {
-
-                                  print("Selected Color");
-                                  print('#${selectedColor!.value.toRadixString(16)}');
-                                  print("Red: " + selectedColor!.red.toRadixString(16).padLeft(2, '0').toString().toUpperCase());
-                                  print("Green: " + selectedColor!.green.toRadixString(16).padLeft(2, '0').toString().toUpperCase());
-                                  print("Blue: " + selectedColor!.blue.toRadixString(16).padLeft(2, '0').toString().toUpperCase());
-                                  String color = "#" + selectedColor!.red.toRadixString(16).padLeft(2, '0').toString().toUpperCase() + selectedColor!.green.toRadixString(16).padLeft(2, '0').toString().toUpperCase() + selectedColor!.blue.toRadixString(16).padLeft(2, '0').toString().toUpperCase();
-                                  print(color);
-                                  await BlocProvider.of<HomeCubit>(context).addToCart(
+                            onPressed: () async {
+                              if (int.parse(widget.selectedFurniture
+                                      .shared[selectedColorIndex].quantity) ==
+                                  0) return;
+                              print("Selected Color");
+                              print(
+                                  '#${selectedColor!.value.toRadixString(16)}');
+                              print("Red: " +
+                                  selectedColor!.red
+                                      .toRadixString(16)
+                                      .padLeft(2, '0')
+                                      .toString()
+                                      .toUpperCase());
+                              print("Green: " +
+                                  selectedColor!.green
+                                      .toRadixString(16)
+                                      .padLeft(2, '0')
+                                      .toString()
+                                      .toUpperCase());
+                              print("Blue: " +
+                                  selectedColor!.blue
+                                      .toRadixString(16)
+                                      .padLeft(2, '0')
+                                      .toString()
+                                      .toUpperCase());
+                              String color = "#" +
+                                  selectedColor!.red
+                                      .toRadixString(16)
+                                      .padLeft(2, '0')
+                                      .toString()
+                                      .toUpperCase() +
+                                  selectedColor!.green
+                                      .toRadixString(16)
+                                      .padLeft(2, '0')
+                                      .toString()
+                                      .toUpperCase() +
+                                  selectedColor!.blue
+                                      .toRadixString(16)
+                                      .padLeft(2, '0')
+                                      .toString()
+                                      .toUpperCase();
+                              print(color);
+                              await BlocProvider.of<HomeCubit>(context)
+                                  .addToCart(
                                       widget.selectedFurniture.furnitureId,
-                                      color, quantity);
+                                      color,
+                                      quantity);
 
-                                  // widget
-                                  //     .selectedFurniture
-                                  //     .shared[selectedColorIndex]
-                                  //     .isAddedCart = true;
-                                  // widget
-                                  //     .selectedFurniture
-                                  //     .shared[selectedColorIndex]
-                                  //     .quantityCart = quantity.toString();
+                              // widget
+                              //     .selectedFurniture
+                              //     .shared[selectedColorIndex]
+                              //     .isAddedCart = true;
+                              // widget
+                              //     .selectedFurniture
+                              //     .shared[selectedColorIndex]
+                              //     .quantityCart = quantity.toString();
 
-                                  // List<int> indices = [];
-                                  // if (cartMap.keys.contains(cartMap[
-                                  //     widget.selectedFurniture.furnitureId])) {
-                                  //   indices = cartMap[
-                                  //       widget.selectedFurniture.furnitureId];
-                                  //   if (indices.contains(selectedColorIndex)) {
-                                  //     return;
-                                  //   }
-                                  // }
+                              // List<int> indices = [];
+                              // if (cartMap.keys.contains(cartMap[
+                              //     widget.selectedFurniture.furnitureId])) {
+                              //   indices = cartMap[
+                              //       widget.selectedFurniture.furnitureId];
+                              //   if (indices.contains(selectedColorIndex)) {
+                              //     return;
+                              //   }
+                              // }
 
-                                  // indices.add(selectedColorIndex);
-                                  // cartMap[widget.selectedFurniture.furnitureId] =
-                                  //     indices;
-                                  //
-                                  // BlocProvider.of<HomeCubit>(context).updateCartInFirestore(widget.selectedFurniture);
-                                  //
-                                  // print("Encoded String");
-                                  // print(json.encode(cartMap));
-                                  // CacheHelper.setMap(
-                                  //     key: 'cart', value: json.encode(cartMap));
-                                  //}
-                                  print("ya rbbb");
-                                  print( BlocProvider
-                                      .of<HomeCubit>(context)
-                                      .cache.cartMap);
+                              // indices.add(selectedColorIndex);
+                              // cartMap[widget.selectedFurniture.furnitureId] =
+                              //     indices;
+                              //
+                              // BlocProvider.of<HomeCubit>(context).updateCartInFirestore(widget.selectedFurniture);
+                              //
+                              // print("Encoded String");
+                              // print(json.encode(cartMap));
+                              // CacheHelper.setMap(
+                              //     key: 'cart', value: json.encode(cartMap));
+                              //}
+                              print("ya rbbb");
+                              print(BlocProvider.of<HomeCubit>(context)
+                                  .cache
+                                  .cartMap);
 
-
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => CartScreen(
-                                            furnitureList: BlocProvider
-                                                .of<HomeCubit>(context)
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => CartScreen(
+                                        furnitureList:
+                                            BlocProvider.of<HomeCubit>(context)
                                                 .furnitureList,
-                                            cartMap: BlocProvider
-                                                .of<HomeCubit>(context)
-                                                .cache.cartMap)),
-                                  );
-                                },
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Icon(
-                                      Icons.add_shopping_cart,
-                                      size: MediaQuery
-                                          .of(context)
-                                          .size
-                                          .height > 700
-                                          ? 24.0
-                                          : 21.0,
-                                    ),
-                                    SizedBox(
-                                      width: 10.0,
-                                    ),
-                                    Text(
-                                      'Add to cart',
-                                      style: TextStyle(
-                                        fontSize:
-                                        MediaQuery
-                                            .of(context)
-                                            .size
-                                            .height > 700
+                                        cartMap:
+                                            BlocProvider.of<HomeCubit>(context)
+                                                .cache
+                                                .cartMap)),
+                              );
+                            },
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  Icons.add_shopping_cart,
+                                  size: MediaQuery.of(context).size.height > 700
+                                      ? 24.0
+                                      : 21.0,
+                                ),
+                                SizedBox(
+                                  width: 10.0,
+                                ),
+                                Text(
+                                  'Add to cart',
+                                  style: TextStyle(
+                                    fontSize:
+                                        MediaQuery.of(context).size.height > 700
                                             ? 18.0
                                             : 16.0,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                style: ElevatedButton.styleFrom(
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(12.0),
+                                    fontWeight: FontWeight.bold,
                                   ),
-                                  backgroundColor: kAppBackgroundColor,
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: 20.0, vertical: 10.0),
                                 ),
+                              ],
+                            ),
+                            style: ElevatedButton.styleFrom(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12.0),
                               ),
+                              backgroundColor: int.parse(widget
+                                          .selectedFurniture
+                                          .shared[selectedColorIndex]
+                                          .quantity) >
+                                      0
+                                  ? kAppBackgroundColor
+                                  : Colors.grey,
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 20.0, vertical: 10.0),
+                            ),
+                          ),
                         ),
                       ),
                       SizedBox(
-                        height:
-                        MediaQuery
-                            .of(context)
-                            .size
-                            .height > 700 ? 20.0 : 10.0,
+                        height: MediaQuery.of(context).size.height > 700
+                            ? 20.0
+                            : 10.0,
                       ),
                       Text(
                         'Recommendations',
-                        style:
-                        TextStyle(fontSize: 16.0, fontWeight: FontWeight.w500),
+                        style: TextStyle(
+                            fontSize: 16.0, fontWeight: FontWeight.w500),
                       ),
                       Expanded(
                         flex: 9,
                         child: ListView.builder(
                           shrinkWrap: true,
                           scrollDirection: Axis.horizontal,
-                          itemCount: BlocProvider.of<HomeCubit>(context).recommendedFurniture.length,
+                          itemCount: BlocProvider.of<HomeCubit>(context)
+                              .recommendedFurniture
+                              .length,
                           itemBuilder: (context, index) {
                             return Stack(
                               children: [
                                 InkWell(
                                   onTap: () {
                                     List<Color?> availableColors = [];
-                                    availableColors = BlocProvider.of<HomeCubit>(context).getAvailableColorsOfFurniture(BlocProvider.of<HomeCubit>(context).recommendedFurniture[index]);
+                                    availableColors = BlocProvider.of<
+                                            HomeCubit>(context)
+                                        .getAvailableColorsOfFurniture(
+                                            BlocProvider.of<HomeCubit>(context)
+                                                .recommendedFurniture[index]);
                                     Navigator.pop(context);
-                                    print("Recoo " + BlocProvider.of<HomeCubit>(context).recommendedFurniture[index].name);
-                                    FurnitureModel selectedRecommendedFurniture = BlocProvider.of<HomeCubit>(context).recommendedFurniture[index];
-                                    BlocProvider.of<HomeCubit>(context).getFurnitureRecommendation(BlocProvider.of<HomeCubit>(context).recommendedFurniture[index], 0);
+                                    print("Recoo " +
+                                        BlocProvider.of<HomeCubit>(context)
+                                            .recommendedFurniture[index]
+                                            .name);
+                                    FurnitureModel
+                                        selectedRecommendedFurniture =
+                                        BlocProvider.of<HomeCubit>(context)
+                                            .recommendedFurniture[index];
+                                    BlocProvider.of<HomeCubit>(context)
+                                        .getFurnitureRecommendation(
+                                            BlocProvider.of<HomeCubit>(context)
+                                                .recommendedFurniture[index],
+                                            0);
                                     Navigator.push(
                                       context,
-                                      MaterialPageRoute(builder: (context) => SelectedFurnitureScreen(selectedFurniture: selectedRecommendedFurniture, availableColors: availableColors)),
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              SelectedFurnitureScreen(
+                                                  selectedFurniture:
+                                                      selectedRecommendedFurniture,
+                                                  availableColors:
+                                                      availableColors)),
                                     );
                                   },
                                   child: Container(
@@ -775,18 +867,31 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                                     ),
                                     child: Column(
                                       children: [
-                                        SizedBox(height: 20.0,),
+                                        SizedBox(
+                                          height: 20.0,
+                                        ),
                                         Expanded(
                                           child: Container(
-                                            width: MediaQuery.of(context).size.width * 0.34,
+                                            width: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.34,
                                             child: Image.network(
-                                                BlocProvider.of<HomeCubit>(context).recommendedFurniture[index].shared[0].image,
-                                                fit: BoxFit.contain,
+                                              BlocProvider.of<HomeCubit>(
+                                                      context)
+                                                  .recommendedFurniture[index]
+                                                  .shared[0]
+                                                  .image,
+                                              fit: BoxFit.contain,
                                             ),
                                           ),
                                         ),
-                                        SizedBox(height: 10,),
-                                        Text(BlocProvider.of<HomeCubit>(context).recommendedFurniture[index].name),
+                                        SizedBox(
+                                          height: 10,
+                                        ),
+                                        Text(BlocProvider.of<HomeCubit>(context)
+                                            .recommendedFurniture[index]
+                                            .name),
                                       ],
                                     ),
                                   ),
@@ -797,30 +902,39 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                                   child: InkWell(
                                     onTap: () {
                                       // int tempIndex = BlocProvider.of<HomeCubit>(context).furnitureList.indexWhere((element) => element.furnitureId == BlocProvider.of<HomeCubit>(context).recommendedFurniture[index].furnitureId);
-                                      BlocProvider.of<HomeCubit>(context).addOrRemoveFromFavorite(BlocProvider.of<HomeCubit>(context).recommendedFurniture[index].furnitureId);
-                                      BlocProvider.of<HomeCubit>(context).emit(AddOrRemoveFavoriteState());
+                                      BlocProvider.of<HomeCubit>(context)
+                                          .addOrRemoveFromFavorite(
+                                              BlocProvider.of<HomeCubit>(
+                                                      context)
+                                                  .recommendedFurniture[index]
+                                                  .furnitureId);
+                                      BlocProvider.of<HomeCubit>(context)
+                                          .emit(AddOrRemoveFavoriteState());
                                     },
-                                    child: BlocProvider.of<HomeCubit>(context).recommendedFurniture[index].isFavorite ? FavoriteIcon(
-                                      iconLogo: Icons.favorite,
-                                      iconColor: kAppBackgroundColor,
-                                      iconSize:
-                                      MediaQuery
-                                          .of(context)
-                                          .size
-                                          .height > 700
-                                          ? 22.0
-                                          : 18.0,
-                                    ): FavoriteIcon(
-                                      iconLogo: Icons.favorite_border_rounded,
-                                      iconColor: kAppBackgroundColor,
-                                      iconSize:
-                                      MediaQuery
-                                          .of(context)
-                                          .size
-                                          .height > 700
-                                          ? 22.0
-                                          : 18.0,
-                                    ),
+                                    child: BlocProvider.of<HomeCubit>(context)
+                                            .recommendedFurniture[index]
+                                            .isFavorite
+                                        ? FavoriteIcon(
+                                            iconLogo: Icons.favorite,
+                                            iconColor: kAppBackgroundColor,
+                                            iconSize: MediaQuery.of(context)
+                                                        .size
+                                                        .height >
+                                                    700
+                                                ? 22.0
+                                                : 18.0,
+                                          )
+                                        : FavoriteIcon(
+                                            iconLogo:
+                                                Icons.favorite_border_rounded,
+                                            iconColor: kAppBackgroundColor,
+                                            iconSize: MediaQuery.of(context)
+                                                        .size
+                                                        .height >
+                                                    700
+                                                ? 22.0
+                                                : 18.0,
+                                          ),
                                   ),
                                 ),
                               ],
