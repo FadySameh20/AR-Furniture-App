@@ -635,14 +635,7 @@ class HomeCubit extends Cubit<HomeState> {
           }
         });
         String name=key+"|"+furnitureList.where((element) => element.furnitureId==key).first.name;
-        for(int i=0;i<orderedSharedList.length;i++) {
-          if(!orderMap.containsKey(name)){
-            orderMap[name]=[];
-          }
-          orderMap[name].add(SharedModel.fromJson(orderedSharedList[i].toMap()));
-          orderMap[name].last.quantityCart=orderedSharedList[i].quantityCart;
-
-        }
+        orderMap[name] = orderedSharedList;
       });
 
       print("Cart map");
@@ -1031,7 +1024,7 @@ class CachedUserModel {
 
     // cartMap = json["cartData"];
 
-    if (json["cartData"] != null) {
+    if (json["cartData"] != null)
       json["cartData"].forEach((key, value) {
         List<SharedModel> shared = [];
         value.forEach((element) {
@@ -1041,7 +1034,6 @@ class CachedUserModel {
         });
         cartMap[key] = shared;
       });
-    }
   }
 
   Map toMap() {
