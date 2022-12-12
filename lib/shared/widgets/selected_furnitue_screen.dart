@@ -6,6 +6,7 @@ import 'package:ar_furniture_app/models/furniture_model.dart';
 import 'package:ar_furniture_app/shared/cache/sharedpreferences.dart';
 import 'package:ar_furniture_app/shared/widgets/cart_screen.dart';
 import 'package:ar_furniture_app/shared/widgets/favorite_icon.dart';
+import 'package:ar_furniture_app/shared/widgets/objectgesturesexample.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -88,7 +89,7 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
       builder: (context, state) {
         return Scaffold(
           appBar: AppBar(
-            backgroundColor: Color.fromRGBO(191, 122, 47, 1),
+            backgroundColor: const Color.fromRGBO(191, 122, 47, 1),
             actions: [
               IconButton(onPressed: () {
                 print("ya rbbb");
@@ -101,12 +102,12 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                         .furnitureList, cartMap: BlocProvider
                         .of<HomeCubit>(context)
                         .cache.cartMap)));
-              }, icon: Icon(Icons.shopping_cart))
+              }, icon: const Icon(Icons.shopping_cart))
             ],
             centerTitle: true,
             title: Text(
               widget.selectedFurniture.name,
-              style: TextStyle(),
+              style: const TextStyle(),
             ),
           ),
           body: Column(
@@ -200,6 +201,16 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                               ),
                             ),
                       ),
+                      Positioned(
+                        top: 15.0,
+                        left: 15.0,
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.push(context,MaterialPageRoute(builder: (context)=>ObjectGesturesWidget(["https://firebasestorage.googleapis.com/v0/b/pharmacy-management-syst-17e25.appspot.com/o/couch.glb?alt=media&token=0eb2f7ca-a894-4c22-9510-f699980fe6ec"])));
+                          },
+                          child: const Icon(Icons.camera)
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -223,7 +234,7 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                       Expanded(
                         flex: 3,
                         child: ListTile(
-                          contentPadding: EdgeInsets.only(
+                          contentPadding: const EdgeInsets.only(
                               left: 0.0, right: 0.0),
                           title: Padding(
                             padding: const EdgeInsets.only(bottom: 5.0),
@@ -231,7 +242,7 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                               widget.selectedFurniture.name,
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontSize: 16.0,
                                 fontWeight: FontWeight.w500,
                               ),
@@ -243,13 +254,13 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                             widget.selectedFurniture.description!,
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
+                            style: const TextStyle(
                                 fontSize: 14.0,
                                 fontWeight: FontWeight.w400,
                                 fontStyle: FontStyle.italic),
                           ),
                           trailing: Padding(
-                            padding: EdgeInsets.only(bottom: 22.0, right: 0),
+                            padding: const EdgeInsets.only(bottom: 22.0, right: 0),
                             child: Container(
                               width: MediaQuery.of(context).size.width/1.5,
                               child: Row(
@@ -267,7 +278,7 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                                       color: kAppBackgroundColor,
                                     ),
                                   ),
-                                  SizedBox(width: 10,),
+                                  const SizedBox(width: 10,),
                                   if(widget.selectedFurniture.shared[selectedColorIndex].discount!="0")
 
                                     Text(
@@ -277,7 +288,7 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                                         .price) -( (double.parse(widget.selectedFurniture.shared[selectedColorIndex].discount)/100)*double.parse(widget.selectedFurniture
                                           .shared[selectedColorIndex]
                                           .price))).toStringAsFixed(2)} L.E',
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                       fontSize: 18.0,
                                       fontWeight: FontWeight.w600,
                                       color: kAppBackgroundColor,
@@ -311,10 +322,10 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                               // allowHalfRating: true,
                               ignoreGestures: true,
                               itemCount: 5,
-                              itemPadding: EdgeInsets.symmetric(
+                              itemPadding: const EdgeInsets.symmetric(
                                   horizontal: 1.0),
                               itemBuilder: (context, _) =>
-                                  Icon(
+                                  const Icon(
                                     Icons.star,
                                     color: Colors.amber,
                                   ),
@@ -325,7 +336,7 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                                 //   });
                               },
                             ),
-                            SizedBox(
+                            const SizedBox(
                               width: 10.0,
                             ),
                             Text(
@@ -335,7 +346,7 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                                   .calculateAverageRating()
                                   .toString(),
                             ),
-                            Spacer(),
+                            const Spacer(),
                             InkWell(
                               onTap: () {
                                 Alert(
@@ -346,10 +357,10 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                                   content: Column(
                                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Icon(Icons.rate_review, size: 50.0, color: kAppBackgroundColor,),
-                                      SizedBox(height: 20.0,),
-                                      Text("Rating", style: TextStyle(fontSize: 23.0, letterSpacing: 0.8),),
-                                      SizedBox(height: 20.0,),
+                                      const Icon(Icons.rate_review, size: 50.0, color: kAppBackgroundColor,),
+                                      const SizedBox(height: 20.0,),
+                                      const Text("Rating", style: TextStyle(fontSize: 23.0, letterSpacing: 0.8),),
+                                      const SizedBox(height: 20.0,),
                                       RatingBar.builder(
                                         itemSize: 30.0,
                                         initialRating: widget.selectedFurniture.ratings[FirebaseAuth.instance.currentUser!.uid] == null ? 1 : widget.selectedFurniture.ratings[FirebaseAuth.instance.currentUser!.uid],
@@ -358,10 +369,10 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                                         // allowHalfRating: true,
                                         // ignoreGestures: true,
                                         itemCount: 5,
-                                        itemPadding: EdgeInsets.symmetric(
+                                        itemPadding: const EdgeInsets.symmetric(
                                             horizontal: 1.0),
                                         itemBuilder: (context, _) =>
-                                            Icon(
+                                            const Icon(
                                               Icons.star,
                                               color: Colors.amber,
                                             ),
@@ -378,7 +389,7 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                                   ),
                                   buttons: [
                                     DialogButton(
-                                      child: Text(
+                                      child: const Text(
                                         "Rate",
                                         style: TextStyle(color: Colors.white, fontSize: 20),
                                       ),
@@ -391,7 +402,7 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                                       color: kAppBackgroundColor,
                                     ),
                                   ],
-                                  style: AlertStyle(
+                                  style: const AlertStyle(
                                     animationType: AnimationType.fromTop,
                                     animationDuration: Duration(milliseconds: 400),
                                     titleStyle: TextStyle(
@@ -403,7 +414,7 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                                   ),
                                 ).show();
                               },
-                              child: Text(
+                              child: const Text(
                                 'Add a review ?',
                                 style: TextStyle(
                                   decoration: TextDecoration.underline,
@@ -424,12 +435,12 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                         flex: 2,
                         child: Row(
                           children: [
-                            Text(
+                            const Text(
                               'Color',
                               style: TextStyle(
                                   fontSize: 16.0, fontWeight: FontWeight.w500),
                             ),
-                            SizedBox(
+                            const SizedBox(
                               width: 54.5,
                             ),
                             Expanded(
@@ -513,7 +524,7 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                         flex: 2,
                         child: Row(
                           children: [
-                            Text(
+                            const Text(
                               'Quantity',
                               style: TextStyle(
                                 fontSize: 16.0,
@@ -556,7 +567,7 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                                 ),
                               ),
                             ),
-                            SizedBox(
+                            const SizedBox(
                               width: 10.0,
                             ),
                             Text(
@@ -571,7 +582,7 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                                 fontWeight: FontWeight.w600,
                               ),
                             ),
-                            SizedBox(
+                            const SizedBox(
                               width: 10.0,
                             ),
                             InkWell(
@@ -604,13 +615,13 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                                 ),
                               ),
                             ),
-                            Spacer(),
+                            const Spacer(),
                             Text(
                               "(Available Quantity: " +
                                   widget.selectedFurniture
                                       .shared[selectedColorIndex].quantity +
                                   ")",
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontSize: 14.0,
                                 fontWeight: FontWeight.w500,
                               ),
@@ -702,7 +713,7 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                                           ? 24.0
                                           : 21.0,
                                     ),
-                                    SizedBox(
+                                    const SizedBox(
                                       width: 10.0,
                                     ),
                                     Text(
@@ -725,7 +736,7 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                                     borderRadius: BorderRadius.circular(12.0),
                                   ),
                                   backgroundColor: kAppBackgroundColor,
-                                  padding: EdgeInsets.symmetric(
+                                  padding: const EdgeInsets.symmetric(
                                       horizontal: 20.0, vertical: 10.0),
                                 ),
                               ),
@@ -738,7 +749,7 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                             .size
                             .height > 700 ? 20.0 : 10.0,
                       ),
-                      Text(
+                      const Text(
                         'Recommendations',
                         style:
                         TextStyle(fontSize: 16.0, fontWeight: FontWeight.w500),
@@ -766,16 +777,16 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                                     );
                                   },
                                   child: Container(
-                                    margin: EdgeInsets.only(
+                                    margin: const EdgeInsets.only(
                                         right: 20.0, top: 20.0, bottom: 10.0),
-                                    padding: EdgeInsets.all(10.0),
+                                    padding: const EdgeInsets.all(10.0),
                                     decoration: BoxDecoration(
-                                      color: Color.fromRGBO(191, 122, 47, 0.2),
+                                      color: const Color.fromRGBO(191, 122, 47, 0.2),
                                       borderRadius: BorderRadius.circular(20.0),
                                     ),
                                     child: Column(
                                       children: [
-                                        SizedBox(height: 20.0,),
+                                        const SizedBox(height: 20.0,),
                                         Expanded(
                                           child: Container(
                                             width: MediaQuery.of(context).size.width * 0.34,
@@ -785,7 +796,7 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                                             ),
                                           ),
                                         ),
-                                        SizedBox(height: 10,),
+                                        const SizedBox(height: 10,),
                                         Text(BlocProvider.of<HomeCubit>(context).recommendedFurniture[index].name),
                                       ],
                                     ),
