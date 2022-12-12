@@ -629,13 +629,16 @@ class HomeCubit extends Cubit<HomeState> {
             element.quantity =
                 (int.parse(element.quantity) - int.parse(element.quantityCart))
                     .toString();
-            orderedSharedList.add(element);
+            String tempQuantityCart = element.quantityCart;
+            orderedSharedList.add(SharedModel.fromJson(element.toMap()));
+            orderedSharedList.last.quantityCart = tempQuantityCart;
             print("Orders List");
             print(orderedSharedList);
           }
         });
         String name=key+"|"+furnitureList.where((element) => element.furnitureId==key).first.name;
         orderMap[name] = orderedSharedList;
+        print(orderMap);
       });
 
       print("Cart map");
@@ -685,10 +688,15 @@ class HomeCubit extends Cubit<HomeState> {
               cache.cartMap[key][j].quantity =
                   (availableQuantity[key]![j] - int.parse(value[j].quantityCart))
                       .toString();
+              print("Order quantityCart before");
+              String tempKey = key+"|"+furnitureList.where((element) => element.furnitureId==key).first.name;
+              print(orderMap[tempKey][0].quantityCart);
+              print(cache.cartMap[key][j].quantityCart);
               cache.cartMap[key][j].quantityCart = "0";
               furnitureList[index].shared[j].quantityCart = "0";
               print("Cache quantity value");
-              print(cache.cartMap[key][j].quantity);
+              print(orderMap[tempKey][0].quantityCart);
+              print(cache.cartMap[key][j].quantityCart);
             }
           }
 
