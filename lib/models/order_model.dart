@@ -62,6 +62,7 @@ class OrderModel {
       Map<String, dynamic> tempCartMap = {};
       List<Map<String, dynamic>> tempSharedList = [];
       order.forEach((key, value) {
+        tempSharedList = [];
         value.forEach((element) {
           Map<String, dynamic> tempSharedMap = element.toMap();
           tempSharedMap['quantityCart'] = element.quantityCart;

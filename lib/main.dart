@@ -54,7 +54,6 @@ class MyApp extends StatelessWidget {
           '/register': (context) => RegisterScreen(),
           '/login': (context) => LoginScreen(),
           '/home': (context) => HomePage(),
-          '/filter': (context) => SearchFilterScreen(),
         },
         // home: BoardingScreen(),
       ),

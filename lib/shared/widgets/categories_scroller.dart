@@ -13,25 +13,25 @@ class CategoriesScroller extends StatefulWidget {
   //   "assets/drawers.png"
   // ];
   static String selectedCategoryName="";
+  static int selectedCategoryIndex = -1;
 
   @override
   State<CategoriesScroller> createState() => _CategoriesScrollerState();
 }
 
 class _CategoriesScrollerState extends State<CategoriesScroller> {
-  int selectedCategoryIndex = 0;
 
-  @override
-  void initState() {
-    // TODO: implement initState
-    CategoriesScroller.selectedCategoryName=BlocProvider.of<HomeCubit>(context).categories.first.name;
-    super.initState();
-  }
+  // @override
+  // void initState() {
+  //   // TODO: implement initState
+  //   // CategoriesScroller.selectedCategoryName=BlocProvider.of<HomeCubit>(context).categories.first.name;
+  //   super.initState();
+  // }
   @override
   Widget build(BuildContext context) {
     print("hahahaha");
     print(CategoriesScroller.selectedCategoryName);
-
+    print(CategoriesScroller.selectedCategoryIndex);
     return Container(
       margin: EdgeInsets.only(top: 15.0),
       height: MediaQuery.of(context).size.height > 700
@@ -47,28 +47,16 @@ class _CategoriesScrollerState extends State<CategoriesScroller> {
               child: InkWell(
                 onTap: () {
                   setState(() {
-                    CategoriesScroller.selectedCategoryName=BlocProvider.of<HomeCubit>(context).categories[index].name;
-                    selectedCategoryIndex = index;
+                    CategoriesScroller.selectedCategoryName= BlocProvider.of<HomeCubit>(context).categories[index].name;
+                    CategoriesScroller.selectedCategoryIndex = index;
                   });
-                  // BlocProvider.of<HomeCubit>(context).furnitureList.clear();
-                  if(!BlocProvider.of<HomeCubit>(context).returnedCategory.contains(BlocProvider.of<HomeCubit>(context).categories[index].name)) {
-                    BlocProvider.of<HomeCubit>(context).getFurniture(
-                        BlocProvider
-                            .of<HomeCubit>(context)
-                            .categories[index].name);
-                  } else {
-                    BlocProvider.of<HomeCubit>(context).emit(SuccessOffersState());
-                  }
-                  print("List");
-                  // BlocProvider.of<HomeCubit>(context).emit(SuccessOffersState());
-                  // BlocProvider.of<HomeCubit>(context).emit(SuccessOffersState());
-                  print(BlocProvider.of<HomeCubit>(context).furnitureList);
+                  BlocProvider.of<HomeCubit>(context).emit(UpdatedCategoriesScroller());
                 },
                 child: Container(
                   height: 30,
                   width: 70,
                   decoration: BoxDecoration(
-                      color: index == selectedCategoryIndex
+                      color: index == CategoriesScroller.selectedCategoryIndex
                           ? kAppBackgroundColor
                           : Colors.white,
                       borderRadius: BorderRadius.circular(50)),
@@ -98,7 +86,7 @@ class _CategoriesScrollerState extends State<CategoriesScroller> {
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
                               color:
-                              index == selectedCategoryIndex ? Colors.white : Colors.black),
+                              index == CategoriesScroller.selectedCategoryIndex ? Colors.white : Colors.black),
                         ),
                       ],
                     ),

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:ar_furniture_app/cubits/home_cubit.dart';
+import 'package:ar_furniture_app/cubits/home_states.dart';
 import 'package:ar_furniture_app/shared/widgets/validations.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -78,6 +79,16 @@ class _ProfileEditState extends State<ProfileEdit> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+          backgroundColor: Color.fromRGBO(191, 122, 47, 1),
+          leading: IconButton(onPressed: (){Navigator.pop(context);
+            },icon: Icon(Icons.arrow_back_sharp),),
+
+          centerTitle: true,
+          title: Text(
+            "Edit Profile",
+            style: TextStyle(),
+          )),
       body: Container(
         padding: EdgeInsets.only(left: 15, top: 20, right: 15),
         child: GestureDetector(
