@@ -509,6 +509,7 @@ class HomeCubit extends Cubit<HomeState> {
     // chosenFurnitureColor.quantityCart = cartQuantity.toString();
     furnitureList[index].shared[selectedIndex].quantityCart =
         cartQuantity.toString();
+    print("quantityyyyyyyycart"+ cartQuantity.toString());
 
     // var cachedtemp = cacheModel!.cachedModel.where(
     //     (element) => element.uid == FirebaseAuth.instance.currentUser!.uid);
@@ -528,6 +529,7 @@ class HomeCubit extends Cubit<HomeState> {
 
       }
       cache.cartMap[furnitureId][selectedIndex].quantityCart=cartQuantity.toString();
+      print("quantityyyyyyyycarrrrrt"+ cartQuantity.toString());
       // cache.cartMap[furnitureId].add(SharedModel.fromJson(furnitureList[index].shared[selectedIndex].toMap()));
       // cache.cartMap[furnitureId][selectedIndex].quantityCart=cartQuantity.toString();
       print(cache.cartMap[furnitureId]);
@@ -537,6 +539,7 @@ class HomeCubit extends Cubit<HomeState> {
       // cache.cartMap[furnitureId].add(SharedModel.fromJson(furnitureList[index].shared[selectedIndex].toMap()));
       cache.cartMap[furnitureId][selectedIndex].quantityCart =
           cartQuantity.toString();
+
       cache.cartMap[furnitureId][selectedIndex].quantity =
           furnitureList[index].shared[selectedIndex].quantity;
     }
