@@ -9,6 +9,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 
+
 import '../../models/user_model.dart';
 import '../constants/constants.dart';
 import 'cart_screen.dart';
@@ -204,7 +205,7 @@ class _ProfileEditState extends State<ProfileEdit> {
                           },
                         ),
                         SizedBox(height: 10),
-                        buildTextField('Enter Your current Password',
+                        buildTextField('Enter Your Current Password',
                             oldPasswordController,
                             isPassword: true),
                         SizedBox(height: 10),
