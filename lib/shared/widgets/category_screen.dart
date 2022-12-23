@@ -178,7 +178,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                                       ),
                                       SizedBox(
                                         height:
-                                        MediaQuery.of(context).size.height * 0.01,
+                                        filteredFurniture[index].description == null ? MediaQuery.of(context).size.height * 0.01 : MediaQuery.of(context).size.height * 0.0225,
                                       ),
                                       Row(
                                         children: [

@@ -129,7 +129,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
           ).show();
       } else if (state is OrderMadeSuccessfully) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text('PLaced order successfully !'),
+          content: Text('Placed order successfully !'),
         ));
         Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
       }

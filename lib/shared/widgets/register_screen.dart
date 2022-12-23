@@ -73,6 +73,20 @@ class _RegisterScreenState extends State<RegisterScreen> {
             setState(() {
               isLoading = false;
             });
+          } else if(state is WeakPasswordState) {
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text('Too weak password !'),
+            ));
+            setState(() {
+              isLoading = false;
+            });
+          } else if(state is EmailAlreadyInUse) {
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text('The email already exists !'),
+            ));
+            setState(() {
+              isLoading = false;
+            });
           }
         },
         builder: (context, state) {

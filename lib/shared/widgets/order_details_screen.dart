@@ -203,7 +203,7 @@ class OrderDetailsScreen extends StatelessWidget {
                         ),
                       ],
                     ),
-                    Text("Apartment No:${myOrder.appartmentNumber}, Floor no:${myOrder.floorNumber},Building no:${myOrder.buildingNumber}, Street no: ${myOrder.streetName},Area:${myOrder.area}"),
+                    Text("Apartment No: ${myOrder.appartmentNumber}, Floor No: ${myOrder.floorNumber}, Building No: ${myOrder.buildingNumber}, Street No: ${myOrder.streetName}, Area: ${myOrder.area}"),
                     SizedBox(
                       height: 30,
                     ),

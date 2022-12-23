@@ -52,8 +52,12 @@ class AuthCubit extends Cubit<AuthStates> {
     }).catchError((e) {
       if (e.code == 'weak-password') {
         print('The password provided is too weak.');
+        emit(WeakPasswordState());
+        return;
       } else if (e.code == 'email-already-in-use') {
         print('The account already exists for that email.');
+        emit(EmailAlreadyInUse());
+        return;
       }
       emit(AuthErrorState());
     });

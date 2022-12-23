@@ -262,7 +262,7 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                           trailing: Padding(
                             padding: const EdgeInsets.only(bottom: 22.0, right: 0),
                             child: Container(
-                              width: MediaQuery.of(context).size.width/1.5,
+                              width: MediaQuery.of(context).size.width/1.8,
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
@@ -272,14 +272,14 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                                         .price)).toStringAsFixed(2)+
                                         ' L.E',
                                     style: TextStyle(
-                                      decoration: widget.selectedFurniture.shared[selectedColorIndex].discount!="0"?TextDecoration.lineThrough:null,
+                                      decoration: widget.selectedFurniture.shared[selectedColorIndex].discount!="0" && widget.selectedFurniture.shared[selectedColorIndex].discount!="0.0" ? TextDecoration.lineThrough:null,
                                       fontSize: 18.0,
                                       fontWeight: FontWeight.w600,
                                       color: kAppBackgroundColor,
                                     ),
                                   ),
                                   const SizedBox(width: 10,),
-                                  if(widget.selectedFurniture.shared[selectedColorIndex].discount!="0")
+                                  if(widget.selectedFurniture.shared[selectedColorIndex].discount!="0" && widget.selectedFurniture.shared[selectedColorIndex].discount!="0.0")
 
                                     Text(
 
@@ -305,7 +305,7 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                         MediaQuery
                             .of(context)
                             .size
-                            .height > 700 ? 10.0 : 15.0,
+                            .height <= 700 ? 15.0 : widget.selectedFurniture.description == null ? 10.0 : 30.0,
                       ),
                       Expanded(
                         flex: 2,
