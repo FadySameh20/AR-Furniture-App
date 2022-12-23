@@ -28,7 +28,7 @@ class _ObjectGesturesWidgetState extends State<ObjectGesturesWidget> {
 
   List<ARNode> nodes = [];
   List<ARAnchor> anchors = [];
-
+  int index=0;
   @override
   void dispose() {
     super.dispose();
@@ -56,6 +56,22 @@ class _ObjectGesturesWidgetState extends State<ObjectGesturesWidget> {
                           onPressed: onRemoveEverything,
                           child: Text("Remove Everything")),
                     ]),
+              ),
+              Align(
+                alignment: Alignment.centerRight,
+                child: IconButton( onPressed:index==widget.model3DUrls.length-1?null: (){
+                  setState(() {
+                    index+=1;
+                  });
+                },icon: Icon(Icons.arrow_circle_right_rounded),),
+              ),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: IconButton(onPressed: index==0?null:(){
+                  setState(() {
+                    index-=1;
+                  });
+                },icon: Icon(Icons.arrow_circle_left_rounded),),
               )
             ])));
   }
@@ -112,8 +128,8 @@ class _ObjectGesturesWidgetState extends State<ObjectGesturesWidget> {
         var newNode = ARNode(
             type: NodeType.webGLB,
             uri:
-           widget.model3DUrls.first,
-            scale: Vector3(0.2, 0.2, 0.2),
+           widget.model3DUrls[index],
+            scale: Vector3(1, 1, 1),
             position: Vector3(0.0, 0.0, 0.0),
             rotation: Vector4(1.0, 0.0, 0.0, 0.0));
         bool? didAddNodeToAnchor =
