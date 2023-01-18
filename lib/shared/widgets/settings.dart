@@ -183,7 +183,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                               .lName,
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        fontSize: 25,
+                        fontSize: 20,
                       ),
                     ),
                     Text(
@@ -198,24 +198,34 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ],
                 ),
                 Spacer(),
-                Icon(Icons.navigate_next),
+                IconButton(
+                  onPressed: () async {
+                    await Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => ProfileEdit()),
+                    ).then((value) {
+                      setState(() {});
+                    });
+                  },
+                  icon: Icon(Icons.navigate_next),
+                ),
               ],
             ),
           ),
           SizedBox(
             height: 20,
           ),
-          settingsOption("Dark Mode", Icons.dark_mode, 0),
+          // settingsOption("Dark Mode", Icons.dark_mode, 0),
           settingsOptionCategory("Profile"),
           settingsOption("Edit Profile", Icons.account_circle),
           // settingsOption("Change Email", Icons.email),
           // settingsOption("Change Password", Icons.key),
-          settingsOptionCategory("Notifications"),
-          settingsOption("Notifications", Icons.notifications, 1),
+          // settingsOptionCategory("Notifications"),
+          // settingsOption("Notifications", Icons.notifications, 1),
           settingsOptionCategory("App Settings"),
           // settingsOption("My Favorites", Icons.favorite),
           settingsOption("My Orders", Icons.shopping_bag),
-          settingsOption("About Us", Icons.error),
+          // settingsOption("About Us", Icons.error),
           settingsOption("Logout", Icons.logout),
         ]),
       ),

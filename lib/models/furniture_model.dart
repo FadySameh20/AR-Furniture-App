@@ -59,7 +59,7 @@ class FurnitureModel {
     double sum = 0;
     print("Ratings");
     print(ratings);
-    for (double rating in ratings.values) {
+    for (var rating in ratings.values) {
       sum += rating;
     }
     double averageRating = sum / ratings.length;
