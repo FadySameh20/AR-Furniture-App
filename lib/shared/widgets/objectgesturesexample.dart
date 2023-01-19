@@ -113,7 +113,7 @@ class _ObjectGesturesWidgetState extends State<ObjectGesturesWidget> {
             type: NodeType.webGLB,
             uri:
            widget.model3DUrls.first,
-            scale: Vector3(0.2, 0.2, 0.2),
+            scale: Vector3(0.5, 0.5, 0.5),
             position: Vector3(0.0, 0.0, 0.0),
             rotation: Vector4(1.0, 0.0, 0.0, 0.0));
         bool? didAddNodeToAnchor =

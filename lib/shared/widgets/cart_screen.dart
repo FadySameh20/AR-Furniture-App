@@ -37,6 +37,7 @@ class _CartScreenState extends State<CartScreen> {
   // Map<String, dynamic> cartMap = {};
   List<String> furnitureIds=[];
   List<String> furnitureColors=[];
+  List<String> furnitureColorNames=[];
 
   var quantity = 0;
   double subTotal = 0;
@@ -75,6 +76,7 @@ class _CartScreenState extends State<CartScreen> {
           availableQuantity.add(element.quantity);
           furniturePrices.add((double.parse(element.price) -( (double.parse(element.discount)/100)*double.parse(element.price))).toStringAsFixed(2));
           furnitureColors.add(element.color);
+          furnitureColorNames.add(element.colorName);
           print("furnitureCOLORS");
           print(furnitureColors);
           furnitureNames.add(widget.furnitureList
@@ -175,19 +177,22 @@ class _CartScreenState extends State<CartScreen> {
                           totalPrice =
                           (subTotal + tax);
                           // Remove the item from the data source.
+
+                          // Then show a snackbar.
+                          ScaffoldMessenger.of(context)
+                              .showSnackBar(SnackBar(content: Text('${furnitureColorNames[index]} ${furnitureNames[index]} is dismissed !')));
+
                           setState(() {
                             furnitureNames.removeAt(index);
                             furnitureQuantities.removeAt(index);
                             furnitureColors.removeAt(index);
+                            furnitureColorNames.removeAt(index);
                             furnitureIds.removeAt(index);
                             furnitureImages.removeAt(index);
                             furniturePrices.removeAt(index);
                             availableQuantity.removeAt(index);
                           });
 
-                          // Then show a snackbar.
-                          ScaffoldMessenger.of(context)
-                              .showSnackBar(SnackBar(content: Text('$furnitureNames dismissed')));
                         },
                         // Show a red background as the item is swiped away.
                         background: ColoredBox(color: Colors.red,child: Align(
