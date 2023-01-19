@@ -270,34 +270,50 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
-                                  Text(
-                                    (double.parse(widget.selectedFurniture
-                                        .shared[selectedColorIndex]
-                                        .price)).toStringAsFixed(2)+
-                                        ' L.E',
-                                    style: TextStyle(
-                                      decoration: widget.selectedFurniture.shared[selectedColorIndex].discount!="0" && widget.selectedFurniture.shared[selectedColorIndex].discount!="0.0" ? TextDecoration.lineThrough:null,
-                                      fontSize: 18.0,
-                                      fontWeight: FontWeight.w600,
-                                      color: kAppBackgroundColor,
+                                  Flexible(
+                                    child: double.parse(widget.selectedFurniture.shared[selectedColorIndex].discount).toInt()!=0 ? Text(
+                                      (double.parse(widget.selectedFurniture
+                                          .shared[selectedColorIndex]
+                                          .price)).toStringAsFixed(2),
+                                      style: TextStyle(
+                                        decoration: TextDecoration.lineThrough,
+                                        fontSize: double.parse(widget.selectedFurniture
+                                            .shared[selectedColorIndex]
+                                            .price) >= 10000 ? 16.5: 17.0,
+                                        fontWeight: FontWeight.w600,
+                                        color: kAppBackgroundColor,
+                                      ),
+                                    ) : Text(
+                                      (double.parse(widget.selectedFurniture
+                                          .shared[selectedColorIndex]
+                                          .price)).toStringAsFixed(2) + ' L.E',
+                                      style: TextStyle(
+                                        fontSize: 17.0,
+                                        fontWeight: FontWeight.w600,
+                                        color: kAppBackgroundColor,
+                                      ),
                                     ),
                                   ),
-                                  const SizedBox(width: 10,),
-                                  if(widget.selectedFurniture.shared[selectedColorIndex].discount!="0" && widget.selectedFurniture.shared[selectedColorIndex].discount!="0.0")
+                                  const SizedBox(width: 8,),
+                                  if(double.parse(widget.selectedFurniture.shared[selectedColorIndex].discount).toInt()!=0)
 
-                                    Text(
+                                    Flexible(
+                                      child: Text(
 
-                                      '${(double.parse(widget.selectedFurniture
-                                        .shared[selectedColorIndex]
-                                        .price) -( (double.parse(widget.selectedFurniture.shared[selectedColorIndex].discount)/100)*double.parse(widget.selectedFurniture
+                                        '${(double.parse(widget.selectedFurniture
                                           .shared[selectedColorIndex]
-                                          .price))).toStringAsFixed(2)} L.E',
-                                    style: const TextStyle(
-                                      fontSize: 18.0,
-                                      fontWeight: FontWeight.w600,
-                                      color: kAppBackgroundColor,
-                                    ),
-                                  )
+                                          .price) -( (double.parse(widget.selectedFurniture.shared[selectedColorIndex].discount)/100)*double.parse(widget.selectedFurniture
+                                            .shared[selectedColorIndex]
+                                            .price))).toStringAsFixed(2)} L.E',
+                                      style: TextStyle(
+                                        fontSize: double.parse(widget.selectedFurniture
+                                            .shared[selectedColorIndex]
+                                            .price) >= 10000 ? 16.5: 17.0,
+                                        fontWeight: FontWeight.w600,
+                                        color: kAppBackgroundColor,
+                                      ),
+                                  ),
+                                    )
                                 ],
                               ),
                             ),

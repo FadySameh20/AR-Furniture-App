@@ -247,6 +247,7 @@ class _HomePageState extends State<HomePage> {
                                                               element.color)!);
                                                 });
                                               }
+                                              BlocProvider.of<HomeCubit>(context).getFurnitureRecommendation(furn, 0);
                                               Navigator.push(
                                                 context,
                                                 MaterialPageRoute(
