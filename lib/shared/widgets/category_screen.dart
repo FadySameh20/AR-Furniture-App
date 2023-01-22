@@ -127,8 +127,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                                         : MediaQuery.of(context).size.height * 0.043,
                                     padding: EdgeInsets.all(5.0),
                                     child: Text(
-                                      'EGP ' + filteredFurniture[index].shared[selectedColorIndex].price,
-                                      style: TextStyle(
+                                      'EGP ' + (double.parse(filteredFurniture[index].shared[selectedColorIndex].price) - double.parse(filteredFurniture[index].shared[selectedColorIndex].price) * double.parse(filteredFurniture[index].shared[selectedColorIndex].discount) / 100).toStringAsFixed(0),                                      style: TextStyle(
                                         color: Colors.white,
                                       ),
                                     ),
