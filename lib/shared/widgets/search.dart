@@ -28,7 +28,7 @@ class _SearchState extends State<Search> {
   TextEditingController _searchController = TextEditingController();
 
   // filter
-  RangeValues currentRangeValues = const RangeValues(0, 500);
+  RangeValues currentRangeValues = const RangeValues(0, 10000);
   Map<Color,bool> colors = {};
   Map<CategoryItem,bool> categories = {};
   var arguments;

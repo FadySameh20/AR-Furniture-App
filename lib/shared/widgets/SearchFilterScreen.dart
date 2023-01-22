@@ -41,7 +41,7 @@ class _SearchFilterScreenState extends State<SearchFilterScreen> {
               RangeSlider(
                   values: widget.rangeValues,
                   min: 0,
-                  max: 500,
+                  max: 10000,
                   divisions: 10,
                   labels: RangeLabels(
                       widget.rangeValues.start.round().toString(),
