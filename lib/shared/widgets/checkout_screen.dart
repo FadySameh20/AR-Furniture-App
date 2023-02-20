@@ -137,9 +137,15 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       return Scaffold(
         appBar: AppBar(
           backgroundColor: Color.fromRGBO(191, 122, 47, 1),
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back_ios,color: !BlocProvider.of<HomeCubit>(context).isDark?Colors.white:Colors.black),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+          ),
           title: Text(
             "Checkout",
-            style: TextStyle(),
+            style: TextStyle(color: !BlocProvider.of<HomeCubit>(context).isDark?Colors.white:Colors.black),
           ),
         ),
 
@@ -192,6 +198,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                           ),
                           SizedBox(height: 10),
                           InternationalPhoneNumberInput(
+
+                            textStyle:TextStyle(color: BlocProvider.of<HomeCubit>(context).isDark?Colors.white:Colors.black),
                             spaceBetweenSelectorAndTextField: 0,
                             onInputValidated: (value) {},
                             onInputChanged: (PhoneNumber number) {},
@@ -200,8 +208,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                             ),
                             ignoreBlank: false,
                             autoValidateMode: AutovalidateMode.onUserInteraction,
+
                             selectorTextStyle:
-                                const TextStyle(color: Colors.black),
+                         TextStyle(color: BlocProvider.of<HomeCubit>(context).isDark?Colors.white:Colors.black),
                             initialValue: number,
                             textFieldController: mobileNumberController,
                             formatInput: false,
@@ -221,7 +230,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                 width: double.infinity,
                 height: MediaQuery.of(context).size.height * 0.4,
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                color: !BlocProvider.of<HomeCubit>(context).isDark?Colors.white:Colors.black,
                   borderRadius: BorderRadius.only(
                       topRight: Radius.circular(30),
                       topLeft: Radius.circular(30)),
@@ -233,8 +242,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text("Sub Total            "),
-                          Text("\EGP ${widget.subTotal.toStringAsFixed(2)}"),
+                          Text("Sub Total            ",style:TextStyle(color: BlocProvider.of<HomeCubit>(context).isDark?Colors.white:Colors.black)),
+                          Text("\EGP ${widget.subTotal.toStringAsFixed(2)}",style:TextStyle(color: BlocProvider.of<HomeCubit>(context).isDark?Colors.white:Colors.black)),
                         ],
                       ),
                       SizedBox(
@@ -243,8 +252,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text("Estimating Tax(14%)            "),
-                          Text("\EGP ${tax.toStringAsFixed(2)}"),
+                          Text("Estimating Tax(14%)            ",style:TextStyle(color: BlocProvider.of<HomeCubit>(context).isDark?Colors.white:Colors.black)),
+                          Text("\EGP ${tax.toStringAsFixed(2)}",style:TextStyle(color: BlocProvider.of<HomeCubit>(context).isDark?Colors.white:Colors.black)),
                         ],
                       ),
                       SizedBox(
@@ -259,8 +268,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text("Total"),
-                          Text("\EGP ${totalPrice.toStringAsFixed(2)}"),
+                          Text("Total",style:TextStyle(color: BlocProvider.of<HomeCubit>(context).isDark?Colors.white:Colors.black)),
+                          Text("\EGP ${totalPrice.toStringAsFixed(2)}",style:TextStyle(color: BlocProvider.of<HomeCubit>(context).isDark?Colors.white:Colors.black)),
                         ],
                       ),
                       SizedBox(
@@ -303,6 +312,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                     "Place Order",
                                     style: TextStyle(
                                         fontWeight: FontWeight.bold,
+ color: !BlocProvider.of<HomeCubit>(context).isDark?Colors.white:Colors.black,
                                         fontSize: 20),
                                   ))),
                         ],
@@ -323,6 +333,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       controller: controller,
       obscureText: isPassword,
       validator: validator,
+      style: TextStyle(color: BlocProvider.of<HomeCubit>(context).isDark?Colors.white:Colors.black),
       decoration: InputDecoration(
         enabledBorder: UnderlineInputBorder(
             borderSide: BorderSide(
@@ -335,6 +346,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
           color: Color.fromRGBO(124, 58, 40, 1),
           fontSize: 13,
         ),
+
         // hintText: "Edit Your Password"
       ),
       cursorColor: Color.fromRGBO(124, 58, 40, 1),

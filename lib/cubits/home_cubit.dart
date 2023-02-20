@@ -42,10 +42,19 @@ class HomeCubit extends Cubit<HomeState> {
   String lastSearchbarName = "";
   bool moreFurnitureAvailable = true;
   Map<String, dynamic> lastDocMap = {};
+  var isDark;
 
+  changeTheme()async{
+    isDark=!isDark;
+    await CacheHelper.setData(key: "darkMode", value: isDark);
+    // print(CacheHelper.getData("darkMode"));
+    print("isDark: ");
+    print(isDark);
+    emit(ThemeModeState());
+  }
   getAllData() async {
     //// await createCache();
-
+    isDark=CacheHelper.getData("darkMode")??false;
     await getCategoryNames();
     await getOffers();
     if (FirebaseAuth.instance.currentUser != null) {

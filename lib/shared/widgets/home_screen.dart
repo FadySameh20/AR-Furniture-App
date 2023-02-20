@@ -1,6 +1,7 @@
 
 import 'package:ar_furniture_app/cubits/home_cubit.dart';
 import 'package:ar_furniture_app/models/furniture_model.dart';
+import 'package:ar_furniture_app/shared/constants/constants.dart';
 import 'package:ar_furniture_app/shared/widgets/favorite_icon.dart';
 import 'package:ar_furniture_app/shared/widgets/search.dart';
 import 'package:ar_furniture_app/shared/widgets/selected_furnitue_screen.dart';
@@ -13,6 +14,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../cubits/home_states.dart';
+import '../cache/sharedpreferences.dart';
 import 'cart_screen.dart';
 import 'categories_scroller.dart';
 import 'category_screen.dart';
@@ -44,33 +46,7 @@ class _HomePageState extends State<HomePage> {
 
   double bottomNavBarHeight = 60;
 
-  List<TabItem> tabItems = List.of([
-    TabItem(
-      Icons.home,
-      "Home",
-      const Color.fromRGBO(191, 122, 47, 1),
-    ),
-    TabItem(
-      Icons.favorite,
-      "Favorite",
-      const Color.fromRGBO(191, 122, 47, 1),
-    ),
-    TabItem(
-      Icons.search,
-      "Search",
-      const Color.fromRGBO(191, 122, 47, 1),
-    ),
-    TabItem(
-      Icons.category,
-      "Categories",
-      const Color.fromRGBO(191, 122, 47, 1),
-    ),
-    TabItem(
-      Icons.person,
-      "Profile",
-      const Color.fromRGBO(191, 122, 47, 1),
-    ),
-  ]);
+
 
   late CircularBottomNavigationController _navigationController;
 
@@ -88,6 +64,49 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    List<TabItem> tabItems = List.of([
+      TabItem(
+        Icons.home,
+        "Home",
+        const Color.fromRGBO(191, 122, 47, 1),
+        labelStyle:  TextStyle(color: !BlocProvider.of<HomeCubit>(context).isDark
+            ? Colors.black
+            : Colors.white,fontSize: 16),
+      ),
+      TabItem(
+        Icons.favorite,
+        "Favorite",
+        const Color.fromRGBO(191, 122, 47, 1),
+        labelStyle:  TextStyle(color: !BlocProvider.of<HomeCubit>(context).isDark
+            ? Colors.black
+            : Colors.white,fontSize: 16),
+      ),
+      TabItem(
+        Icons.search,
+        "Search",
+        const Color.fromRGBO(191, 122, 47, 1),
+        labelStyle:  TextStyle(color: !BlocProvider.of<HomeCubit>(context).isDark
+            ? Colors.black
+            : Colors.white,fontSize: 16),
+      ),
+      TabItem(
+        Icons.category,
+        "Categories",
+        const Color.fromRGBO(191, 122, 47, 1),
+        labelStyle:  TextStyle(color: !BlocProvider.of<HomeCubit>(context).isDark
+            ? Colors.black
+            : Colors.white,fontSize: 16),
+      ),
+      TabItem(
+        Icons.person,
+        "Profile",
+        const Color.fromRGBO(191, 122, 47, 1),
+        labelStyle:  TextStyle(color: !BlocProvider.of<HomeCubit>(context).isDark
+            ? Colors.black
+            : Colors.white,fontSize: 16),
+      ),
+    ]);
+    const screenTitles=["Home","Favorite","Search","Categories","Profile"];
     return BlocConsumer<HomeCubit, HomeState>(
       listener: (context, state) {
         if (state is UpdateUserDataSuccessData) {
@@ -114,25 +133,30 @@ class _HomePageState extends State<HomePage> {
         }
       },
       builder: (context, state) {
-        print(selectedPos);
+        // var isDark=CacheHelper.getData("darkMode")??false;
+        print("Dark is ");
+        print(BlocProvider.of<HomeCubit>(context).isDark);
+        // print(selectedPos);
         if (selectedPos != 3) {
           CategoriesScroller.selectedCategoryName = "";
           CategoriesScroller.selectedCategoryIndex = -1;
         }
         if (selectedPos == 0) {}
+
         // print(FirebaseAuth.instance.currentUser!.uid);
         return Scaffold(
           // backgroundColor: Color(0xE9E89235),
           // backgroundColor: Colors.grey[300],
-          backgroundColor: const Color.fromRGBO(242, 246, 249, 1),
+          backgroundColor: !BlocProvider.of<HomeCubit>(context).isDark?const Color.fromRGBO(242, 246, 249, 1):const Color.fromRGBO(30, 30, 30, 1),
+
           appBar: AppBar(
               backgroundColor: const Color.fromRGBO(191, 122, 47, 1),
               leading: const FlutterLogo(),
               actions: [
                 IconButton(
                     onPressed: () {
-                      print("ya rbbb");
-                      print(BlocProvider.of<HomeCubit>(context).cache.cartMap);
+                      // print("ya rbbb");
+                      // print(BlocProvider.of<HomeCubit>(context).cache.cartMap);
                       Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -144,10 +168,10 @@ class _HomePageState extends State<HomePage> {
                                       .cache
                                       .cartMap)));
                     },
-                    icon: Icon(Icons.shopping_cart))
+                    icon: Icon(Icons.shopping_cart,color:!BlocProvider.of<HomeCubit>(context).isDark?Color.fromRGBO(242, 246, 249, 1):Color.fromRGBO(30, 30, 30, 1)))
               ],
               centerTitle: true,
-              title: selectedPos == 0 ? const Text("Home",) : selectedPos == 1 ? const Text("Favorites",) : selectedPos == 2 ? const Text("Search",) : selectedPos == 3 ? const Text("Categories",) : const Text("Profile",),
+              title: Text(screenTitles[selectedPos],style: Theme.of(context).textTheme.bodyLarge!.copyWith(fontSize: 25,fontWeight: FontWeight.bold,color: BlocProvider.of<HomeCubit>(context).isDark?Colors.black:Colors.white)) ,
           ),
           body: Stack(
             children: <Widget>[
@@ -199,9 +223,9 @@ class _HomePageState extends State<HomePage> {
                                                       element.furnitureId ==
                                                       i.salesId)
                                                   .isEmpty) {
-                                                print("ya rb");
-                                                print(i.category);
-                                                print(i.salesId);
+                                                // print("ya rb");
+                                                // print(i.category);
+                                                // print(i.salesId);
                                                 FirebaseFirestore.instance
                                                     .collection("category")
                                                     .doc(i.category)
@@ -287,14 +311,15 @@ class _HomePageState extends State<HomePage> {
                                   height: 20,
                                 ),
                                 Row(
-                                  children: const [
+                                  children:  [
                                     Padding(
                                       padding:
                                           EdgeInsets.symmetric(horizontal: 20),
                                       child: Text(
                                         "Categories",
-                                        style: TextStyle(
+                                        style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                                             fontWeight: FontWeight.bold,
+                                            color:BlocProvider.of<HomeCubit>(context).isDark?Colors.white:Colors.black,
                                             fontSize: 20),
                                       ),
                                     ),
@@ -331,14 +356,15 @@ class _HomePageState extends State<HomePage> {
                                   height: 10,
                                 ),
                                 Row(
-                                  children: const [
+                                  children:  [
                                     Padding(
                                       padding:
                                           EdgeInsets.symmetric(horizontal: 20),
                                       child: Text(
                                         "Recommended",
-                                        style: TextStyle(
+                                        style:  Theme.of(context).textTheme.bodyLarge!.copyWith(
                                             fontWeight: FontWeight.bold,
+                                            color:BlocProvider.of<HomeCubit>(context).isDark?Colors.white:Colors.black,
                                             fontSize: 20),
                                       ),
                                     ),
@@ -597,12 +623,17 @@ class _HomePageState extends State<HomePage> {
                   alignment: Alignment.bottomCenter,
                   child: CircularBottomNavigation(
                     tabItems,
+                    selectedIconColor: BlocProvider.of<HomeCubit>(context).isDark
+                        ? Colors.black
+                        : Colors.white,
                     controller: _navigationController,
                     selectedPos: selectedPos,
                     barHeight: bottomNavBarHeight,
-                    barBackgroundColor: Colors.white,
+                    barBackgroundColor: BlocProvider.of<HomeCubit>(context).isDark
+                        ? Colors.black
+                        : Colors.white,
                     backgroundBoxShadow: const <BoxShadow>[
-                      BoxShadow(color: Colors.black45, blurRadius: 10.0),
+                      BoxShadow(color: kAppBackgroundColor, blurRadius: 10.0),
                     ],
                     animationDuration: const Duration(milliseconds: 300),
                     selectedCallback: (int? selectedPos) {
@@ -620,7 +651,7 @@ class _HomePageState extends State<HomePage> {
                       }
                       setState(() {
                         this.selectedPos = selectedPos ?? 0;
-                        print(_navigationController.value);
+                        // print(_navigationController.value);
                       });
                     },
                   ))

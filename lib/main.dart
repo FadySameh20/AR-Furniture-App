@@ -44,10 +44,12 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         initialRoute: '/',
         theme: ThemeData(
-          scaffoldBackgroundColor: Color.fromRGBO(242, 246, 249, 1),
+          scaffoldBackgroundColor: CacheHelper.getData("darkMode")==false || CacheHelper.getData("darkMode")==null?Color.fromRGBO(242, 246, 249, 1):Color.fromRGBO(30, 30, 30, 1),
           textTheme: TextTheme(
             bodyText1: GoogleFonts.crimsonPro()
-          )
+                ,
+          ).apply(bodyColor: CacheHelper.getData("darkMode")==false || CacheHelper.getData("darkMode")==null?Color.fromRGBO(30, 30, 30, 1):Color.fromRGBO(242, 246, 249, 1)),
+
         ),
         routes: {
           '/': (context)=>FirebaseAuth.instance.currentUser!=null?HomePage():CacheHelper.getData("hasPassedBoardingScreen")!=null?SplashWelcomeScreen():BoardingScreen(),

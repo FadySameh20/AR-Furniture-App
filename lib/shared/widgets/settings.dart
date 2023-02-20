@@ -1,3 +1,4 @@
+import 'package:ar_furniture_app/shared/cache/sharedpreferences.dart';
 import 'package:ar_furniture_app/shared/widgets/profile_edit.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +8,7 @@ import 'package:image_picker/image_picker.dart';
 import '../../cubits/home_cubit.dart';
 import '../../cubits/home_states.dart';
 import '../../models/user_model.dart';
+import '../constants/constants.dart';
 import 'cart_screen.dart';
 import 'favorite_screen.dart';
 import 'order_screen.dart';
@@ -28,17 +30,20 @@ class _SettingsScreenState extends State<SettingsScreen> {
   // 2 for icon (out of the list)
   Container addEndWidget(int switchIndex) {
     if (switchIndex == 2) {
-      return Container(child: Icon(Icons.navigate_next));
+      return Container(child: Icon(Icons.navigate_next,                      color: CacheHelper.getData("darkMode")==false || CacheHelper.getData("darkMode")==null?Colors.black:Colors.white,
+      ));
     } else {
       return Container(
         child: Switch(
-          value: allowSwitches[switchIndex],
-          onChanged: (value) {
+          value: BlocProvider.of<HomeCubit>(context).isDark,
+          onChanged: (value)async {
+            await BlocProvider.of<HomeCubit>(context).changeTheme();
             setState(() {
-              allowSwitches[switchIndex] = value;
+
+
             });
           },
-          activeColor: Colors.green,
+          activeColor: kAppBackgroundColor,
         ),
       );
     }
@@ -79,23 +84,23 @@ class _SettingsScreenState extends State<SettingsScreen> {
             child: Row(
               children: [
                 Material(
+                  borderRadius: BorderRadius.circular(10),
+                  color: const Color.fromRGBO(207, 138, 61, 1),
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Icon(
                       optionIcon,
-                      color: Colors.white,
+                      color: !BlocProvider.of<HomeCubit>(context).isDark?Colors.white:Colors.black,
                       size: 25,
                     ),
                   ),
-                  borderRadius: BorderRadius.circular(10),
-                  color: const Color.fromRGBO(207, 138, 61, 1),
                 ),
-                SizedBox(
+                const SizedBox(
                   width: 8,
                 ),
                 Text(
                   optionText,
-                  style: TextStyle(fontSize: 20),
+                  style: TextStyle(fontSize: 20,color: !BlocProvider.of<HomeCubit>(context).isDark?Colors.black:Colors.white),
                 ),
                 Spacer(),
                 addEndWidget(switchIndex),
@@ -141,94 +146,101 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(children: [
-          InkWell(
-            onTap: () {
-              // print("name");
-            },
-            child: Row(
-              children: [
-                CircleAvatar(
-                  backgroundColor: Colors.white,
-                  backgroundImage: BlocProvider.of<HomeCubit>(context)
-                              .cache
-                              .cachedUser
-                              .img !=
-                          ""
-                      ? NetworkImage(BlocProvider.of<HomeCubit>(context)
-                          .cache
-                          .cachedUser
-                          .img)
-                      : AssetImage("assets/profile.png") as ImageProvider,
-                  radius: 50,
-                ),
-                SizedBox(
-                  width: 15,
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      BlocProvider.of<HomeCubit>(context)
-                              .cache
-                              .cachedUser
-                              .fName +
-                          " " +
-                          BlocProvider.of<HomeCubit>(context)
-                              .cache
-                              .cachedUser
-                              .lName,
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20,
+    return BlocConsumer<HomeCubit,HomeState>(
+      listener: (context, state) {},
+
+      builder: (context, state) {
+      return SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(children: [
+            InkWell(
+              onTap: () {
+                // print("name");
+              },
+              child: Row(
+                children: [
+                  CircleAvatar(
+                    backgroundColor: Colors.white,
+                    backgroundImage: BlocProvider.of<HomeCubit>(context)
+                                .cache
+                                .cachedUser
+                                .img !=
+                            ""
+                        ? NetworkImage(BlocProvider.of<HomeCubit>(context)
+                            .cache
+                            .cachedUser
+                            .img)
+                        : AssetImage("assets/profile.png") as ImageProvider,
+                    radius: 50,
+                  ),
+                  SizedBox(
+                    width: 15,
+                  ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        BlocProvider.of<HomeCubit>(context)
+                                .cache
+                                .cachedUser
+                                .fName +
+                            " " +
+                            BlocProvider.of<HomeCubit>(context)
+                                .cache
+                                .cachedUser
+                                .lName,
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20,
+                          color:!BlocProvider.of<HomeCubit>(context).isDark?Colors.black:Colors.white
+                        ),
                       ),
-                    ),
-                    Text(
-                      BlocProvider.of<HomeCubit>(context)
-                          .cache
-                          .cachedUser
-                          .email,
-                      style: TextStyle(
-                        fontSize: 15,
+                      Text(
+                        BlocProvider.of<HomeCubit>(context)
+                            .cache
+                            .cachedUser
+                            .email,
+                        style: TextStyle(
+                          fontSize: 15,
+                            color:!BlocProvider.of<HomeCubit>(context).isDark?Colors.black:Colors.white
+
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-                Spacer(),
-                IconButton(
-                  onPressed: () async {
-                    await Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => ProfileEdit()),
-                    ).then((value) {
-                      setState(() {});
-                    });
-                  },
-                  icon: Icon(Icons.navigate_next),
-                ),
-              ],
+                    ],
+                  ),
+                  Spacer(),
+                  IconButton(
+                    onPressed: () async {
+                      await Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => ProfileEdit()),
+                      ).then((value) {
+                        setState(() {});
+                      });
+                    },
+                    icon: Icon(Icons.navigate_next,color: !BlocProvider.of<HomeCubit>(context).isDark?Colors.black:Colors.white)
+                  ),
+                ],
+              ),
             ),
-          ),
-          SizedBox(
-            height: 20,
-          ),
-          // settingsOption("Dark Mode", Icons.dark_mode, 0),
-          settingsOptionCategory("Profile"),
-          settingsOption("Edit Profile", Icons.account_circle),
-          // settingsOption("Change Email", Icons.email),
-          // settingsOption("Change Password", Icons.key),
-          // settingsOptionCategory("Notifications"),
-          // settingsOption("Notifications", Icons.notifications, 1),
-          settingsOptionCategory("App Settings"),
-          // settingsOption("My Favorites", Icons.favorite),
-          settingsOption("My Orders", Icons.shopping_bag),
-          // settingsOption("About Us", Icons.error),
-          settingsOption("Logout", Icons.logout),
-        ]),
-      ),
-    );
+            SizedBox(
+              height: 20,
+            ),
+            settingsOption("Dark Mode", Icons.dark_mode, 0),
+            settingsOptionCategory("Profile"),
+            settingsOption("Edit Profile", Icons.account_circle),
+            // settingsOption("Change Email", Icons.email),
+            // settingsOption("Change Password", Icons.key),
+            // settingsOptionCategory("Notifications"),
+            // settingsOption("Notifications", Icons.notifications, 1),
+            settingsOptionCategory("App Settings"),
+            // settingsOption("My Favorites", Icons.favorite),
+            settingsOption("My Orders", Icons.shopping_bag),
+            // settingsOption("About Us", Icons.error),
+            settingsOption("Logout", Icons.logout),
+          ]),
+        ),
+      );}    );
   }
 }

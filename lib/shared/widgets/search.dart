@@ -378,9 +378,9 @@ class _SearchState extends State<Search> {
                 }
               ),
               if(viewSuggestions == false)
-                const Text(
+                 Text(
                   "Categories",
-                  style: TextStyle(
+                  style:  Theme.of(context).textTheme.bodyLarge!.copyWith(
                     fontWeight: FontWeight.bold,
                     fontSize: 20,
                   ),
@@ -388,9 +388,9 @@ class _SearchState extends State<Search> {
               if(viewSuggestions == false)
                 CategoriesScroller(),
               if(viewSuggestions == false)
-                const Text(
+                 Text(
                   "Recently Viewed",
-                  style: TextStyle(
+                  style:  Theme.of(context).textTheme.bodyLarge!.copyWith(
                     fontWeight: FontWeight.bold,
                     fontSize: 20,
                   ),
