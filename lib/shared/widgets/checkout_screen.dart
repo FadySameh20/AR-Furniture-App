@@ -135,6 +135,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       }
     }, builder: (context, state) {
       return Scaffold(
+        backgroundColor: !BlocProvider.of<HomeCubit>(context).isDark?Colors.white:Colors.black,
         appBar: AppBar(
           backgroundColor: Color.fromRGBO(191, 122, 47, 1),
           leading: IconButton(

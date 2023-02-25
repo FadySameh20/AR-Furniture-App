@@ -216,11 +216,7 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                         left: 15.0,
                         child: GestureDetector(
                           onTap: () {
-                            Navigator.push(context,MaterialPageRoute(builder: (context)=>ObjectGesturesWidget([
-                              "https://firebasestorage.googleapis.com/v0/b/ar-furniture-7fb69.appspot.com/o/west_elm_slope_leather_chair.glb?alt=media&token=0f58db19-6637-4872-9f77-b00d8b787f8a",
-                              "https://firebasestorage.googleapis.com/v0/b/ar-furniture-7fb69.appspot.com/o/victorian_style_sofa.glb?alt=media&token=e10ab968-34d4-40d4-b60d-1e32492f9e25"
-                            ,"https://firebasestorage.googleapis.com/v0/b/ar-furniture-7fb69.appspot.com/o/victorian_chair.glb?alt=media&token=5d19e19d-1e8c-4865-9b5c-03e54fc7e49e"
-                            ,"https://firebasestorage.googleapis.com/v0/b/ar-furniture-7fb69.appspot.com/o/victorian_console_table.glb?alt=media&token=bdc623df-94e5-4087-b911-95d8ce3e9e2d"])));
+                            Navigator.push(context,MaterialPageRoute(builder: (context)=>ObjectGesturesWidget([widget.selectedFurniture.model])));
                           },
                           child: const Icon(Icons.camera, color: kAppBackgroundColor,)
                         ),

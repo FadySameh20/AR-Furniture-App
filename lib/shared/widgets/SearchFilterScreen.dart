@@ -27,6 +27,7 @@ class _SearchFilterScreenState extends State<SearchFilterScreen> {
     return BlocConsumer<HomeCubit,HomeState>(
       listener: (context,state){},
       builder:(context,state){return Scaffold(
+        backgroundColor: !BlocProvider.of<HomeCubit>(context).isDark?Colors.white:Colors.black,
         appBar: AppBar(
           title:  Text("Filter",style: TextStyle(color: !BlocProvider.of<HomeCubit>(context).isDark?Colors.white:Colors.black),),
           centerTitle: true,
