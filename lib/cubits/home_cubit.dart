@@ -3,9 +3,11 @@ import 'dart:convert';
 import 'dart:ui';
 
 import 'package:ar_furniture_app/cubits/home_states.dart';
+import 'package:ar_furniture_app/models/category_model.dart';
 import 'package:ar_furniture_app/models/furniture_model.dart';
 import 'package:ar_furniture_app/models/offers_model.dart';
 import 'package:ar_furniture_app/models/shared_model.dart';
+import 'package:ar_furniture_app/models/statistics_model.dart';
 import 'package:ar_furniture_app/shared/cache/sharedpreferences.dart';
 import 'package:ar_furniture_app/shared/widgets/home_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -36,6 +38,11 @@ class HomeCubit extends Cubit<HomeState> {
   List<String> changedDiscountList = [];
   List<FurnitureModel> recommendedFurniture = [];
   Map<String, dynamic> orderMap = {};
+  Map<String,dynamic>statisticsMap={};
+  Map<String,dynamic>statisticsSameMonthMap={};
+  double income=0;
+  int orderNumberSameMonth=0;
+  double incomeSameMonth=0;
   List<OrderModel> orders = [];
   var cache;
   DocumentSnapshot? _lastDocumentSearch;
@@ -640,6 +647,8 @@ class HomeCubit extends Cubit<HomeState> {
       print(cache.cartMap);
       List<SharedModel> orderedSharedList = [];
       orderMap.clear();
+      income=0;
+
       cache.cartMap.forEach((key, value) {
         orderedSharedList = [];
         value.forEach((element) {
@@ -650,6 +659,27 @@ class HomeCubit extends Cubit<HomeState> {
             String tempQuantityCart = element.quantityCart;
             orderedSharedList.add(SharedModel.fromJson(element.toMap()));
             orderedSharedList.last.quantityCart = tempQuantityCart;
+            String categoryNameStatistics=furnitureList.where((element) => element.furnitureId==key).first.category;
+            String paymentinitial=(double.parse(element.price) -( (double.parse(element.discount)/100)*double.parse(element.price))).toStringAsFixed(2);
+            CategoryModel tempCategoryModel;
+            if(statisticsMap.containsKey(categoryNameStatistics)){
+              tempCategoryModel = CategoryModel(
+                count: (
+                    (int.parse(statisticsMap[categoryNameStatistics].count)+int.parse(tempQuantityCart)).toString()), payment:(double.parse(statisticsMap[categoryNameStatistics].payment)+ (double.parse(paymentinitial)*double.parse(tempQuantityCart))).toString());
+            statisticsMap[categoryNameStatistics]=tempCategoryModel;}
+            else{tempCategoryModel = CategoryModel(
+                count: (
+                    int.parse(tempQuantityCart).toString()), payment: (double.parse(paymentinitial)*double.parse(tempQuantityCart)).toString());
+              statisticsMap[categoryNameStatistics]=tempCategoryModel;}
+            income=income+(double.parse(paymentinitial)*double.parse(tempQuantityCart));
+
+            print ("categoryname"+categoryNameStatistics);
+            print ("payment"+statisticsMap[categoryNameStatistics].payment);
+            print("income"+income.toStringAsFixed(2));
+
+
+
+            //categoryMap[categoryName]=
             print("Orders List");
             print(orderedSharedList);
           }
@@ -746,6 +776,7 @@ class HomeCubit extends Cubit<HomeState> {
       } else {
         print("Orderrrr made");
         await createOrder(appartmentNumber, area, buildingNumber, floorNumber, mobileNumber, streetName);
+        await putStatistics();
         emit(OrderMadeSuccessfully());
       }
       
@@ -914,7 +945,85 @@ class HomeCubit extends Cubit<HomeState> {
     });
   }
 
-  createOrder(String appartmentNumber, String area, String buildingNumber,
+
+  putStatistics()async{
+    print("d5al statistics");
+    DateTime time=DateTime.now();
+    String docId =
+    await FirebaseFirestore.instance.collection("statistics").doc().id;
+    print("Document ID statistics: " + docId);
+    await FirebaseFirestore.instance
+        .collection("statistics")
+        .where("year", isEqualTo: time.year.toString() ).where("month",isEqualTo:time.month.toString())
+        .get()
+        .then((value) {
+      value.docs.forEach((element) {
+        print("same year same month");
+        print(element);
+        docId =element.id;
+        StatisticsModel statisticsModel=StatisticsModel.fromJson(element.data());
+        print("incomeeeeeeeeeeeeeee"+statisticsModel.income);
+        Map<String,dynamic>statisticsSameMonthMap={};
+       incomeSameMonth=double.parse(statisticsModel.income);
+        orderNumberSameMonth=int.parse(statisticsModel.ordersNumber);
+        statisticsSameMonthMap=statisticsModel.category;
+
+      });
+    });
+
+    income=(incomeSameMonth+income);
+    statisticsSameMonthMap.forEach((key, value) {
+      if(statisticsMap.containsKey(key)){
+        CategoryModel tempCategoryModel;
+        tempCategoryModel = CategoryModel(
+            count: (
+                (int.parse(statisticsMap[key].count)+int.parse(statisticsSameMonthMap[key])).toString()), payment:(double.parse(statisticsMap[key].payment)+ (double.parse(statisticsSameMonthMap[key].payment))).toString());
+        statisticsMap[key]=tempCategoryModel;}
+    });
+
+    StatisticsModel statisticsModel=StatisticsModel(
+        income: income.toStringAsFixed(2),
+        ordersNumber:(orderNumberSameMonth+1).toString(),
+        year: time.year.toString(),
+        month: time.month.toString(),
+        category: statisticsMap,
+
+    );
+    print("After creating statisticsModel");
+    print(statisticsModel.category);
+    print(statisticsModel.income);
+    print(statisticsModel.ordersNumber);
+    print("After printing category");
+    if(orderNumberSameMonth==0){
+    await FirebaseFirestore.instance
+        .collection("statistics")
+        .doc(docId)
+        .set(statisticsModel.toMap())
+        .then((value) {
+      print("statistics successfully");
+
+    }).catchError((error) {
+      print('errorStatistics: ' + error.toString());
+    });}
+    else{
+      await FirebaseFirestore.instance
+          .collection("statistics")
+          .doc(docId)
+          .update(statisticsModel.toMap())
+          .then((value) {
+        print("statistics updateddddddddddddddddd successfully");
+
+      }).catchError((error) {
+        print('errorStatistics update: ' + error.toString());
+      });}
+    }
+
+
+
+
+
+
+createOrder(String appartmentNumber, String area, String buildingNumber,
       String floorNumber, String mobileNumber, String streetName) async {
     String docId =
         await FirebaseFirestore.instance.collection("order").doc().id;
