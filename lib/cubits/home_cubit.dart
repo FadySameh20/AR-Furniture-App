@@ -949,6 +949,9 @@ class HomeCubit extends Cubit<HomeState> {
 
   putStatistics()async{
     print("d5al statistics");
+    orderNumberSameMonth=0;
+     incomeSameMonth=0;
+    statisticsSameMonthMap={};
     DateTime time=DateTime.now();
     List<dynamic> years=[] ;
     int yearFlag=1;
