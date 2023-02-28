@@ -63,6 +63,7 @@ class HomeCubit extends Cubit<HomeState> {
     //// await createCache();
     isDark=CacheHelper.getData("darkMode")??false;
     await getCategoryNames();
+   // await putStatistics();
     await getOffers();
     if (FirebaseAuth.instance.currentUser != null) {
       cache = await getCache();
@@ -949,6 +950,43 @@ class HomeCubit extends Cubit<HomeState> {
   putStatistics()async{
     print("d5al statistics");
     DateTime time=DateTime.now();
+    List<dynamic> years=[] ;
+    int yearFlag=1;
+    await FirebaseFirestore.instance
+        .collection("years")
+        .get()
+        .then((value) {
+      value.docs.forEach((element) async {
+        print("years");
+        print(element.data().values.toList()[0]);
+        for(var year in element.data().values.toList()[0] ){
+          years.add(year);
+          print (years);
+        }
+        for(int i=0;i<years.length;i++ ){
+          if(years[i]==time.year.toString()){
+            yearFlag=0;
+          }
+        }
+        if(yearFlag==1){
+years.add(time.year.toString());
+
+await FirebaseFirestore.instance
+                .collection("years")
+                .doc(element.id)
+                .update({"yearsList":years})
+                .then((value) {
+              print("years updateddddddddddddddddd successfully");});
+        }
+
+
+
+
+
+
+      });
+    });
+
     String docId =
     await FirebaseFirestore.instance.collection("statistics").doc().id;
     print("Document ID statistics: " + docId);
