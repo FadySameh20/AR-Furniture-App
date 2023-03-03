@@ -127,9 +127,8 @@ class _ObjectGesturesWidgetState extends State<ObjectGesturesWidget> {
         // Add note to anchor
         var newNode = ARNode(
             type: NodeType.webGLB,
-            uri:
-           widget.model3DUrls[index],
-            scale: Vector3(1, 1, 1),
+            uri:"https://firebasestorage.googleapis.com/v0/b/ar-furniture-7fb69.appspot.com/o/west_elm_slope_leather_chair.glb?alt=media&token=0f58db19-6637-4872-9f77-b00d8b787f8a",
+            scale: Vector3(40, 40, 40),
             position: Vector3(0.0, 0.0, 0.0),
             rotation: Vector4(1.0, 0.0, 0.0, 0.0));
         bool? didAddNodeToAnchor =
