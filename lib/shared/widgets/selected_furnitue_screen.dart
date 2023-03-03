@@ -216,7 +216,7 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                         left: 15.0,
                         child: GestureDetector(
                           onTap: () {
-                            Navigator.push(context,MaterialPageRoute(builder: (context)=>ObjectGesturesWidget([widget.selectedFurniture.model])));
+                            Navigator.push(context,MaterialPageRoute(builder: (context)=>ObjectGesturesWidget([widget.selectedFurniture.model],[widget.selectedFurniture])));
                           },
                           child: const Icon(Icons.camera, color: kAppBackgroundColor,)
                         ),
