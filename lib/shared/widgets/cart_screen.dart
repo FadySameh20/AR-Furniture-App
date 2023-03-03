@@ -37,6 +37,7 @@ class _CartScreenState extends State<CartScreen> {
   // Map<String, dynamic> cartMap = {};
   List<String> furnitureIds=[];
   List<String> furnitureColors=[];
+  List<String> furnitureColorNames=[];
 
   var quantity = 0;
   double subTotal = 0;
@@ -75,6 +76,7 @@ class _CartScreenState extends State<CartScreen> {
           availableQuantity.add(element.quantity);
           furniturePrices.add((double.parse(element.price) -( (double.parse(element.discount)/100)*double.parse(element.price))).toStringAsFixed(2));
           furnitureColors.add(element.color);
+          furnitureColorNames.add(element.colorName);
           print("furnitureCOLORS");
           print(furnitureColors);
           furnitureNames.add(widget.furnitureList
@@ -86,6 +88,315 @@ class _CartScreenState extends State<CartScreen> {
               .where((element) => element.furnitureId == key)
               .first
               .furnitureId);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         }
       });
     });
@@ -140,15 +451,27 @@ class _CartScreenState extends State<CartScreen> {
         },
         builder: (context, state) {
           return Scaffold(
+            backgroundColor: !BlocProvider.of<HomeCubit>(context).isDark?Colors.white:Colors.black,
+
             appBar: AppBar(
               backgroundColor: Color.fromRGBO(191, 122, 47, 1),
+              leading: IconButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                icon: Icon(
+                  Icons.arrow_back_ios,
+                  color: BlocProvider.of<HomeCubit>(context).isDark?Colors.black:Colors.white,
+                ),
+              ),
               actions: [
-                IconButton(onPressed: () {}, icon: Icon(Icons.shopping_cart))
+                IconButton(onPressed: () {}, icon: Icon(Icons.shopping_cart,color: BlocProvider.of<HomeCubit>(context).isDark?Colors.black:Colors.white,))
               ],
               centerTitle: true,
+
               title: Text(
                 "Cart",
-                style: TextStyle(),
+                style: TextStyle(color: BlocProvider.of<HomeCubit>(context).isDark?Colors.black:Colors.white,),
               ),
             ),
 
@@ -175,19 +498,22 @@ class _CartScreenState extends State<CartScreen> {
                           totalPrice =
                           (subTotal + tax);
                           // Remove the item from the data source.
+
+                          // Then show a snackbar.
+                          ScaffoldMessenger.of(context)
+                              .showSnackBar(SnackBar(content: Text('${furnitureColorNames[index]} ${furnitureNames[index]} is dismissed !')));
+
                           setState(() {
                             furnitureNames.removeAt(index);
                             furnitureQuantities.removeAt(index);
                             furnitureColors.removeAt(index);
+                            furnitureColorNames.removeAt(index);
                             furnitureIds.removeAt(index);
                             furnitureImages.removeAt(index);
                             furniturePrices.removeAt(index);
                             availableQuantity.removeAt(index);
                           });
 
-                          // Then show a snackbar.
-                          ScaffoldMessenger.of(context)
-                              .showSnackBar(SnackBar(content: Text('$furnitureNames dismissed')));
                         },
                         // Show a red background as the item is swiped away.
                         background: ColoredBox(color: Colors.red,child: Align(
@@ -388,7 +714,7 @@ class _CartScreenState extends State<CartScreen> {
                       width: double.infinity,
                       height: MediaQuery.of(context).size.height * 0.35,
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: BlocProvider.of<HomeCubit>(context).isDark?Colors.black:Colors.white,
                         borderRadius: BorderRadius.only(
                             topRight: Radius.circular(30),
                             topLeft: Radius.circular(30)),
@@ -403,8 +729,8 @@ class _CartScreenState extends State<CartScreen> {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Text("Sub Total            "),
-                                  Text("\EGP ${subTotal.toStringAsFixed(2)}"),
+                                  Text("Sub Total            ",style:TextStyle(color: BlocProvider.of<HomeCubit>(context).isDark?Colors.white:Colors.black)),
+                                  Text("\EGP ${subTotal.toStringAsFixed(2)}",style:TextStyle(color: BlocProvider.of<HomeCubit>(context).isDark?Colors.white:Colors.black)),
                                 ],
                               ),
                               SizedBox(
@@ -425,8 +751,8 @@ class _CartScreenState extends State<CartScreen> {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Text("Estimating Tax(14%)            "),
-                                  Text("\EGP ${tax.toStringAsFixed(2)}"),
+                                  Text("Estimating Tax(14%)            ",style:TextStyle(color: BlocProvider.of<HomeCubit>(context).isDark?Colors.white:Colors.black)),
+                                  Text("\EGP ${tax.toStringAsFixed(2)}",style:TextStyle(color: BlocProvider.of<HomeCubit>(context).isDark?Colors.white:Colors.black)),
                                 ],
                               ),
                               SizedBox(
@@ -442,8 +768,8 @@ class _CartScreenState extends State<CartScreen> {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Text("Total"),
-                                  Text("\EGP ${totalPrice.toStringAsFixed(2)}"),
+                                  Text("Total",style:TextStyle(color: BlocProvider.of<HomeCubit>(context).isDark?Colors.white:Colors.black)),
+                                  Text("\EGP ${totalPrice.toStringAsFixed(2)}",style:TextStyle(color: BlocProvider.of<HomeCubit>(context).isDark?Colors.white:Colors.black)),
                                 ],
                               ),
                               SizedBox(
@@ -475,7 +801,7 @@ class _CartScreenState extends State<CartScreen> {
                                             "Checkout",
                                             style: TextStyle(
                                                 fontWeight: FontWeight.bold,
-                                                fontSize: 20),
+                                                fontSize: 20,color: !BlocProvider.of<HomeCubit>(context).isDark?Colors.white:Colors.black),
                                           ))),
                                 ],
                               )

@@ -50,6 +50,7 @@ dependencies:
   rflutter_alert: ^2.0.4
   image_picker: ^0.8.6
   firebase_storage: ^11.0.4
+  ar_flutter_plugin: ^0.7.3
 
 dev_dependencies:
   flutter_test:
