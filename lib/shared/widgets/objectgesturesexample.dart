@@ -17,7 +17,8 @@ import 'dart:math';
 import '../../cubits/home_cubit.dart';
 import '../../cubits/home_states.dart';
 import '../../models/furniture_model.dart';
-
+import '../constants/constants.dart';
+import 'circle_avatar.dart';
 
 class ObjectGesturesWidget extends StatefulWidget {
   List<String> model3DUrls;
@@ -38,6 +39,7 @@ class _ObjectGesturesWidgetState extends State<ObjectGesturesWidget> {
   int index = 0;
   List<Color?> availableColors = [];
   bool _isvisible = false;
+  int selectedColorIndex = 0;
   @override
   void dispose() {
     super.dispose();
@@ -53,6 +55,7 @@ class _ObjectGesturesWidgetState extends State<ObjectGesturesWidget> {
           return Scaffold(
               appBar: AppBar(
                 title: const Text('Object Transformation Gestures'),
+                  backgroundColor:  kAppBackgroundColor,
               ),
               body: Container(
                   child: Stack(children: [
@@ -62,19 +65,23 @@ class _ObjectGesturesWidgetState extends State<ObjectGesturesWidget> {
                       PlaneDetectionConfig.horizontalAndVertical,
                 ),
                 Padding(
-                  padding: EdgeInsets.only(top:450,left:MediaQuery.of(context).size.width/1.18),
+                  padding: EdgeInsets.only(
+                      top: MediaQuery.of(context).size.height / 1.5,
+                      left: MediaQuery.of(context).size.width / 1.18),
                   child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         IconButton(
                           onPressed: onRemoveEverything,
-                             icon: Icon(Icons.delete_forever_outlined,
-                             size: 43,), ),
+                          icon: Icon(
+                            Icons.delete_forever_outlined,
+                            size: 43,
+                          ),
+                        ),
 
                         // ElevatedButton(
                         //     onPressed: onRemoveEverything,
                         //     child: Text("Remove Everything")),
-
                       ]),
                 ),
                 // Align(
@@ -111,7 +118,7 @@ class _ObjectGesturesWidgetState extends State<ObjectGesturesWidget> {
                         margin:
                             EdgeInsets.only(left: 10, right: 10, bottom: 10),
                         width: MediaQuery.of(context).size.width / 1,
-                        height: MediaQuery.of(context).size.height / 9,
+                        height: MediaQuery.of(context).size.height / 9.5,
                         decoration: BoxDecoration(
                             color: Color(0xFFEEEEEE),
                             borderRadius: BorderRadius.circular(20),
@@ -141,18 +148,17 @@ class _ObjectGesturesWidgetState extends State<ObjectGesturesWidget> {
                                         .getAvailableColorsOfFurniture(
                                             widget.model3D[index]);
                                 setState(() {
-                                  _isvisible= !_isvisible;
+                                  _isvisible = true;
                                 });
-
                               },
                               child: Align(
                                 child: Container(
                                     margin:
                                         EdgeInsets.only(left: 5.0, right: 7.0),
                                     width:
-                                        MediaQuery.of(context).size.width / 6,
+                                        MediaQuery.of(context).size.width / 5.5,
                                     height:
-                                        MediaQuery.of(context).size.height / 15,
+                                        MediaQuery.of(context).size.height / 13,
                                     // decoration: BoxDecoration(
                                     //   //color: Color(0xFFEEEEEE),
                                     // ),
@@ -171,11 +177,11 @@ class _ObjectGesturesWidgetState extends State<ObjectGesturesWidget> {
                   visible: _isvisible,
                   child: Stack(children: [
                     Padding(
-                     // padding: EdgeInsets.fromLTRB(left, top, right, bottom),
-                      padding: EdgeInsets.fromLTRB(360, 150, 0, 50),
+                      // padding: EdgeInsets.fromLTRB(left, top, right, bottom),
+                      padding: EdgeInsets.fromLTRB(355, 150, 6.5, 50),
                       child: Container(
                         margin: EdgeInsets.only(left: 5.0),
-                        width: MediaQuery.of(context).size.height / 17,
+                        width: MediaQuery.of(context).size.width / 5,
                         height: MediaQuery.of(context).size.height / 3,
                         decoration: BoxDecoration(
                             color: Color(0xFFEEEEEE),
@@ -189,9 +195,9 @@ class _ObjectGesturesWidgetState extends State<ObjectGesturesWidget> {
                       ),
                     ),
                     Padding(
-                        padding: EdgeInsets.fromLTRB(360, 150, 0, 50),
+                        padding: EdgeInsets.fromLTRB(355, 150, 6.5, 50),
                         child: Container(
-                          width: MediaQuery.of(context).size.height / 17,
+                          width: MediaQuery.of(context).size.width / 5,
                           height: MediaQuery.of(context).size.height / 3,
                           child: ListView.builder(
                               scrollDirection: Axis.vertical,
@@ -199,42 +205,60 @@ class _ObjectGesturesWidgetState extends State<ObjectGesturesWidget> {
                               itemCount: availableColors.length,
                               itemBuilder: (context, int index) {
                                 return Padding(
-                                  padding: EdgeInsets.fromLTRB(10, 20, 0, 20),
+                                  padding: EdgeInsets.fromLTRB(10, 20, 4, 20),
                                   child: InkWell(
-                                    onTap: () {},
-                                    child: CircleAvatar(
-                                      radius:
-                                          MediaQuery.of(context).size.height > 700
-                                              ? 15.0
-                                              : 12.0,
-                                      backgroundColor: availableColors[index],
-                                    ),
+                                    onTap: () {
+                                      setState(() {
+                                        selectedColorIndex = index;
 
-                                    // child: CustomCircleAvatar(
+                                        //selectedColor = widget.availableColors[index];
+
+                                        //   chosenColor = availableColors[index];
+                                      });
+
+                                    },
+                                    // child: CircleAvatar(
                                     //   radius:
                                     //       MediaQuery.of(context).size.height > 700
                                     //           ? 15.0
                                     //           : 12.0,
-                                    //   CavatarColor: Color(0xff7d0552),
-                                    //   // CavatarColor: int.parse(widget
-                                    //   //     .selectedFurniture
-                                    //   //     .shared[selectedColorIndex]
-                                    //   //     .quantity) >
-                                    //   // 0
-                                    //   // ? kAppBackgroundColor
-                                    //   //     : Colors.grey,
-                                    //   icon: Icon(
-                                    //     Icons.remove,
-                                    //     // size: 100,
-                                    //     size: MediaQuery.of(context).size.height >
-                                    //             700
-                                    //         ? 22.0
-                                    //         : 18.0,
-                                    //     color: Color(
-                                    //       0xffe42217,
-                                    //     ),
-                                    //   ),
+                                    //   backgroundColor: availableColors[index],
                                     // ),
+
+                                    child:CircleAvatar(
+                                      radius:
+                                      MediaQuery.of(context).size.height > 700
+                                          ? 23.0
+                                          : 21.0,
+                                      backgroundColor:availableColors[index],
+                                      child: CircleAvatar(
+                                          radius:
+                                                MediaQuery.of(context).size.height > 700
+                                                    ? 18.0
+                                                    : 16.0,
+                                            backgroundColor: Color(0xffffffff),
+                                        child: CustomCircleAvatar(
+                                          radius:
+                                              MediaQuery.of(context).size.height >
+                                                      700
+                                                  ? 15.0
+                                                  : 13.0,
+                                          CavatarColor: availableColors[index],
+                                          icon: index == selectedColorIndex
+                                              ? Icon(
+                                                  Icons.check,
+                                                  color: Color(0xff000000),
+                                                  size: MediaQuery.of(context)
+                                                              .size
+                                                              .height >
+                                                          700
+                                                      ? 22.0
+                                                      : 18.0,
+                                                )
+                                              : null,
+                                        ),
+                                      ),
+                                    ),
                                   ),
                                 );
                               }),
@@ -282,7 +306,7 @@ class _ObjectGesturesWidgetState extends State<ObjectGesturesWidget> {
     });
     anchors = [];
     setState(() {
-      _isvisible = !_isvisible;
+      _isvisible = false;
     });
   }
 
