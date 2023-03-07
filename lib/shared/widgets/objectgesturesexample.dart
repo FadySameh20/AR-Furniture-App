@@ -128,61 +128,101 @@ class _ObjectGesturesWidgetState extends State<ObjectGesturesWidget> {
                                 blurRadius: 7,
                               )
                             ]),
-                      ),
-                    ),
-                    Align(
-                      alignment: Alignment.bottomRight,
-                      child: Container(
-                        margin: EdgeInsets.only(left: 9, right: 9),
-                        width: MediaQuery.of(context).size.width / 1,
-                        height: MediaQuery.of(context).size.height / 8,
-                        child: ListView.builder(
-                          scrollDirection: Axis.horizontal,
-                          shrinkWrap: true,
-                          itemCount: widget.model3D.length,
-                          itemBuilder: (context, int index) {
-                            return InkWell(
-                              onTap: () {
-                                availableColors =
-                                    BlocProvider.of<HomeCubit>(context)
-                                        .getAvailableColorsOfFurniture(
+                        child:Align(
+                          alignment: Alignment.bottomRight,
+                          child: Container(
+                            margin: EdgeInsets.only(left: 9, right: 9),
+                            width: MediaQuery.of(context).size.width / 1,
+                            height: MediaQuery.of(context).size.height / 8,
+                            child: ListView.builder(
+                              scrollDirection: Axis.horizontal,
+                              shrinkWrap: true,
+                              itemCount: widget.model3D.length,
+                              itemBuilder: (context, int index) {
+                                return InkWell(
+                                  onTap: () {
+                                    availableColors =
+                                        BlocProvider.of<HomeCubit>(context)
+                                            .getAvailableColorsOfFurniture(
                                             widget.model3D[index]);
-                                setState(() {
-                                  _isvisible = true;
-                                });
-                              },
-                              child: Align(
-                                child: Container(
-                                    margin:
+                                    setState(() {
+                                      _isvisible = true;
+                                    });
+                                  },
+                                  child: Align(
+                                    child: Container(
+                                        margin:
                                         EdgeInsets.only(left: 5.0, right: 7.0),
-                                    width:
+                                        width:
                                         MediaQuery.of(context).size.width / 5.5,
-                                    height:
+                                        height:
                                         MediaQuery.of(context).size.height / 13,
-                                    // decoration: BoxDecoration(
-                                    //   //color: Color(0xFFEEEEEE),
-                                    // ),
-                                    child: Image.network(widget
-                                        .model3D[index].shared.first.image)),
-                              ),
-                            );
-                          },
+                                        // decoration: BoxDecoration(
+                                        //   //color: Color(0xFFEEEEEE),
+                                        // ),
+                                        child: Image.network(widget
+                                            .model3D[index].shared.first.image)),
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
                         ),
                       ),
                     ),
+                    // Align(
+                    //   alignment: Alignment.bottomRight,
+                    //   child: Container(
+                    //     margin: EdgeInsets.only(left: 9, right: 9),
+                    //     width: MediaQuery.of(context).size.width / 1,
+                    //     height: MediaQuery.of(context).size.height / 8,
+                    //     child: ListView.builder(
+                    //       scrollDirection: Axis.horizontal,
+                    //       shrinkWrap: true,
+                    //       itemCount: widget.model3D.length,
+                    //       itemBuilder: (context, int index) {
+                    //         return InkWell(
+                    //           onTap: () {
+                    //             availableColors =
+                    //                 BlocProvider.of<HomeCubit>(context)
+                    //                     .getAvailableColorsOfFurniture(
+                    //                         widget.model3D[index]);
+                    //             setState(() {
+                    //               _isvisible = true;
+                    //             });
+                    //           },
+                    //           child: Align(
+                    //             child: Container(
+                    //                 margin:
+                    //                     EdgeInsets.only(left: 5.0, right: 7.0),
+                    //                 width:
+                    //                     MediaQuery.of(context).size.width / 5.5,
+                    //                 height:
+                    //                     MediaQuery.of(context).size.height / 13,
+                    //                 // decoration: BoxDecoration(
+                    //                 //   //color: Color(0xFFEEEEEE),
+                    //                 // ),
+                    //                 child: Image.network(widget
+                    //                     .model3D[index].shared.first.image)),
+                    //           ),
+                    //         );
+                    //       },
+                    //     ),
+                    //   ),
+                    // ),
                   ],
                 ),
 
                 Visibility(
                   visible: _isvisible,
                   child: Stack(children: [
-                    Padding(
-                      // padding: EdgeInsets.fromLTRB(left, top, right, bottom),
-                      padding: EdgeInsets.fromLTRB(355, 150, 6.5, 50),
+                    Align(
+
+                     alignment: Alignment.topRight,
                       child: Container(
-                        margin: EdgeInsets.only(left: 5.0),
-                        width: MediaQuery.of(context).size.width / 5,
-                        height: MediaQuery.of(context).size.height / 3,
+                        margin: EdgeInsets.only(top: MediaQuery.of(context).size.height /5,right: 10),
+                        width: MediaQuery.of(context).size.width / 7,
+                        height: MediaQuery.of(context).size.height /3.2,
                         decoration: BoxDecoration(
                             color: Color(0xFFEEEEEE),
                             borderRadius: BorderRadius.circular(20),
@@ -192,12 +232,8 @@ class _ObjectGesturesWidgetState extends State<ObjectGesturesWidget> {
                                 blurRadius: 7,
                               )
                             ]),
-                      ),
-                    ),
-                    Padding(
-                        padding: EdgeInsets.fromLTRB(355, 150, 6.5, 50),
-                        child: Container(
-                          width: MediaQuery.of(context).size.width / 5,
+                        child:  Container(
+                          width: MediaQuery.of(context).size.width / 2,
                           height: MediaQuery.of(context).size.height / 3,
                           child: ListView.builder(
                               scrollDirection: Axis.vertical,
@@ -205,56 +241,30 @@ class _ObjectGesturesWidgetState extends State<ObjectGesturesWidget> {
                               itemCount: availableColors.length,
                               itemBuilder: (context, int index) {
                                 return Padding(
-                                  padding: EdgeInsets.fromLTRB(10, 20, 4, 20),
+                                  padding: EdgeInsets.symmetric(vertical: 17),
                                   child: InkWell(
                                     onTap: () {
                                       setState(() {
                                         selectedColorIndex = index;
 
-                                        //selectedColor = widget.availableColors[index];
-
-                                        //   chosenColor = availableColors[index];
                                       });
 
                                     },
-                                    // child: CircleAvatar(
-                                    //   radius:
-                                    //       MediaQuery.of(context).size.height > 700
-                                    //           ? 15.0
-                                    //           : 12.0,
-                                    //   backgroundColor: availableColors[index],
-                                    // ),
-
                                     child:CircleAvatar(
-                                      radius:
-                                      MediaQuery.of(context).size.height > 700
-                                          ? 23.0
-                                          : 21.0,
+                                      radius: 18.0,
                                       backgroundColor:availableColors[index],
                                       child: CircleAvatar(
-                                          radius:
-                                                MediaQuery.of(context).size.height > 700
-                                                    ? 18.0
-                                                    : 16.0,
-                                            backgroundColor: Color(0xffffffff),
+                                        radius: 15.0,
+                                        backgroundColor: Color(0xffffffff),
                                         child: CustomCircleAvatar(
-                                          radius:
-                                              MediaQuery.of(context).size.height >
-                                                      700
-                                                  ? 15.0
-                                                  : 13.0,
+                                          radius: 10.0,
                                           CavatarColor: availableColors[index],
                                           icon: index == selectedColorIndex
                                               ? Icon(
-                                                  Icons.check,
-                                                  color: Color(0xff000000),
-                                                  size: MediaQuery.of(context)
-                                                              .size
-                                                              .height >
-                                                          700
-                                                      ? 22.0
-                                                      : 18.0,
-                                                )
+                                            Icons.check,
+                                            color: Color(0xff000000),
+                                            size: 18.0,
+                                          )
                                               : null,
                                         ),
                                       ),
@@ -262,7 +272,10 @@ class _ObjectGesturesWidgetState extends State<ObjectGesturesWidget> {
                                   ),
                                 );
                               }),
-                        ))
+                        ),
+                      ),
+                    ),
+
                   ]),
                 )
               ])));
