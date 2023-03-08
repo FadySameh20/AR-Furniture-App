@@ -21,9 +21,8 @@ import '../constants/constants.dart';
 import 'circle_avatar.dart';
 
 class ObjectGesturesWidget extends StatefulWidget {
-  List<String> model3DUrls;
-  List<FurnitureModel> model3D;
-  ObjectGesturesWidget(this.model3DUrls, this.model3D, {Key? key})
+  List<FurnitureModel> furnModel;
+  ObjectGesturesWidget(this.furnModel, {Key? key})
       : super(key: key);
   @override
   _ObjectGesturesWidgetState createState() => _ObjectGesturesWidgetState();
@@ -137,14 +136,14 @@ class _ObjectGesturesWidgetState extends State<ObjectGesturesWidget> {
                             child: ListView.builder(
                               scrollDirection: Axis.horizontal,
                               shrinkWrap: true,
-                              itemCount: widget.model3D.length,
+                              itemCount: widget.furnModel.length,
                               itemBuilder: (context, int index) {
                                 return InkWell(
                                   onTap: () {
                                     availableColors =
                                         BlocProvider.of<HomeCubit>(context)
                                             .getAvailableColorsOfFurniture(
-                                            widget.model3D[index]);
+                                            widget.furnModel[index]);
                                     setState(() {
                                       _isvisible = true;
                                     });
@@ -161,7 +160,7 @@ class _ObjectGesturesWidgetState extends State<ObjectGesturesWidget> {
                                         //   //color: Color(0xFFEEEEEE),
                                         // ),
                                         child: Image.network(widget
-                                            .model3D[index].shared.first.image)),
+                                            .furnModel[index].shared.first.image)),
                                   ),
                                 );
                               },
@@ -336,7 +335,7 @@ class _ObjectGesturesWidgetState extends State<ObjectGesturesWidget> {
         // Add note to anchor
         var newNode = ARNode(
             type: NodeType.webGLB,
-            uri: widget.model3DUrls[index].toString(),
+            uri: widget.furnModel[index].shared[selectedColorIndex].model.toString(),
             scale: Vector3(1, 1, 1),
             position: Vector3(0.0, 0.0, 0.0),
             rotation: Vector4(1.0, 0.0, 0.0, 0.0));
