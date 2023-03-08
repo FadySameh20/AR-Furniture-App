@@ -152,6 +152,7 @@ class _ObjectGesturesWidgetState extends State<ObjectGesturesWidget> {
                                     setState(() {
                                       _isvisible = true;
                                       this.index = index;
+                                      selectedColorIndex = 0;
                                     });
                                   },
                                   child: Align(
