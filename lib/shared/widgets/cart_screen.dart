@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:ar_furniture_app/cubits/home_cubit.dart';
 import 'package:ar_furniture_app/cubits/home_states.dart';
+import 'package:ar_furniture_app/models/shared_model.dart';
 import 'package:ar_furniture_app/shared/cache/sharedpreferences.dart';
 import 'package:ar_furniture_app/shared/constants/constants.dart';
 import 'package:ar_furniture_app/shared/widgets/checkout_screen.dart';
@@ -13,6 +14,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../models/furniture_model.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
+
+import 'objectgesturesexample.dart';
 
 class CartScreen extends StatefulWidget {
   // List<FurnitureModel> furnitureList;
@@ -38,6 +41,8 @@ class _CartScreenState extends State<CartScreen> {
   List<String> furnitureIds=[];
   List<String> furnitureColors=[];
   List<String> furnitureColorNames=[];
+  List<FurnitureModel> furnModel=[];
+
 
   var quantity = 0;
   double subTotal = 0;
@@ -71,6 +76,8 @@ class _CartScreenState extends State<CartScreen> {
         print("lol");
         print(element.quantityCart);
         if (int.parse(element.quantityCart) > 0) {
+          FurnitureModel furnModelTemp = FurnitureModel(description:"",furnitureId:key,name:"",category:"",shared:[SharedModel(color:element.color,colorName:"",image:element.image,price:"",quantity:"",discount:"",model:element.model)],ratings:{});
+          furnModel.add(furnModelTemp);
           furnitureQuantities.add(element.quantityCart);
           furnitureImages.add(element.image);
           availableQuantity.add(element.quantity);
@@ -88,6 +95,7 @@ class _CartScreenState extends State<CartScreen> {
               .where((element) => element.furnitureId == key)
               .first
               .furnitureId);
+
 
 
 
@@ -465,7 +473,11 @@ class _CartScreenState extends State<CartScreen> {
                 ),
               ),
               actions: [
-                IconButton(onPressed: () {}, icon: Icon(Icons.shopping_cart,color: BlocProvider.of<HomeCubit>(context).isDark?Colors.black:Colors.white,))
+                IconButton(onPressed: (){
+                  Navigator.push(context,MaterialPageRoute(builder: (context)=>ObjectGesturesWidget(furnModel)));
+                }, icon: Icon(Icons.camera)),
+               // IconButton(onPressed: () {}, icon: Icon(Icons.shopping_cart,color: BlocProvider.of<HomeCubit>(context).isDark?Colors.black:Colors.white,)),
+
               ],
               centerTitle: true,
 
