@@ -1,8 +1,11 @@
+import 'dart:async';
+
 import 'package:ar_flutter_plugin/managers/ar_location_manager.dart';
 import 'package:ar_flutter_plugin/managers/ar_session_manager.dart';
 import 'package:ar_flutter_plugin/managers/ar_object_manager.dart';
 import 'package:ar_flutter_plugin/managers/ar_anchor_manager.dart';
 import 'package:ar_flutter_plugin/models/ar_anchor.dart';
+import 'package:flutter/material.dart' as material;
 import 'package:flutter/material.dart';
 import 'package:ar_flutter_plugin/ar_flutter_plugin.dart';
 import 'package:ar_flutter_plugin/datatypes/config_planedetection.dart';
@@ -13,7 +16,7 @@ import 'package:ar_flutter_plugin/models/ar_hittest_result.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vector_math/vector_math_64.dart';
-import 'dart:math';
+
 import '../../cubits/home_cubit.dart';
 import '../../cubits/home_states.dart';
 import '../../models/furniture_model.dart';
@@ -34,6 +37,7 @@ class _ObjectGesturesWidgetState extends State<ObjectGesturesWidget> {
   ARObjectManager? arObjectManager;
   ARAnchorManager? arAnchorManager;
 
+  bool isLoadingGLB=false;
   List<ARNode> nodes = [];
   List<ARAnchor> anchors = [];
   int? index;
@@ -42,6 +46,22 @@ class _ObjectGesturesWidgetState extends State<ObjectGesturesWidget> {
   int selectedColorIndex = 0;
   int selectedNodeIndex = -1;
   Map<String, dynamic> modelsMap = {};
+  bool toolTip = false;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    setTimer();
+    print(widget.availableColors.isEmpty);
+    if(widget.availableColors.isEmpty){
+
+      index == -1;
+      print("indexxxxxxxxxxx"+index.toString());
+    }else{
+      index=0;
+    }
+  }
 
   @override
   void dispose() {
@@ -49,27 +69,16 @@ class _ObjectGesturesWidgetState extends State<ObjectGesturesWidget> {
     arSessionManager!.dispose();
   }
 
-
-    @override
-  void initState() {
-    // TODO: implement didChangeDependencies
-      print(widget.availableColors.isEmpty);
-      if(widget.availableColors.isEmpty){
-
-        index == -1;
-        print("indexxxxxxxxxxx"+index.toString());
-      }else{
-        index=0;
-      }
-    super.initState();
+  Future<void> setTimer() async {
+    Timer(Duration(seconds: 3), () {
+      setState(() {
+        toolTip = true;
+      });
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-
-
-
-
     return BlocConsumer<HomeCubit, HomeState>(
         listener: (context, state) {},
         builder: (context, state) {
@@ -89,15 +98,47 @@ class _ObjectGesturesWidgetState extends State<ObjectGesturesWidget> {
                 Padding(
                   padding: EdgeInsets.only(
                       top: MediaQuery.of(context).size.height / 1.5,
-                      left: MediaQuery.of(context).size.width / 1.18),
+                      right: MediaQuery.of(context).size.width / 40),
                   child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        IconButton(
-                          onPressed: onRemoveEverything,
-                          icon: Icon(
-                            Icons.delete_forever_outlined,
-                            size: 43,
+                        toolTip == false ? Material(
+                  borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(30.0),
+                topRight: Radius.circular(30.0),
+                bottomLeft: Radius.circular(30.0),
+                bottomRight: Radius.circular(0.0),
+              ),
+            elevation: 5.0,
+            color: kAppBackgroundColor,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+              child: Text(
+                "Remove Everything",
+                style: TextStyle(
+                  fontSize: 15.0,
+                  color: material.Colors.white,
+                ),
+              ),
+            ),
+          ) : Text(""),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 5.0),
+                          child: GestureDetector(
+                            onTap: onRemoveEverything,
+                            child: Container(
+                              height: 50,
+                              width: 50,
+                              decoration: BoxDecoration(
+                                color: Color(0xffffffff),
+                                borderRadius: BorderRadius.circular(20)
+                              ),
+                              child: Icon(
+                                Icons.delete_forever_outlined,
+                                size: 43,
+                                color: material.Colors.red,
+                              ),
+                            ),
                           ),
                         ),
 
@@ -106,39 +147,11 @@ class _ObjectGesturesWidgetState extends State<ObjectGesturesWidget> {
                         //     child: Text("Remove Everything")),
                       ]),
                 ),
-                // Align(
-                //   alignment: Alignment.centerRight,
-                //   child: IconButton(
-                //     onPressed: index == widget.model3DUrls.length - 1
-                //         ? null
-                //         : () {
-                //             setState(() {
-                //               index += 1;
-                //             });
-                //           },
-                //     icon: Icon(Icons.arrow_circle_right_rounded),
-                //   ),
-                // ),
-                // Align(
-                //   alignment: Alignment.centerLeft,
-                //   child: IconButton(
-                //     onPressed: index == 0
-                //         ? null
-                //         : () {
-                //             setState(() {
-                //               index -= 1;
-                //             });
-                //           },
-                //     icon: Icon(Icons.arrow_circle_left_rounded),
-                //   ),
-                // ),
-                Stack(
-                  children: [
-                    Align(
+                Align(
                       alignment: Alignment.bottomRight,
                       child: Container(
                         margin:
-                            EdgeInsets.only(left: 10, right: 10, bottom: 10),
+                        EdgeInsets.only(left: 10, right: 10, bottom: 10),
                         width: MediaQuery.of(context).size.width / 1,
                         height: MediaQuery.of(context).size.height / 9.5,
                         decoration: BoxDecoration(
@@ -194,49 +207,6 @@ class _ObjectGesturesWidgetState extends State<ObjectGesturesWidget> {
                         ),
                       ),
                     ),
-                    // Align(
-                    //   alignment: Alignment.bottomRight,
-                    //   child: Container(
-                    //     margin: EdgeInsets.only(left: 9, right: 9),
-                    //     width: MediaQuery.of(context).size.width / 1,
-                    //     height: MediaQuery.of(context).size.height / 8,
-                    //     child: ListView.builder(
-                    //       scrollDirection: Axis.horizontal,
-                    //       shrinkWrap: true,
-                    //       itemCount: widget.model3D.length,
-                    //       itemBuilder: (context, int index) {
-                    //         return InkWell(
-                    //           onTap: () {
-                    //             availableColors =
-                    //                 BlocProvider.of<HomeCubit>(context)
-                    //                     .getAvailableColorsOfFurniture(
-                    //                         widget.model3D[index]);
-                    //             setState(() {
-                    //               _isvisible = true;
-                    //             });
-                    //           },
-                    //           child: Align(
-                    //             child: Container(
-                    //                 margin:
-                    //                     EdgeInsets.only(left: 5.0, right: 7.0),
-                    //                 width:
-                    //                     MediaQuery.of(context).size.width / 5.5,
-                    //                 height:
-                    //                     MediaQuery.of(context).size.height / 13,
-                    //                 // decoration: BoxDecoration(
-                    //                 //   //color: Color(0xFFEEEEEE),
-                    //                 // ),
-                    //                 child: Image.network(widget
-                    //                     .model3D[index].shared.first.image)),
-                    //           ),
-                    //         );
-                    //       },
-                    //     ),
-                    //   ),
-                    // ),
-                  ],
-                ),
-
                 Visibility(
                   visible: _isvisible,
                   child: Stack(children: [
@@ -256,65 +226,74 @@ class _ObjectGesturesWidgetState extends State<ObjectGesturesWidget> {
                                 blurRadius: 7,
                               )
                             ]),
-                        child:  Container(
+                        child: Container(
                           width: MediaQuery.of(context).size.width / 2,
                           height: MediaQuery.of(context).size.height / 3,
-                          child: ListView.builder(
-                              scrollDirection: Axis.vertical,
-                              shrinkWrap: true,
-                              itemCount: widget.availableColors.length,
-                              itemBuilder: (context, int index) {
-                                return Padding(
-                                  padding: EdgeInsets.symmetric(vertical: 17),
-                                  child: InkWell(
-                                    onTap: () async {
-                                      setState(() {
-                                        selectedColorIndex = index;
-                                      });
-                                      if(nodes.isNotEmpty) {
-                                        bool flag = false;
-                                        for(var node in modelsMap.keys) {
-                                          if(modelsMap[node]["furnitureName"] == widget.furnModel[this.index!].name) {
-                                            flag = true;
-                                            break;
+                          child: Column(
+                            children: [
+                              ListView.builder(
+                                  scrollDirection: Axis.vertical,
+                                  shrinkWrap: true,
+                                  itemCount: widget.availableColors.length,
+                                  itemBuilder: (context, int index) {
+                                    return Padding(
+                                      padding: EdgeInsets.symmetric(vertical: 17),
+                                      child: InkWell(
+                                        onTap: () async {
+                                          setState(() {
+                                            selectedColorIndex = index;
+                                          });
+                                          if(nodes.isNotEmpty) {
+                                            bool flag = false;
+                                            for(var node in modelsMap.keys) {
+                                              if(modelsMap[node]["furnitureName"] == widget.furnModel[this.index!].name) {
+                                                flag = true;
+                                                break;
+                                              }
+                                            }
+                                            if(flag) {
+                                              await replaceColor();
+                                            }
                                           }
-                                        }
-                                        if(flag) {
-                                          await replaceColor();
-                                        }
-                                      }
-                                      },
-                                    child:CircleAvatar(
-                                      radius: 18.0,
-                                      backgroundColor:widget.availableColors[index],
-                                      child: CircleAvatar(
-                                        radius: 15.0,
-                                        backgroundColor: Color(0xffffffff),
-                                        child: CustomCircleAvatar(
-                                          radius: 10.0,
-                                          CavatarColor: widget.availableColors[index],
-                                          icon: index == selectedColorIndex
-                                              ? Icon(
-                                            Icons.check,
-                                            color: Color(0xff000000),
-                                            size: 18.0,
-                                          )
-                                              : null,
+                                          },
+                                        child:CircleAvatar(
+                                          radius: 18.0,
+                                          backgroundColor:widget.availableColors[index],
+                                          child: CircleAvatar(
+                                            radius: 15.0,
+                                            backgroundColor: Color(0xffffffff),
+                                            child: CustomCircleAvatar(
+                                              radius: 10.0,
+                                              CavatarColor: widget.availableColors[index],
+                                              icon: index == selectedColorIndex
+                                                  ? Icon(
+                                                Icons.check,
+                                                color: Color(0xff000000),
+                                                size: 18.0,
+                                              )
+                                                  : null,
+                                            ),
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                  ),
-                                );
-                              }),
+                                    );
+                                  }),
+                              Spacer(),
+                              Center(
+                                child: Padding(
+                                  padding: const EdgeInsets.only(bottom: 4.0),
+                                  child: IconButton(icon: Icon(Icons.cancel_outlined), iconSize: 35, color: material.Colors.red, onPressed: (){removeModel();},),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
-                    Positioned(top:0, right: 0, child: ElevatedButton(onPressed: (){
-                      removeModel();
-                    }, child: Text("Delete")),),
-
                   ]),
-                )
+                ),
+                    Visibility(visible: isLoadingGLB,child: Container(color: Color(
+                        0x8E645E5E),width: MediaQuery.of(context).size.width,height: MediaQuery.of(context).size.height,child:Center(child: CircularProgressIndicator(),)))
               ])));
         });
   }
@@ -401,9 +380,12 @@ class _ObjectGesturesWidgetState extends State<ObjectGesturesWidget> {
       List<ARHitTestResult> hitTestResults) async {
     print(this.index);
     print("Tapping a node");
-    if (this.index==-1){
+    if (this.index==-1 || isLoadingGLB==true){
       return;
     }
+    setState(() {
+      isLoadingGLB=true;
+    });
     var singleHitTestResult = hitTestResults.firstWhere(
         (hitTestResult) => hitTestResult.type == ARHitTestResultType.plane);
     if (singleHitTestResult != null) {
@@ -422,6 +404,10 @@ class _ObjectGesturesWidgetState extends State<ObjectGesturesWidget> {
         bool? didAddNodeToAnchor = await this
             .arObjectManager!
             .addNode(newNode, planeAnchor: newAnchor);
+        setState(() {
+          isLoadingGLB=false;
+
+        });
         if (didAddNodeToAnchor!) {
           this.nodes.add(newNode);
           modelsMap[newNode.name] = {
