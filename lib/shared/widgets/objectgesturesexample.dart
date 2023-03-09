@@ -110,31 +110,34 @@ class _ObjectGesturesWidgetState extends State<ObjectGesturesWidget> {
                 bottomRight: Radius.circular(0.0),
               ),
             elevation: 5.0,
-            color: material.Colors.white,
+            color: kAppBackgroundColor,
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
               child: Text(
                 "Remove Everything",
                 style: TextStyle(
                   fontSize: 15.0,
-                  color: material.Colors.black,
+                  color: material.Colors.white,
                 ),
               ),
             ),
           ) : Text(""),
-                        GestureDetector(
-                          onTap: onRemoveEverything,
-                          child: Container(
-                            height: 50,
-                            width: 50,
-                            decoration: BoxDecoration(
-                              color: Color(0xffffffff),
-                              borderRadius: BorderRadius.circular(20)
-                            ),
-                            child: Icon(
-                              Icons.delete_forever_outlined,
-                              size: 43,
-                              color: material.Colors.red,
+                        Padding(
+                          padding: const EdgeInsets.only(left: 5.0),
+                          child: GestureDetector(
+                            onTap: onRemoveEverything,
+                            child: Container(
+                              height: 50,
+                              width: 50,
+                              decoration: BoxDecoration(
+                                color: Color(0xffffffff),
+                                borderRadius: BorderRadius.circular(20)
+                              ),
+                              child: Icon(
+                                Icons.delete_forever_outlined,
+                                size: 43,
+                                color: material.Colors.red,
+                              ),
                             ),
                           ),
                         ),
