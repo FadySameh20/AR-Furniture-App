@@ -13,7 +13,7 @@ import 'package:ar_flutter_plugin/models/ar_hittest_result.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vector_math/vector_math_64.dart';
-import 'dart:math';
+
 import '../../cubits/home_cubit.dart';
 import '../../cubits/home_states.dart';
 import '../../models/furniture_model.dart';
@@ -34,6 +34,7 @@ class _ObjectGesturesWidgetState extends State<ObjectGesturesWidget> {
   ARObjectManager? arObjectManager;
   ARAnchorManager? arAnchorManager;
 
+  bool isLoadingGLB=false;
   List<ARNode> nodes = [];
   List<ARAnchor> anchors = [];
   int? index;
@@ -81,6 +82,7 @@ class _ObjectGesturesWidgetState extends State<ObjectGesturesWidget> {
               ),
               body: Container(
                   child: Stack(children: [
+
                 ARView(
                   onARViewCreated: onARViewCreated,
                   planeDetectionConfig:
@@ -101,44 +103,13 @@ class _ObjectGesturesWidgetState extends State<ObjectGesturesWidget> {
                           ),
                         ),
 
-                        // ElevatedButton(
-                        //     onPressed: onRemoveEverything,
-                        //     child: Text("Remove Everything")),
                       ]),
                 ),
-                // Align(
-                //   alignment: Alignment.centerRight,
-                //   child: IconButton(
-                //     onPressed: index == widget.model3DUrls.length - 1
-                //         ? null
-                //         : () {
-                //             setState(() {
-                //               index += 1;
-                //             });
-                //           },
-                //     icon: Icon(Icons.arrow_circle_right_rounded),
-                //   ),
-                // ),
-                // Align(
-                //   alignment: Alignment.centerLeft,
-                //   child: IconButton(
-                //     onPressed: index == 0
-                //         ? null
-                //         : () {
-                //             setState(() {
-                //               index -= 1;
-                //             });
-                //           },
-                //     icon: Icon(Icons.arrow_circle_left_rounded),
-                //   ),
-                // ),
-                Stack(
-                  children: [
-                    Align(
+                Align(
                       alignment: Alignment.bottomRight,
                       child: Container(
                         margin:
-                            EdgeInsets.only(left: 10, right: 10, bottom: 10),
+                        EdgeInsets.only(left: 10, right: 10, bottom: 10),
                         width: MediaQuery.of(context).size.width / 1,
                         height: MediaQuery.of(context).size.height / 9.5,
                         decoration: BoxDecoration(
@@ -194,49 +165,6 @@ class _ObjectGesturesWidgetState extends State<ObjectGesturesWidget> {
                         ),
                       ),
                     ),
-                    // Align(
-                    //   alignment: Alignment.bottomRight,
-                    //   child: Container(
-                    //     margin: EdgeInsets.only(left: 9, right: 9),
-                    //     width: MediaQuery.of(context).size.width / 1,
-                    //     height: MediaQuery.of(context).size.height / 8,
-                    //     child: ListView.builder(
-                    //       scrollDirection: Axis.horizontal,
-                    //       shrinkWrap: true,
-                    //       itemCount: widget.model3D.length,
-                    //       itemBuilder: (context, int index) {
-                    //         return InkWell(
-                    //           onTap: () {
-                    //             availableColors =
-                    //                 BlocProvider.of<HomeCubit>(context)
-                    //                     .getAvailableColorsOfFurniture(
-                    //                         widget.model3D[index]);
-                    //             setState(() {
-                    //               _isvisible = true;
-                    //             });
-                    //           },
-                    //           child: Align(
-                    //             child: Container(
-                    //                 margin:
-                    //                     EdgeInsets.only(left: 5.0, right: 7.0),
-                    //                 width:
-                    //                     MediaQuery.of(context).size.width / 5.5,
-                    //                 height:
-                    //                     MediaQuery.of(context).size.height / 13,
-                    //                 // decoration: BoxDecoration(
-                    //                 //   //color: Color(0xFFEEEEEE),
-                    //                 // ),
-                    //                 child: Image.network(widget
-                    //                     .model3D[index].shared.first.image)),
-                    //           ),
-                    //         );
-                    //       },
-                    //     ),
-                    //   ),
-                    // ),
-                  ],
-                ),
-
                 Visibility(
                   visible: _isvisible,
                   child: Stack(children: [
@@ -314,7 +242,9 @@ class _ObjectGesturesWidgetState extends State<ObjectGesturesWidget> {
                     }, child: Text("Delete")),),
 
                   ]),
-                )
+                ),
+                    Visibility(visible: isLoadingGLB,child: Container(color: Color(
+                        0x8E645E5E),width: MediaQuery.of(context).size.width,height: MediaQuery.of(context).size.height,child:Center(child: CircularProgressIndicator(),)))
               ])));
         });
   }
@@ -401,9 +331,12 @@ class _ObjectGesturesWidgetState extends State<ObjectGesturesWidget> {
       List<ARHitTestResult> hitTestResults) async {
     print(this.index);
     print("Tapping a node");
-    if (this.index==-1){
+    if (this.index==-1 || isLoadingGLB==true){
       return;
     }
+    setState(() {
+      isLoadingGLB=true;
+    });
     var singleHitTestResult = hitTestResults.firstWhere(
         (hitTestResult) => hitTestResult.type == ARHitTestResultType.plane);
     if (singleHitTestResult != null) {
@@ -422,6 +355,10 @@ class _ObjectGesturesWidgetState extends State<ObjectGesturesWidget> {
         bool? didAddNodeToAnchor = await this
             .arObjectManager!
             .addNode(newNode, planeAnchor: newAnchor);
+        setState(() {
+          isLoadingGLB=false;
+
+        });
         if (didAddNodeToAnchor!) {
           this.nodes.add(newNode);
           modelsMap[newNode.name] = {
