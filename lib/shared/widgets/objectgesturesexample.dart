@@ -1,8 +1,11 @@
+import 'dart:async';
+
 import 'package:ar_flutter_plugin/managers/ar_location_manager.dart';
 import 'package:ar_flutter_plugin/managers/ar_session_manager.dart';
 import 'package:ar_flutter_plugin/managers/ar_object_manager.dart';
 import 'package:ar_flutter_plugin/managers/ar_anchor_manager.dart';
 import 'package:ar_flutter_plugin/models/ar_anchor.dart';
+import 'package:flutter/material.dart' as material;
 import 'package:flutter/material.dart';
 import 'package:ar_flutter_plugin/ar_flutter_plugin.dart';
 import 'package:ar_flutter_plugin/datatypes/config_planedetection.dart';
@@ -13,7 +16,6 @@ import 'package:ar_flutter_plugin/models/ar_hittest_result.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vector_math/vector_math_64.dart';
-import 'dart:math';
 import '../../cubits/home_cubit.dart';
 import '../../cubits/home_states.dart';
 import '../../models/furniture_model.dart';
@@ -43,11 +45,27 @@ class _ObjectGesturesWidgetState extends State<ObjectGesturesWidget> {
   int selectedColorIndex = 0;
   int selectedNodeIndex = -1;
   Map<String, dynamic> modelsMap = {};
+  bool toolTip = false;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    setTimer();
+  }
 
   @override
   void dispose() {
     super.dispose();
     arSessionManager!.dispose();
+  }
+
+  Future<void> setTimer() async {
+    Timer(Duration(seconds: 3), () {
+      setState(() {
+        toolTip = true;
+      });
+    });
   }
 
   @override
@@ -71,15 +89,44 @@ class _ObjectGesturesWidgetState extends State<ObjectGesturesWidget> {
                 Padding(
                   padding: EdgeInsets.only(
                       top: MediaQuery.of(context).size.height / 1.5,
-                      left: MediaQuery.of(context).size.width / 1.18),
+                      right: MediaQuery.of(context).size.width / 40),
                   child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        IconButton(
-                          onPressed: onRemoveEverything,
-                          icon: Icon(
-                            Icons.delete_forever_outlined,
-                            size: 43,
+                        toolTip == false ? Material(
+                  borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(30.0),
+                topRight: Radius.circular(30.0),
+                bottomLeft: Radius.circular(30.0),
+                bottomRight: Radius.circular(0.0),
+              ),
+            elevation: 5.0,
+            color: material.Colors.white,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
+              child: Text(
+                "Remove Everything",
+                style: TextStyle(
+                  fontSize: 15.0,
+                  color: material.Colors.black,
+                ),
+              ),
+            ),
+          ) : Text(""),
+                        GestureDetector(
+                          onTap: onRemoveEverything,
+                          child: Container(
+                            height: 50,
+                            width: 50,
+                            decoration: BoxDecoration(
+                              color: Color(0xffffffff),
+                              borderRadius: BorderRadius.circular(20)
+                            ),
+                            child: Icon(
+                              Icons.delete_forever_outlined,
+                              size: 43,
+                              color: material.Colors.red,
+                            ),
                           ),
                         ),
 
@@ -238,63 +285,70 @@ class _ObjectGesturesWidgetState extends State<ObjectGesturesWidget> {
                                 blurRadius: 7,
                               )
                             ]),
-                        child:  Container(
+                        child: Container(
                           width: MediaQuery.of(context).size.width / 2,
                           height: MediaQuery.of(context).size.height / 3,
-                          child: ListView.builder(
-                              scrollDirection: Axis.vertical,
-                              shrinkWrap: true,
-                              itemCount: widget.availableColors.length,
-                              itemBuilder: (context, int index) {
-                                return Padding(
-                                  padding: EdgeInsets.symmetric(vertical: 17),
-                                  child: InkWell(
-                                    onTap: () async {
-                                      setState(() {
-                                        selectedColorIndex = index;
-                                      });
-                                      if(nodes.isNotEmpty) {
-                                        bool flag = false;
-                                        for(var node in modelsMap.keys) {
-                                          if(modelsMap[node]["furnitureName"] == widget.furnModel[this.index].name) {
-                                            flag = true;
-                                            break;
+                          child: Column(
+                            children: [
+                              ListView.builder(
+                                  scrollDirection: Axis.vertical,
+                                  shrinkWrap: true,
+                                  itemCount: widget.availableColors.length,
+                                  itemBuilder: (context, int index) {
+                                    return Padding(
+                                      padding: EdgeInsets.symmetric(vertical: 17),
+                                      child: InkWell(
+                                        onTap: () async {
+                                          setState(() {
+                                            selectedColorIndex = index;
+                                          });
+                                          if(nodes.isNotEmpty) {
+                                            bool flag = false;
+                                            for(var node in modelsMap.keys) {
+                                              if(modelsMap[node]["furnitureName"] == widget.furnModel[this.index].name) {
+                                                flag = true;
+                                                break;
+                                              }
+                                            }
+                                            if(flag) {
+                                              await replaceColor();
+                                            }
                                           }
-                                        }
-                                        if(flag) {
-                                          await replaceColor();
-                                        }
-                                      }
-                                      },
-                                    child:CircleAvatar(
-                                      radius: 18.0,
-                                      backgroundColor:widget.availableColors[index],
-                                      child: CircleAvatar(
-                                        radius: 15.0,
-                                        backgroundColor: Color(0xffffffff),
-                                        child: CustomCircleAvatar(
-                                          radius: 10.0,
-                                          CavatarColor: widget.availableColors[index],
-                                          icon: index == selectedColorIndex
-                                              ? Icon(
-                                            Icons.check,
-                                            color: Color(0xff000000),
-                                            size: 18.0,
-                                          )
-                                              : null,
+                                          },
+                                        child:CircleAvatar(
+                                          radius: 18.0,
+                                          backgroundColor:widget.availableColors[index],
+                                          child: CircleAvatar(
+                                            radius: 15.0,
+                                            backgroundColor: Color(0xffffffff),
+                                            child: CustomCircleAvatar(
+                                              radius: 10.0,
+                                              CavatarColor: widget.availableColors[index],
+                                              icon: index == selectedColorIndex
+                                                  ? Icon(
+                                                Icons.check,
+                                                color: Color(0xff000000),
+                                                size: 18.0,
+                                              )
+                                                  : null,
+                                            ),
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                  ),
-                                );
-                              }),
+                                    );
+                                  }),
+                              Spacer(),
+                              Center(
+                                child: Padding(
+                                  padding: const EdgeInsets.only(bottom: 4.0),
+                                  child: IconButton(icon: Icon(Icons.cancel_outlined), iconSize: 35, color: material.Colors.red, onPressed: (){removeModel();},),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
-                    Positioned(top:0, right: 0, child: ElevatedButton(onPressed: (){
-                      removeModel();
-                    }, child: Text("Delete")),),
-
                   ]),
                 )
               ])));

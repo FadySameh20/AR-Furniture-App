@@ -474,7 +474,7 @@ class _CartScreenState extends State<CartScreen> {
               ),
               actions: [
                 IconButton(onPressed: (){
-                  Navigator.push(context,MaterialPageRoute(builder: (context)=>ObjectGesturesWidget(furnModel)));
+                  // Navigator.push(context,MaterialPageRoute(builder: (context)=>ObjectGesturesWidget(furnModel)));
                 }, icon: Icon(Icons.camera)),
                 // IconButton(onPressed: () {}, icon: Icon(Icons.shopping_cart,color: BlocProvider.of<HomeCubit>(context).isDark?Colors.black:Colors.white,)),
 
