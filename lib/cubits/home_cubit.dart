@@ -521,7 +521,7 @@ class HomeCubit extends Cubit<HomeState> {
     //SharedModel chosenFurnitureColor = furnitureList[index].shared.where((element) => element.color == selectedColor).first;
     int selectedIndex = furnitureList[index]
         .shared
-        .indexWhere((element) => element.color == selectedColor);
+        .indexWhere((element) => element.color.toLowerCase() == selectedColor.toLowerCase());
     print("Selected Index = " + selectedIndex.toString());
     // chosenFurnitureColor.quantityCart = cartQuantity.toString();
     furnitureList[index].shared[selectedIndex].quantityCart =
