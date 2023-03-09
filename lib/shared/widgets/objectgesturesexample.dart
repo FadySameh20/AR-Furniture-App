@@ -22,7 +22,9 @@ import 'circle_avatar.dart';
 
 class ObjectGesturesWidget extends StatefulWidget {
   List<FurnitureModel> furnModel;
-  ObjectGesturesWidget(this.furnModel, {Key? key})
+  List<Color?> availableColors;
+
+  ObjectGesturesWidget(this.furnModel, this.availableColors, {Key? key})
       : super(key: key);
   @override
   _ObjectGesturesWidgetState createState() => _ObjectGesturesWidgetState();
@@ -36,9 +38,12 @@ class _ObjectGesturesWidgetState extends State<ObjectGesturesWidget> {
   List<ARNode> nodes = [];
   List<ARAnchor> anchors = [];
   int index = 0;
-  List<Color?> availableColors = [];
+  // List<Color?> availableColors = [];
   bool _isvisible = false;
   int selectedColorIndex = 0;
+  int selectedNodeIndex = -1;
+  Map<String, dynamic> modelsMap = {};
+
   @override
   void dispose() {
     super.dispose();
@@ -140,12 +145,14 @@ class _ObjectGesturesWidgetState extends State<ObjectGesturesWidget> {
                               itemBuilder: (context, int index) {
                                 return InkWell(
                                   onTap: () {
-                                    availableColors =
+                                    widget.availableColors =
                                         BlocProvider.of<HomeCubit>(context)
                                             .getAvailableColorsOfFurniture(
                                             widget.furnModel[index]);
                                     setState(() {
                                       _isvisible = true;
+                                      this.index = index;
+                                      selectedColorIndex = 0;
                                     });
                                   },
                                   child: Align(
@@ -237,27 +244,37 @@ class _ObjectGesturesWidgetState extends State<ObjectGesturesWidget> {
                           child: ListView.builder(
                               scrollDirection: Axis.vertical,
                               shrinkWrap: true,
-                              itemCount: availableColors.length,
+                              itemCount: widget.availableColors.length,
                               itemBuilder: (context, int index) {
                                 return Padding(
                                   padding: EdgeInsets.symmetric(vertical: 17),
                                   child: InkWell(
-                                    onTap: () {
+                                    onTap: () async {
                                       setState(() {
                                         selectedColorIndex = index;
-
                                       });
-
-                                    },
+                                      if(nodes.isNotEmpty) {
+                                        bool flag = false;
+                                        for(var node in modelsMap.keys) {
+                                          if(modelsMap[node]["furnitureName"] == widget.furnModel[this.index].name) {
+                                            flag = true;
+                                            break;
+                                          }
+                                        }
+                                        if(flag) {
+                                          await replaceColor();
+                                        }
+                                      }
+                                      },
                                     child:CircleAvatar(
                                       radius: 18.0,
-                                      backgroundColor:availableColors[index],
+                                      backgroundColor:widget.availableColors[index],
                                       child: CircleAvatar(
                                         radius: 15.0,
                                         backgroundColor: Color(0xffffffff),
                                         child: CustomCircleAvatar(
                                           radius: 10.0,
-                                          CavatarColor: availableColors[index],
+                                          CavatarColor: widget.availableColors[index],
                                           icon: index == selectedColorIndex
                                               ? Icon(
                                             Icons.check,
@@ -274,6 +291,9 @@ class _ObjectGesturesWidgetState extends State<ObjectGesturesWidget> {
                         ),
                       ),
                     ),
+                    Positioned(top:0, right: 0, child: ElevatedButton(onPressed: (){
+                      removeModel();
+                    }, child: Text("Delete")),),
 
                   ]),
                 )
@@ -307,6 +327,7 @@ class _ObjectGesturesWidgetState extends State<ObjectGesturesWidget> {
     this.arObjectManager!.onRotationStart = onRotationStarted;
     this.arObjectManager!.onRotationChange = onRotationChanged;
     this.arObjectManager!.onRotationEnd = onRotationEnded;
+    this.arObjectManager!.onNodeTap = onNodeTap;
   }
 
   Future<void> onRemoveEverything() async {
@@ -320,6 +341,42 @@ class _ObjectGesturesWidgetState extends State<ObjectGesturesWidget> {
     setState(() {
       _isvisible = false;
     });
+  }
+
+  Future<void> removeModel() async {
+    this.arAnchorManager!.removeAnchor(anchors[selectedNodeIndex]);
+    nodes.removeAt(selectedNodeIndex);
+    anchors.removeAt(selectedNodeIndex);
+    setState(() {
+      _isvisible = false;
+    });
+  }
+
+  Future<void> replaceColor() async {
+    var newNode = ARNode(
+        type: NodeType.webGLB,
+        uri: widget.furnModel[index].shared[selectedColorIndex].model.toString(),
+        scale: nodes[selectedNodeIndex].scale,
+        position: nodes[selectedNodeIndex].position,
+        rotation: Vector4(1.0, 0.0, 0.0, 0.0)
+    );
+
+    var newArAnchor = ARPlaneAnchor(transformation: anchors[selectedNodeIndex].transformation);
+    await removeModel();
+    bool? didAddAnchor = await this.arAnchorManager!.addAnchor(newArAnchor);
+    if (didAddAnchor!) {
+      this.anchors.add(newArAnchor);
+      bool? didAddNodeToAnchor = await this.arObjectManager!.addNode(newNode, planeAnchor: newArAnchor);
+      if (didAddNodeToAnchor!) {
+        this.nodes.add(newNode);
+        modelsMap[newNode.name] = {
+          "furnitureName": widget.furnModel[index].name,
+          "furnitureIndex": index,
+          "colorIndex": selectedColorIndex,
+          "availableColors": widget.availableColors.toList()
+        };
+      }
+    }
   }
 
   Future<void> onPlaneOrPointTapped(
@@ -344,6 +401,16 @@ class _ObjectGesturesWidgetState extends State<ObjectGesturesWidget> {
             .addNode(newNode, planeAnchor: newAnchor);
         if (didAddNodeToAnchor!) {
           this.nodes.add(newNode);
+          modelsMap[newNode.name] = {
+            "furnitureName": widget.furnModel[index].name,
+            "furnitureIndex": index,
+            "colorIndex": selectedColorIndex,
+            "availableColors": widget.availableColors.toList()
+          };
+          setState(() {
+            _isvisible = false;
+            selectedColorIndex = 0;
+          });
         } else {
           this.arSessionManager!.onError("Adding Node to Anchor failed");
         }
@@ -351,6 +418,17 @@ class _ObjectGesturesWidgetState extends State<ObjectGesturesWidget> {
         this.arSessionManager!.onError("Adding Anchor failed");
       }
     }
+  }
+
+  onNodeTap(List<String> nodeName) {
+    print("Tapping a node");
+    selectedNodeIndex = nodes.indexWhere((element) => element.name == nodeName.first);
+    setState(() {
+      _isvisible = true;
+      selectedColorIndex = modelsMap[nodeName.first]["colorIndex"];
+      this.index = modelsMap[nodeName.first]["furnitureIndex"];
+      widget.availableColors = modelsMap[nodeName.first]["availableColors"];
+    });
   }
 
   onPanStarted(String nodeName) {

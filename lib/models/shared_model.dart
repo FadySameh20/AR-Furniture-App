@@ -13,6 +13,7 @@ class SharedModel {
         required this.color,
         required this.colorName,
         required this.image,
+        required this.model,
         required this.price,
         required this.quantity,
         required this.discount
