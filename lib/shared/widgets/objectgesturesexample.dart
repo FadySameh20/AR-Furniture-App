@@ -22,10 +22,9 @@ import 'circle_avatar.dart';
 
 class ObjectGesturesWidget extends StatefulWidget {
   List<FurnitureModel> furnModel;
-  List<Color?> availableColors;
+  List<Color?> availableColors=[];
 
-  ObjectGesturesWidget(this.furnModel, this.availableColors, {Key? key})
-      : super(key: key);
+  ObjectGesturesWidget(this.furnModel, [this.availableColors=const []]);
   @override
   _ObjectGesturesWidgetState createState() => _ObjectGesturesWidgetState();
 }
@@ -37,7 +36,7 @@ class _ObjectGesturesWidgetState extends State<ObjectGesturesWidget> {
 
   List<ARNode> nodes = [];
   List<ARAnchor> anchors = [];
-  int index = 0;
+  int? index;
   // List<Color?> availableColors = [];
   bool _isvisible = false;
   int selectedColorIndex = 0;
@@ -50,8 +49,27 @@ class _ObjectGesturesWidgetState extends State<ObjectGesturesWidget> {
     arSessionManager!.dispose();
   }
 
+
+    @override
+  void initState() {
+    // TODO: implement didChangeDependencies
+      print(widget.availableColors.isEmpty);
+      if(widget.availableColors.isEmpty){
+
+        index == -1;
+        print("indexxxxxxxxxxx"+index.toString());
+      }else{
+        index=0;
+      }
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
+
+
+
+
     return BlocConsumer<HomeCubit, HomeState>(
         listener: (context, state) {},
         builder: (context, state) {
@@ -256,7 +274,7 @@ class _ObjectGesturesWidgetState extends State<ObjectGesturesWidget> {
                                       if(nodes.isNotEmpty) {
                                         bool flag = false;
                                         for(var node in modelsMap.keys) {
-                                          if(modelsMap[node]["furnitureName"] == widget.furnModel[this.index].name) {
+                                          if(modelsMap[node]["furnitureName"] == widget.furnModel[this.index!].name) {
                                             flag = true;
                                             break;
                                           }
@@ -355,7 +373,7 @@ class _ObjectGesturesWidgetState extends State<ObjectGesturesWidget> {
   Future<void> replaceColor() async {
     var newNode = ARNode(
         type: NodeType.webGLB,
-        uri: widget.furnModel[index].shared[selectedColorIndex].model.toString(),
+        uri: widget.furnModel[index!].shared[selectedColorIndex].model.toString(),
         scale: nodes[selectedNodeIndex].scale,
         position: nodes[selectedNodeIndex].position,
         rotation: Vector4(1.0, 0.0, 0.0, 0.0)
@@ -370,7 +388,7 @@ class _ObjectGesturesWidgetState extends State<ObjectGesturesWidget> {
       if (didAddNodeToAnchor!) {
         this.nodes.add(newNode);
         modelsMap[newNode.name] = {
-          "furnitureName": widget.furnModel[index].name,
+          "furnitureName": widget.furnModel[index!].name,
           "furnitureIndex": index,
           "colorIndex": selectedColorIndex,
           "availableColors": widget.availableColors.toList()
@@ -381,6 +399,11 @@ class _ObjectGesturesWidgetState extends State<ObjectGesturesWidget> {
 
   Future<void> onPlaneOrPointTapped(
       List<ARHitTestResult> hitTestResults) async {
+    print(this.index);
+    print("Tapping a node");
+    if (this.index==-1){
+      return;
+    }
     var singleHitTestResult = hitTestResults.firstWhere(
         (hitTestResult) => hitTestResult.type == ARHitTestResultType.plane);
     if (singleHitTestResult != null) {
@@ -392,7 +415,7 @@ class _ObjectGesturesWidgetState extends State<ObjectGesturesWidget> {
         // Add note to anchor
         var newNode = ARNode(
             type: NodeType.webGLB,
-            uri: widget.furnModel[index].shared[selectedColorIndex].model.toString(),
+            uri: widget.furnModel[index!].shared[selectedColorIndex].model.toString(),
             scale: Vector3(1, 1, 1),
             position: Vector3(0.0, 0.0, 0.0),
             rotation: Vector4(1.0, 0.0, 0.0, 0.0));
@@ -402,7 +425,7 @@ class _ObjectGesturesWidgetState extends State<ObjectGesturesWidget> {
         if (didAddNodeToAnchor!) {
           this.nodes.add(newNode);
           modelsMap[newNode.name] = {
-            "furnitureName": widget.furnModel[index].name,
+            "furnitureName": widget.furnModel[index!].name,
             "furnitureIndex": index,
             "colorIndex": selectedColorIndex,
             "availableColors": widget.availableColors.toList()
@@ -421,7 +444,7 @@ class _ObjectGesturesWidgetState extends State<ObjectGesturesWidget> {
   }
 
   onNodeTap(List<String> nodeName) {
-    print("Tapping a node");
+
     selectedNodeIndex = nodes.indexWhere((element) => element.name == nodeName.first);
     setState(() {
       _isvisible = true;

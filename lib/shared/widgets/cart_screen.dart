@@ -1,4 +1,3 @@
-import 'dart:convert';
 
 import 'package:ar_furniture_app/cubits/home_cubit.dart';
 import 'package:ar_furniture_app/cubits/home_states.dart';
@@ -50,17 +49,33 @@ class _CartScreenState extends State<CartScreen> {
   double totalPrice = 0;
   bool flag = false;
   double estimatingTax = 0.14;
+  bool _isvisible = true;
 
   @override
   void initState() {
     // TODO: implement initState
+    if(widget.cartMap.isEmpty){
 
+      _isvisible =false;
+      print("visibleeee"+_isvisible.toString());
+    }else{
+      _isvisible =true;
+
+    }
     WidgetsBinding.instance.addPostFrameCallback((_) {
       // await this.setCache();
       setCartData();
       setState(() {});
     });
+    super.initState();
   }
+
+
+
+
+
+
+
 
   // Future<void> setCache() async {
   //   cartMap = await json.decode(CacheHelper.getData('cart')) ?? {};
@@ -419,8 +434,10 @@ class _CartScreenState extends State<CartScreen> {
     print(furnitureQuantities);
   }
 
+
   @override
   Widget build(BuildContext context) {
+
     return BlocConsumer<HomeCubit, HomeState>(
         listener: (context, state) {
           // if(state is ErrorInCheckout) {
@@ -468,15 +485,21 @@ class _CartScreenState extends State<CartScreen> {
                   Navigator.pop(context);
                 },
                 icon: Icon(
+
                   Icons.arrow_back_ios,
                   color: BlocProvider.of<HomeCubit>(context).isDark?Colors.black:Colors.white,
                 ),
               ),
               actions: [
-                IconButton(onPressed: (){
-                  Navigator.push(context,MaterialPageRoute(builder: (context)=>ObjectGesturesWidget(furnModel)));
-                }, icon: Icon(Icons.camera)),
-                // IconButton(onPressed: () {}, icon: Icon(Icons.shopping_cart,color: BlocProvider.of<HomeCubit>(context).isDark?Colors.black:Colors.white,)),
+
+                  Visibility(
+                    visible: _isvisible,
+                    child: IconButton(onPressed: () {
+                      Navigator.push(context, MaterialPageRoute(
+                          builder: (context) => ObjectGesturesWidget(furnModel)));
+                    }, icon: Icon(Icons.camera)),
+                  ),
+                  // IconButton(onPressed: () {}, icon: Icon(Icons.shopping_cart,color: BlocProvider.of<HomeCubit>(context).isDark?Colors.black:Colors.white,)),
 
               ],
               centerTitle: true,
@@ -502,6 +525,9 @@ class _CartScreenState extends State<CartScreen> {
                         onDismissed: (direction)async {
                           await BlocProvider.of<HomeCubit>(context).removeFromCart(
                               furnitureIds[index], furnitureColors[index]);
+                          if(BlocProvider.of<HomeCubit>(context).cache.cartMap.isEmpty){
+                            _isvisible = false;
+                          }
                           subTotal =subTotal- (double.parse(
                               furniturePrices[index])*double.parse(
                               furnitureQuantities[index]));
