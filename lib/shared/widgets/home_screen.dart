@@ -467,7 +467,7 @@ class _HomePageState extends State<HomePage> {
                                                       borderRadius:
                                                           BorderRadius.circular(
                                                               20),
-                                                      color: Colors.white,
+                                                      color: !BlocProvider.of<HomeCubit>(context).isDark?Colors.white:Color(0xff414147),
                                                     ),
                                                     child: Column(
                                                       children: [
@@ -485,12 +485,14 @@ class _HomePageState extends State<HomePage> {
                                                                     .furnitureList[
                                                                         index]
                                                                     .name,
-                                                                style: const TextStyle(
+                                                                style:  TextStyle(
                                                                     fontWeight:
                                                                         FontWeight
                                                                             .bold,
                                                                     fontSize:
-                                                                        17),
+                                                                        17,
+                                                                color: BlocProvider.of<HomeCubit>(context).isDark?Colors.white:Colors.black, ),
+
                                                               ),
                                                             ],
                                                           ),
@@ -567,7 +569,8 @@ class _HomePageState extends State<HomePage> {
                                                                     .shared
                                                                     .first
                                                                     .price,
-                                                                style: const TextStyle(
+                                                                style: TextStyle(
+                                                                  color:  BlocProvider.of<HomeCubit>(context).isDark?Colors.white:Colors.black,
                                                                     fontWeight:
                                                                         FontWeight
                                                                             .bold,
@@ -596,7 +599,7 @@ class _HomePageState extends State<HomePage> {
                                                                         ? Icons
                                                                             .favorite_border_rounded
                                                                         : Icons
-                                                                            .favorite),
+                                                                            .favorite,iconColor: Colors.red,),
                                                               ),
                                                             ],
                                                           ),

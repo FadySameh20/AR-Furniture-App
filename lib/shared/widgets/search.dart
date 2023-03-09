@@ -188,6 +188,7 @@ class _SearchState extends State<Search> {
                         padding: const EdgeInsets.all(6.0),
                         child: ClipOval(
                           child: Container(
+
                             color: Colors.grey.shade400,
                             child: Padding(
                               padding: EdgeInsets.all(8.0),
@@ -296,7 +297,7 @@ class _SearchState extends State<Search> {
                               height: 300,
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(12),
-                                color: Colors.white,
+                                color: !BlocProvider.of<HomeCubit>(context).isDark?Colors.white:Color(0xff414147),
                               ),
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
@@ -326,7 +327,8 @@ class _SearchState extends State<Search> {
                                   ),
                                   Text(
                                     fur.name,
-                                    style: const TextStyle(
+                                    style:  TextStyle(
+                                      color:BlocProvider.of<HomeCubit>(context).isDark?Colors.white:Colors.black,
                                       fontSize: 18,
                                       fontWeight: FontWeight.bold,
                                     ),

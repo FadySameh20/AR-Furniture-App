@@ -565,6 +565,7 @@ class _CartScreenState extends State<CartScreen> {
                         child: Padding(
                           padding: const EdgeInsets.all(10.0),
                           child: Material(
+                            color:!BlocProvider.of<HomeCubit>(context).isDark?Colors.white:Color(0xff414147),
                             borderRadius: BorderRadius.circular(30),
                             child: Stack(
                               children: [
@@ -589,7 +590,8 @@ class _CartScreenState extends State<CartScreen> {
                                         children: [
                                           Text(
                                             furnitureNames[index],
-                                            style: TextStyle(fontSize: 15),
+                                            style: TextStyle(fontSize: 15,
+                                            color:BlocProvider.of<HomeCubit>(context).isDark?Colors.white:Colors.white),
                                           ),
                                           SizedBox(
                                             height: 10,
@@ -665,6 +667,7 @@ class _CartScreenState extends State<CartScreen> {
                                                       ? 20.0
                                                       : 18.0,
                                                   fontWeight: FontWeight.w600,
+                                                  color:BlocProvider.of<HomeCubit>(context).isDark?Colors.white:Colors.black
                                                 ),
                                               ),
                                               SizedBox(
@@ -728,7 +731,7 @@ class _CartScreenState extends State<CartScreen> {
                                                   '\EGP ${furniturePrices[index]}',
                                                   style: TextStyle(
                                                       fontWeight: FontWeight.bold,
-                                                      fontSize: 18),
+                                                      fontSize: 18,color:BlocProvider.of<HomeCubit>(context).isDark?Colors.white:Colors.black),
                                                 ),
                                               ),
                                             ],

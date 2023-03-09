@@ -72,6 +72,7 @@ class _FavoriteItemWidgetState extends State<FavoriteItemWidget> {
         },
         child: Material(
           borderRadius: BorderRadius.circular(20),
+          color: !BlocProvider.of<HomeCubit>(context).isDark?Colors.white:Color(0xff414147),
           // decoration: BoxDecoration(
           //   borderRadius: BorderRadius.circular(20)
 
@@ -104,7 +105,7 @@ class _FavoriteItemWidgetState extends State<FavoriteItemWidget> {
                       children: [
                         Text(
                           widget.myFavorite.name,
-                          style: TextStyle(fontSize: 15),
+                          style: TextStyle(fontSize: 15,color:BlocProvider.of<HomeCubit>(context).isDark?Colors.white:Colors.black),
                         ),
                         SizedBox(
                           height: 10,
@@ -122,7 +123,7 @@ class _FavoriteItemWidgetState extends State<FavoriteItemWidget> {
                                       ' L.E',
                                   style: TextStyle(
                                     decoration: widget.myFavorite.shared[currentColorIndex].discount!="0"?TextDecoration.lineThrough:null,
-                                    fontSize: 18.0,
+                                    fontSize: 15.0,
                                     fontWeight: FontWeight.w600,
                                     color: kAppBackgroundColor,
                                   ),
@@ -134,7 +135,7 @@ class _FavoriteItemWidgetState extends State<FavoriteItemWidget> {
 
                                     '${(double.parse(widget.myFavorite.shared[currentColorIndex].price) -( (double.parse(widget.myFavorite.shared[currentColorIndex].discount)/100)*double.parse(widget.myFavorite.shared[currentColorIndex].price))).toStringAsFixed(2)} L.E',
                                     style: TextStyle(
-                                      fontSize: 18.0,
+                                      fontSize: 15.0,
                                       fontWeight: FontWeight.w600,
                                       color: kAppBackgroundColor,
                                     ),

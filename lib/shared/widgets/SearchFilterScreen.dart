@@ -99,8 +99,7 @@ class _SearchFilterScreenState extends State<SearchFilterScreen> {
                               height: 30,
                               width: 70,
                               decoration: BoxDecoration(
-                                  color: widget.categories.values.elementAt(index)? kAppBackgroundColor
-                                      : Colors.white,
+                                  color: !BlocProvider.of<HomeCubit>(context).isDark?Colors.white:Color(0xff414147),
                                   borderRadius: BorderRadius.circular(50)),
                               child: Padding(
                                 padding: const EdgeInsets.all(8.0),
@@ -110,7 +109,8 @@ class _SearchFilterScreenState extends State<SearchFilterScreen> {
                                     Expanded(
                                         child: CircleAvatar(
                                           radius: 25,
-                                          backgroundColor: Colors.grey[300],
+                                          backgroundColor: !BlocProvider.of<HomeCubit>(context).isDark?Colors.white:Color(
+                                              0xffb1b1b5),
                                           // radius: 10,
                                           child: Padding(
                                             padding: const EdgeInsets.all(7.0),
@@ -128,7 +128,7 @@ class _SearchFilterScreenState extends State<SearchFilterScreen> {
                                       overflow: TextOverflow.ellipsis,
                                       style: TextStyle(
                                           color:
-                                          widget.categories.values.elementAt(index) ? Colors.white : Colors.black),
+                                          BlocProvider.of<HomeCubit>(context).isDark?Colors.white:Colors.black,),
                                     ),
                                   ],
                                 ),

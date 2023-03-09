@@ -115,7 +115,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                                       ? MediaQuery.of(context).size.height * 0.23
                                       : MediaQuery.of(context).size.height * 0.28,
                                   decoration: BoxDecoration(
-                                    color: Colors.white,
+                                    color: !BlocProvider.of<HomeCubit>(context).isDark?Colors.white:Color(0xff414147),
                                     borderRadius: BorderRadius.circular(20),
                                   ),
                                 ),
@@ -158,6 +158,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                                                 maxLines: 2,
                                                 overflow: TextOverflow.ellipsis,
                                                 style: TextStyle(
+                                                  color:BlocProvider.of<HomeCubit>(context).isDark?Colors.white:Colors.black,
                                                   fontSize: 16.0,
                                                   fontWeight: FontWeight.w500,
                                                 ),
@@ -168,6 +169,9 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                                               maxLines: 2,
                                               overflow: TextOverflow.ellipsis,
                                               style: TextStyle(
+                                                color:!BlocProvider.of<HomeCubit>(context).isDark?Color(
+                                                    0xffb2b2b6):Color(
+                                                    0xffb2b2b6),
                                                   fontSize: 14.0,
                                                   fontWeight: FontWeight.w400,
                                                   fontStyle: FontStyle.italic),
