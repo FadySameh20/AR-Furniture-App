@@ -599,7 +599,7 @@ class _HomePageState extends State<HomePage> {
                                                                         ? Icons
                                                                             .favorite_border_rounded
                                                                         : Icons
-                                                                            .favorite,iconColor: Colors.red,),
+                                                                            .favorite,iconColor: kAppBackgroundColor,),
                                                               ),
                                                             ],
                                                           ),

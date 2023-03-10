@@ -1,7 +1,9 @@
 import 'package:ar_furniture_app/shared/constants/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../cubits/home_cubit.dart';
 import '../../models/furniture_model.dart';
 import '../../models/order_model.dart';
 
@@ -17,6 +19,7 @@ class OrderDetailsScreen extends StatelessWidget {
           .of(context)
           .size
           .height - 100,
+      color: !BlocProvider.of<HomeCubit>(context).isDark?Colors.white:Color(0xff414147),
       child: Column(
         children: [
           Container(
@@ -34,7 +37,7 @@ class OrderDetailsScreen extends StatelessWidget {
                   height: 4,
                   width: 45,
                   decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: !BlocProvider.of<HomeCubit>(context).isDark?Colors.white:Color(0xff414147),
                       borderRadius: BorderRadius.circular(20)),
                 ),
               ],
@@ -57,8 +60,9 @@ class OrderDetailsScreen extends StatelessWidget {
                         Text(
                           "Your Order Details",
                           style: GoogleFonts.raleway(
-                            textStyle: const TextStyle(
-                                fontSize: 20, fontWeight: FontWeight.bold),
+                            textStyle:  TextStyle(
+                                fontSize: 20, fontWeight: FontWeight.bold,
+                            color: BlocProvider.of<HomeCubit>(context).isDark?Colors.white:Colors.black),
                           ),
                         ),
                       ],
@@ -73,8 +77,9 @@ class OrderDetailsScreen extends StatelessWidget {
                           "Order id: ${myOrder.orderId}",
                           overflow: TextOverflow.ellipsis,
                           style: GoogleFonts.raleway(
-                            textStyle: const TextStyle(
-                                fontSize: 18, fontWeight: FontWeight.bold),
+                            textStyle:TextStyle(
+                                fontSize: 18, fontWeight: FontWeight.bold,
+                               color: BlocProvider.of<HomeCubit>(context).isDark?Colors.white:Colors.black),
                           ),
                         ),
                       ],
@@ -93,7 +98,7 @@ class OrderDetailsScreen extends StatelessWidget {
                           .width - 10,
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
-                          color: Colors.grey[300]),
+                          color: BlocProvider.of<HomeCubit>(context).isDark?Color(0xFF585858):Colors.grey[300]),
                       child: ListView.builder(
                           physics: NeverScrollableScrollPhysics(),
                           shrinkWrap: true,
@@ -131,10 +136,13 @@ class OrderDetailsScreen extends StatelessWidget {
                                         overflow: TextOverflow.ellipsis,
                                         maxLines: 1,
                                         style: GoogleFonts.raleway(
-                                          textStyle: const TextStyle(
+                                          textStyle: TextStyle(
                                               fontSize: 16,
 
-                                              fontWeight: FontWeight.bold),
+                                              fontWeight: FontWeight.bold,
+                                            color:  BlocProvider.of<HomeCubit>(context).isDark?Colors.white:Colors.black,
+                                          ),
+
                                         ),
                                       ),
                                     ),
@@ -182,7 +190,10 @@ class OrderDetailsScreen extends StatelessWidget {
                                 Spacer(),
                                 Padding(
                                   padding: const EdgeInsets.only(right:15.0),
-                                  child: Text("${furniture[index]["quantity"]}"),
+                                  child: Text("${furniture[index]["quantity"]}",
+                                  style: TextStyle(
+                                    color: BlocProvider.of<HomeCubit>(context).isDark?Colors.white:Colors.black,
+                                  ),),
                                 )
                               ],
                             );
@@ -197,13 +208,16 @@ class OrderDetailsScreen extends StatelessWidget {
                         Text(
                           "Your Shipping address: ",
                           style: GoogleFonts.raleway(
-                            textStyle: const TextStyle(
-                                fontSize: 14, fontWeight: FontWeight.bold),
+                            textStyle: TextStyle(
+                                fontSize: 14, fontWeight: FontWeight.bold,
+                            color:BlocProvider.of<HomeCubit>(context).isDark?Colors.white:Colors.black),
                           ),
                         ),
                       ],
                     ),
-                    Text("Apartment No: ${myOrder.appartmentNumber}, Floor No: ${myOrder.floorNumber}, Building No: ${myOrder.buildingNumber}, Street No: ${myOrder.streetName}, Area: ${myOrder.area}"),
+                    Text("Apartment No: ${myOrder.appartmentNumber}, Floor No: ${myOrder.floorNumber}, Building No: ${myOrder.buildingNumber}, Street No: ${myOrder.streetName}, Area: ${myOrder.area}",
+                    style: TextStyle(
+                        color:BlocProvider.of<HomeCubit>(context).isDark?Colors.white:Colors.black),),
                     SizedBox(
                       height: 30,
                     ),
