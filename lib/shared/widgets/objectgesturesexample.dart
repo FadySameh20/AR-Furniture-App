@@ -56,7 +56,7 @@ class _ObjectGesturesWidgetState extends State<ObjectGesturesWidget> {
     print(widget.availableColors.isEmpty);
     if(widget.availableColors.isEmpty){
 
-      index == -1;
+      index = -1;
       print("indexxxxxxxxxxx"+index.toString());
     }else{
       index=0;
@@ -353,11 +353,19 @@ class _ObjectGesturesWidgetState extends State<ObjectGesturesWidget> {
     var newNode = ARNode(
         type: NodeType.webGLB,
         uri: widget.furnModel[index!].shared[selectedColorIndex].model.toString(),
+        transformation: nodes[selectedNodeIndex].transform,
         scale: nodes[selectedNodeIndex].scale,
-        position: nodes[selectedNodeIndex].position,
-        rotation: Vector4(1.0, 0.0, 0.0, 0.0)
+        // position: nodes[selectedNodeIndex].position,
+        // rotation: Vector4.fromFloat64List(nodes[selectedNodeIndex].transform.storage)
     );
-
+    print("tttttttttt");
+  // print(nodes[selectedNodeIndex].rotation.);
+    if (isLoadingGLB==true){
+      return;
+    }
+    setState(() {
+      isLoadingGLB=true;
+    });
     var newArAnchor = ARPlaneAnchor(transformation: anchors[selectedNodeIndex].transformation);
     await removeModel();
     bool? didAddAnchor = await this.arAnchorManager!.addAnchor(newArAnchor);
@@ -374,21 +382,25 @@ class _ObjectGesturesWidgetState extends State<ObjectGesturesWidget> {
         };
       }
     }
+    setState(() {
+      isLoadingGLB = false;
+    });
   }
 
   Future<void> onPlaneOrPointTapped(
       List<ARHitTestResult> hitTestResults) async {
     print(this.index);
     print("Tapping a node");
-    if (this.index==-1 || isLoadingGLB==true){
-      return;
-    }
-    setState(() {
-      isLoadingGLB=true;
-    });
+
     var singleHitTestResult = hitTestResults.firstWhere(
         (hitTestResult) => hitTestResult.type == ARHitTestResultType.plane);
     if (singleHitTestResult != null) {
+      if (this.index==-1 || isLoadingGLB==true){
+        return;
+      }
+      setState(() {
+        isLoadingGLB=true;
+      });
       var newAnchor =
           ARPlaneAnchor(transformation: singleHitTestResult.worldTransform);
       bool? didAddAnchor = await this.arAnchorManager!.addAnchor(newAnchor);
@@ -446,13 +458,15 @@ class _ObjectGesturesWidgetState extends State<ObjectGesturesWidget> {
 
   onPanChanged(String nodeName) {
     print("Continued panning node " + nodeName);
+    final pannedNode =
+    this.nodes.firstWhere((element) => element.name == nodeName);
   }
 
   onPanEnded(String nodeName, Matrix4 newTransform) {
     print("Ended panning node " + nodeName);
     final pannedNode =
         this.nodes.firstWhere((element) => element.name == nodeName);
-
+    pannedNode.transform = newTransform;
     /*
     * Uncomment the following command if you want to keep the transformations of the Flutter representations of the nodes up to date
     * (e.g. if you intend to share the nodes through the cloud)
@@ -462,6 +476,7 @@ class _ObjectGesturesWidgetState extends State<ObjectGesturesWidget> {
 
   onRotationStarted(String nodeName) {
     print("Started rotating node " + nodeName);
+
   }
 
   onRotationChanged(String nodeName) {
@@ -477,6 +492,14 @@ class _ObjectGesturesWidgetState extends State<ObjectGesturesWidget> {
     * Uncomment the following command if you want to keep the transformations of the Flutter representations of the nodes up to date
     * (e.g. if you intend to share the nodes through the cloud)
     */
-    //rotatedNode.transform = newTransform;
+    rotatedNode.transform = newTransform;
+    print("hhhhhh");
+    print(rotatedNode.transform);
+    print(rotatedNode.transform.getRotation());
+    print(Vector4.fromFloat64List(rotatedNode.transform.getRotation().storage));
+    print(rotatedNode.transform.row1.a);
+    print(rotatedNode.transform.row2.a);
+
+    // print(rotatedNode)
   }
 }
