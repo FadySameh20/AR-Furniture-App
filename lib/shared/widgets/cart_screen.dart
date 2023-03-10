@@ -91,7 +91,10 @@ class _CartScreenState extends State<CartScreen> {
         print("lol");
         print(element.quantityCart);
         if (int.parse(element.quantityCart) > 0) {
-          FurnitureModel furnModelTemp = FurnitureModel(description:"",furnitureId:key,name:"",category:"",shared:[SharedModel(color:element.color,colorName:"",image:element.image,price:"",quantity:"",discount:"",model:element.model)],ratings:{});
+          FurnitureModel furnModelTemp = FurnitureModel(description:"",furnitureId:key,name:widget.furnitureList
+              .where((element) => element.furnitureId == key)
+              .first
+              .name,category:"",shared:[SharedModel(color:element.color,colorName:"",image:element.image,price:"",quantity:"",discount:"",model:element.model)],ratings:{});
           furnModel.add(furnModelTemp);
           furnitureQuantities.add(element.quantityCart);
           furnitureImages.add(element.image);
