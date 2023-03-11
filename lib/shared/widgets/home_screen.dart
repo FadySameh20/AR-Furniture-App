@@ -179,7 +179,7 @@ class _HomePageState extends State<HomePage> {
                 padding: EdgeInsets.only(bottom: bottomNavBarHeight),
                 child: state is InitialHomeState
                     ? const Center(
-                        child: CircularProgressIndicator(),
+                        child: CircularProgressIndicator(color: kAppBackgroundColor,),
                       )
                     : selectedPos != 0
                         ? NavbarPages[selectedPos]

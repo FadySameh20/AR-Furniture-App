@@ -85,8 +85,9 @@ class _ObjectGesturesWidgetState extends State<ObjectGesturesWidget> {
           child:
           return Scaffold(
               appBar: AppBar(
-                title: const Text('Object Transformation Gestures'),
-                  backgroundColor:  kAppBackgroundColor,
+                title: const Text('Augmented Reality'),
+                backgroundColor:  kAppBackgroundColor,
+                centerTitle: true,
               ),
               body: Container(
                   child: Stack(children: [
@@ -110,7 +111,7 @@ class _ObjectGesturesWidgetState extends State<ObjectGesturesWidget> {
                 bottomRight: Radius.circular(0.0),
               ),
             elevation: 5.0,
-            color: kAppBackgroundColor,
+            color: kAppBackgroundColor.withAlpha(200),
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 10.0, horizontal: 20.0),
               child: Text(
@@ -184,6 +185,7 @@ class _ObjectGesturesWidgetState extends State<ObjectGesturesWidget> {
                                       _isvisible = true;
                                       this.index = index;
                                       selectedColorIndex = 0;
+                                      selectedNodeIndex = -1;
                                     });
                                   },
                                   child: Align(
@@ -193,10 +195,11 @@ class _ObjectGesturesWidgetState extends State<ObjectGesturesWidget> {
                                         width:
                                         MediaQuery.of(context).size.width / 5.5,
                                         height:
-                                        MediaQuery.of(context).size.height / 13,
-                                        // decoration: BoxDecoration(
-                                        //   //color: Color(0xFFEEEEEE),
-                                        // ),
+                                        MediaQuery.of(context).size.height / 12,
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(20.0),
+                                          color: this.index == index && this.index != -1 && selectedNodeIndex == -1 ? kAppBackgroundColorLowOpacity : Color(0xFFEEEEEE),
+                                        ),
                                         child: Image.network(widget
                                             .furnModel[index].shared.first.image)),
                                   ),
@@ -245,14 +248,18 @@ class _ObjectGesturesWidgetState extends State<ObjectGesturesWidget> {
                                           });
                                           if(nodes.isNotEmpty) {
                                             bool flag = false;
+                                            String tempNode = "";
                                             for(var node in modelsMap.keys) {
                                               if(modelsMap[node]["furnitureName"] == widget.furnModel[this.index!].name) {
+                                                tempNode = node;
                                                 flag = true;
                                                 break;
                                               }
                                             }
                                             if(flag) {
-                                              await replaceColor();
+                                              if(modelsMap[tempNode]["colorIndex"] != selectedColorIndex) {
+                                                await replaceColor();
+                                              }
                                             }
                                           }
                                           },
@@ -279,12 +286,12 @@ class _ObjectGesturesWidgetState extends State<ObjectGesturesWidget> {
                                     );
                                   }),
                               Spacer(),
-                              Center(
+                              selectedNodeIndex != -1 ? Center(
                                 child: Padding(
                                   padding: const EdgeInsets.only(bottom: 4.0),
                                   child: IconButton(icon: Icon(Icons.cancel_outlined), iconSize: 35, color: material.Colors.red, onPressed: (){removeModel();},),
                                 ),
-                              ),
+                              ) : Text(""),
                             ],
                           ),
                         ),
@@ -293,7 +300,7 @@ class _ObjectGesturesWidgetState extends State<ObjectGesturesWidget> {
                   ]),
                 ),
                     Visibility(visible: isLoadingGLB,child: Container(color: Color(
-                        0x8E645E5E),width: MediaQuery.of(context).size.width,height: MediaQuery.of(context).size.height,child:Center(child: CircularProgressIndicator(),)))
+                        0x8E645E5E),width: MediaQuery.of(context).size.width,height: MediaQuery.of(context).size.height,child:Center(child: CircularProgressIndicator(color: kAppBackgroundColor,),)))
               ])));
         });
   }
@@ -335,13 +342,21 @@ class _ObjectGesturesWidgetState extends State<ObjectGesturesWidget> {
       this.arAnchorManager!.removeAnchor(anchor);
     });
     anchors = [];
+    nodes = [];
+    modelsMap = {};
     setState(() {
       _isvisible = false;
+      selectedColorIndex = 0;
+      index = -1;
     });
   }
 
   Future<void> removeModel() async {
     this.arAnchorManager!.removeAnchor(anchors[selectedNodeIndex]);
+    print(modelsMap.length);
+    modelsMap.remove(nodes[selectedNodeIndex].name);
+    print("Models map");
+    print(modelsMap.length);
     nodes.removeAt(selectedNodeIndex);
     anchors.removeAt(selectedNodeIndex);
     setState(() {
@@ -431,6 +446,7 @@ class _ObjectGesturesWidgetState extends State<ObjectGesturesWidget> {
           setState(() {
             _isvisible = false;
             selectedColorIndex = 0;
+            index = -1;
           });
         } else {
           this.arSessionManager!.onError("Adding Node to Anchor failed");
@@ -467,6 +483,12 @@ class _ObjectGesturesWidgetState extends State<ObjectGesturesWidget> {
     final pannedNode =
         this.nodes.firstWhere((element) => element.name == nodeName);
     pannedNode.transform = newTransform;
+
+    setState(() {
+      _isvisible = false;
+      index = -1;
+      selectedColorIndex = 0;
+    });
     /*
     * Uncomment the following command if you want to keep the transformations of the Flutter representations of the nodes up to date
     * (e.g. if you intend to share the nodes through the cloud)
@@ -500,6 +522,11 @@ class _ObjectGesturesWidgetState extends State<ObjectGesturesWidget> {
     print(rotatedNode.transform.row1.a);
     print(rotatedNode.transform.row2.a);
 
+    setState(() {
+      _isvisible = false;
+      index = -1;
+      selectedColorIndex = 0;
+    });
     // print(rotatedNode)
   }
 }
