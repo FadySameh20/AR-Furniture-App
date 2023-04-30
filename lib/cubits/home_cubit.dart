@@ -1138,7 +1138,7 @@ createOrder(String appartmentNumber, String area, String buildingNumber,
         break;
       }
     }
-    print(recommendedFurniture[0].name);
+    // print(recommendedFurniture[0].name);
   }
 }
 

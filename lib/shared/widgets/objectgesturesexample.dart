@@ -15,6 +15,7 @@ import 'package:ar_flutter_plugin/models/ar_node.dart';
 import 'package:ar_flutter_plugin/models/ar_hittest_result.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:vector_math/vector_math_64.dart';
 
 import '../../cubits/home_cubit.dart';
@@ -398,15 +399,17 @@ class _ObjectGesturesWidgetState extends State<ObjectGesturesWidget> {
   }
 
   Future<void> replaceColor() async {
+    var file = await DefaultCacheManager().getSingleFile(widget.furnModel[index!].shared[selectedColorIndex].model
+        .toString());
     var newNode = ARNode(
       type: NodeType.webGLB,
-      uri: widget.furnModel[index!].shared[selectedColorIndex].model.toString(),
+      uri: file.path,
       transformation: nodes[selectedNodeIndex].transform,
       scale: nodes[selectedNodeIndex].scale,
       // position: nodes[selectedNodeIndex].position,
       // rotation: Vector4.fromFloat64List(nodes[selectedNodeIndex].transform.storage)
     );
-    print("tttttttttt");
+    // print("tttttttttt");
     // print(nodes[selectedNodeIndex].rotation.);
     if (isLoadingGLB == true) {
       return;
@@ -458,10 +461,12 @@ class _ObjectGesturesWidgetState extends State<ObjectGesturesWidget> {
       if (didAddAnchor!) {
         this.anchors.add(newAnchor);
         // Add note to anchor
+        var file = await DefaultCacheManager().getSingleFile(widget.furnModel[index!].shared[selectedColorIndex].model
+            .toString());
+
         var newNode = ARNode(
             type: NodeType.webGLB,
-            uri: widget.furnModel[index!].shared[selectedColorIndex].model
-                .toString(),
+            uri: file.path,
             scale: Vector3(1, 1, 1),
             position: Vector3(0.0, 0.0, 0.0),
             rotation: Vector4(1.0, 0.0, 0.0, 0.0));
@@ -550,12 +555,12 @@ class _ObjectGesturesWidgetState extends State<ObjectGesturesWidget> {
     * (e.g. if you intend to share the nodes through the cloud)
     */
     rotatedNode.transform = newTransform;
-    print("hhhhhh");
-    print(rotatedNode.transform);
-    print(rotatedNode.transform.getRotation());
-    print(Vector4.fromFloat64List(rotatedNode.transform.getRotation().storage));
-    print(rotatedNode.transform.row1.a);
-    print(rotatedNode.transform.row2.a);
+    // print("hhhhhh");
+    // print(rotatedNode.transform);
+    // print(rotatedNode.transform.getRotation());
+    // print(Vector4.fromFloat64List(rotatedNode.transform.getRotation().storage));
+    // print(rotatedNode.transform.row1.a);
+    // print(rotatedNode.transform.row2.a);
 
     setState(() {
       _isvisible = false;
