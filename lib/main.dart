@@ -13,6 +13,7 @@ import 'package:circular_bottom_navigation/tab_item.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -21,9 +22,18 @@ import 'cubits/home_cubit.dart';
 import 'models/furniture_model.dart';
 import 'models/shared_model.dart';
 
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  // If you're going to use other Firebase services in the background, such as Firestore,
+  // make sure you call `initializeApp` before using other Firebase services.
+
+  print("Handling a background message: ${message.messageId}");
+}
+
 void main() async{
   await WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   await CacheHelper.init();
   // var temp=await FirebaseFirestore.instance.collection("category").doc("tables").collection("tables").doc();
 //print("hello");
@@ -44,10 +54,12 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         initialRoute: '/',
         theme: ThemeData(
-          scaffoldBackgroundColor: Color.fromRGBO(242, 246, 249, 1),
+          scaffoldBackgroundColor: CacheHelper.getData("darkMode")==false || CacheHelper.getData("darkMode")==null?Color.fromRGBO(242, 246, 249, 1):Color.fromRGBO(30, 30, 30, 1),
           textTheme: TextTheme(
             bodyText1: GoogleFonts.crimsonPro()
-          )
+                ,
+          ).apply(bodyColor: CacheHelper.getData("darkMode")==false || CacheHelper.getData("darkMode")==null?Color.fromRGBO(30, 30, 30, 1):Color.fromRGBO(242, 246, 249, 1)),
+
         ),
         routes: {
           '/': (context)=>FirebaseAuth.instance.currentUser!=null?HomePage():CacheHelper.getData("hasPassedBoardingScreen")!=null?SplashWelcomeScreen():BoardingScreen(),

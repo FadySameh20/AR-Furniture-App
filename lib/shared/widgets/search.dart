@@ -28,7 +28,7 @@ class _SearchState extends State<Search> {
   TextEditingController _searchController = TextEditingController();
 
   // filter
-  RangeValues currentRangeValues = const RangeValues(0, 500);
+  RangeValues currentRangeValues = const RangeValues(0, 10000);
   Map<Color,bool> colors = {};
   Map<CategoryItem,bool> categories = {};
   var arguments;
@@ -188,6 +188,7 @@ class _SearchState extends State<Search> {
                         padding: const EdgeInsets.all(6.0),
                         child: ClipOval(
                           child: Container(
+
                             color: Colors.grey.shade400,
                             child: Padding(
                               padding: EdgeInsets.all(8.0),
@@ -296,7 +297,7 @@ class _SearchState extends State<Search> {
                               height: 300,
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(12),
-                                color: Colors.white,
+                                color: !BlocProvider.of<HomeCubit>(context).isDark?Colors.white:Color(0xff414147),
                               ),
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
@@ -326,7 +327,8 @@ class _SearchState extends State<Search> {
                                   ),
                                   Text(
                                     fur.name,
-                                    style: const TextStyle(
+                                    style:  TextStyle(
+                                      color:BlocProvider.of<HomeCubit>(context).isDark?Colors.white:Colors.black,
                                       fontSize: 18,
                                       fontWeight: FontWeight.bold,
                                     ),
@@ -378,9 +380,9 @@ class _SearchState extends State<Search> {
                 }
               ),
               if(viewSuggestions == false)
-                const Text(
+                 Text(
                   "Categories",
-                  style: TextStyle(
+                  style:  Theme.of(context).textTheme.bodyLarge!.copyWith(
                     fontWeight: FontWeight.bold,
                     fontSize: 20,
                   ),
@@ -388,9 +390,9 @@ class _SearchState extends State<Search> {
               if(viewSuggestions == false)
                 CategoriesScroller(),
               if(viewSuggestions == false)
-                const Text(
+                 Text(
                   "Recently Viewed",
-                  style: TextStyle(
+                  style:  Theme.of(context).textTheme.bodyLarge!.copyWith(
                     fontWeight: FontWeight.bold,
                     fontSize: 20,
                   ),

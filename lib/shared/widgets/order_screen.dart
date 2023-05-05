@@ -13,13 +13,14 @@ class OrderScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        backgroundColor: !BlocProvider.of<HomeCubit>(context).isDark?const Color.fromRGBO(242, 246, 249, 1):const Color.fromRGBO(30, 30, 30, 1),
       appBar: AppBar(
-        backgroundColor: Color.fromRGBO(191, 122, 47, 1),
+        backgroundColor: kAppBackgroundColor  ,
         // leading: FlutterLogo(),
         centerTitle: true,
         title: Text(
           "My Orders",
-          style: TextStyle(),
+          style: TextStyle(color: BlocProvider.of<HomeCubit>(context).isDark?const Color.fromRGBO(242, 246, 249, 1):const Color.fromRGBO(30, 30, 30, 1)),
         ),
       ),
       body: ListView.builder(
@@ -108,10 +109,11 @@ class OrderScreen extends StatelessWidget {
             child: Material(
               elevation: 10,
               borderRadius: BorderRadius.circular(20),
+              color: !BlocProvider.of<HomeCubit>(context).isDark?Colors.white:Color(0xff414147),
 
               child: Container(
                 margin: EdgeInsets.all(15),
-                color: Colors.white,
+                color: !BlocProvider.of<HomeCubit>(context).isDark?Colors.white:Color(0xff414147),
                 height: MediaQuery.of(context).size.height /4.55,
                 // child:Expanded(
                 // flex: 3,
@@ -129,14 +131,15 @@ class OrderScreen extends StatelessWidget {
                             child: Text(
                               "Order NO: ${BlocProvider.of<HomeCubit>(context).orders[index].orderId}",
                               style: TextStyle(
-                                  fontSize: 15, fontWeight: FontWeight.bold),
+                                  fontSize: 15, fontWeight: FontWeight.bold,
+                              color: BlocProvider.of<HomeCubit>(context).isDark?Colors.white:Colors.black),
                             ),
                           ),
                           Spacer(),
                           Text(
                             "${BlocProvider.of<HomeCubit>(context).orders[index].time.toDate().year.toString()}-${BlocProvider.of<HomeCubit>(context).orders[index].time.toDate().month.toString()}-${BlocProvider.of<HomeCubit>(context).orders[index].time.toDate().day.toString()}",
                             style: TextStyle(
-                                fontSize: 15, fontWeight: FontWeight.bold),
+                                fontSize: 15, fontWeight: FontWeight.bold,color: BlocProvider.of<HomeCubit>(context).isDark?Colors.white:Colors.black),
                           ),
                         ],
                       ),
@@ -148,12 +151,12 @@ class OrderScreen extends StatelessWidget {
                         children: [
                           Text(
                             "Quantity: ${quantity}",
-                            style: TextStyle(fontSize: 15, color: Colors.grey),
+                            style: TextStyle(fontSize: 15, color: !BlocProvider.of<HomeCubit>(context).isDark?Colors.grey:Colors.grey[400]),
                           ),
                           Spacer(),
                           Text(
                             "Total Amount: ${totalPrice}",
-                            style: TextStyle(fontSize: 15, color: Colors.grey),
+                            style: TextStyle(fontSize: 15, color: !BlocProvider.of<HomeCubit>(context).isDark?Colors.grey:Colors.grey[400]),
                           ),
                         ],
                       ),

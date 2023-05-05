@@ -1,6 +1,8 @@
 abstract class HomeState{}
 
 class InitialHomeState extends HomeState{}
+class ThemeModeState extends HomeState{}
+class ThemeUpdated extends HomeState{}
 
 class LoadingOffersState extends HomeState{}
 
