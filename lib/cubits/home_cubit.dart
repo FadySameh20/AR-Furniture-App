@@ -352,12 +352,21 @@ class HomeCubit extends Cubit<HomeState> {
     return null;
   }
 
-  List<Color?> getAvailableColorsOfFurniture(FurnitureModel selectedFurniture) {
-    availableColors.clear();
-    for (int i = 0; i < selectedFurniture.shared.length; i++) {
-      availableColors.add(getColorFromHex(selectedFurniture.shared[i].color));
+  List<Color?> getAvailableColorsOfFurniture(FurnitureModel selectedFurniture, [bool flag = false]) {
+    if(!flag) {
+      availableColors.clear();
+      for (int i = 0; i < selectedFurniture.shared.length; i++) {
+        availableColors.add(getColorFromHex(selectedFurniture.shared[i].color));
+      }
+      return availableColors;
+    } else {
+      List<Color?> tempColors = [];
+      for (int i = 0; i < selectedFurniture.shared.length; i++) {
+        tempColors.add(getColorFromHex(selectedFurniture.shared[i].color));
+      }
+      return tempColors;
     }
-    return availableColors;
+
   }
 
   logout(context) async {

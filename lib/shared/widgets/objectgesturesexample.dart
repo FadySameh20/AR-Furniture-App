@@ -182,7 +182,7 @@ class _ObjectGesturesWidgetState extends State<ObjectGesturesWidget> {
                                 widget.availableColors =
                                     BlocProvider.of<HomeCubit>(context)
                                         .getAvailableColorsOfFurniture(
-                                            widget.furnModel[index]);
+                                            widget.furnModel[index], true).toList();
                                 setState(() {
                                   _isvisible = true;
                                   this.index = index;
@@ -352,7 +352,7 @@ class _ObjectGesturesWidgetState extends State<ObjectGesturesWidget> {
           showFeaturePoints: false,
           showPlanes: true,
           customPlaneTexturePath: "Images/triangle.png",
-          showWorldOrigin: true,
+          showWorldOrigin: false,
           handlePans: true,
           handleRotation: true,
         );
@@ -505,7 +505,7 @@ class _ObjectGesturesWidgetState extends State<ObjectGesturesWidget> {
       _isvisible = true;
       selectedColorIndex = modelsMap[nodeName.first]["colorIndex"];
       this.index = modelsMap[nodeName.first]["furnitureIndex"];
-      widget.availableColors = modelsMap[nodeName.first]["availableColors"];
+      widget.availableColors = modelsMap[nodeName.first]["availableColors"].toList();
     });
   }
 
