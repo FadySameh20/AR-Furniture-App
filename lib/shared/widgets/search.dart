@@ -124,7 +124,7 @@ class _SearchState extends State<Search> {
                       color: kAppBackgroundColor,
                     ),
                     child: IconButton(
-                      icon: const Icon(Icons.filter_list, color: Colors.white, size: 25,),
+                      icon: Icon(Icons.filter_list, color: !BlocProvider.of<HomeCubit>(context).isDark? kLightModeBackgroundColor : kDarkModeBackgroundColor, size: 25,),
                       onPressed: () async{
                         if(colorFlag == 0) {
                           getAvailableColors(0);
@@ -255,7 +255,7 @@ class _SearchState extends State<Search> {
                 builder: (context,constraints) {
                   return Container(
                     height: MediaQuery.of(context).size.height-(160+ MediaQuery.of(context).padding.top+AppBar(
-                        backgroundColor: const Color.fromRGBO(191, 122, 47, 1),
+                        backgroundColor: kAppBackgroundColor,
                         leading: const FlutterLogo(),
                         actions: [
                           IconButton(onPressed: () {context.read<HomeCubit>().logout(context);}, icon: Icon(Icons.shopping_cart))
@@ -382,17 +382,19 @@ class _SearchState extends State<Search> {
               if(viewSuggestions == false)
                  Text(
                   "Categories",
-                  style:  Theme.of(context).textTheme.bodyLarge!.copyWith(
+                  style:  TextStyle(
+                    color: BlocProvider.of<HomeCubit>(context).isDark? kLightModeBackgroundColor : kDarkModeBackgroundColor,
                     fontWeight: FontWeight.bold,
                     fontSize: 20,
                   ),
                 ),
               if(viewSuggestions == false)
                 CategoriesScroller(),
-              if(viewSuggestions == false)
+              if(viewSuggestions == false && recentlyViewed.isNotEmpty)
                  Text(
                   "Recently Viewed",
-                  style:  Theme.of(context).textTheme.bodyLarge!.copyWith(
+                  style:  TextStyle(
+                    color: BlocProvider.of<HomeCubit>(context).isDark? kLightModeBackgroundColor : kDarkModeBackgroundColor,
                     fontWeight: FontWeight.bold,
                     fontSize: 20,
                   ),

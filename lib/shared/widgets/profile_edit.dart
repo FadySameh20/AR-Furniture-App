@@ -1,18 +1,13 @@
 import 'dart:io';
-
 import 'package:ar_furniture_app/cubits/home_cubit.dart';
-import 'package:ar_furniture_app/cubits/home_states.dart';
 import 'package:ar_furniture_app/shared/widgets/validations.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
-
-
 import '../../models/user_model.dart';
 import '../constants/constants.dart';
-import 'cart_screen.dart';
 import 'favorite_screen.dart';
 
 class ProfileEdit extends StatefulWidget {
@@ -80,18 +75,21 @@ class _ProfileEditState extends State<ProfileEdit> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: !BlocProvider.of<HomeCubit>(context).isDark? kLightModeBackgroundColor : kDarkModeBackgroundColor,
       appBar: AppBar(
-          backgroundColor: Color.fromRGBO(191, 122, 47, 1),
+          backgroundColor: kAppBackgroundColor,
           leading: IconButton(onPressed: (){Navigator.pop(context);
-            },icon: Icon(Icons.arrow_back_sharp),),
-
+            },icon: Icon(
+            Icons.arrow_back_sharp,
+            color: BlocProvider.of<HomeCubit>(context).isDark?Colors.black:Colors.white,
+          ),),
           centerTitle: true,
           title: Text(
             "Edit Profile",
-            style: TextStyle(),
+            style: TextStyle(color: !BlocProvider.of<HomeCubit>(context).isDark? Colors.white : Colors.black),
           )),
       body: Container(
-        padding: EdgeInsets.only(left: 15, top: 20, right: 15),
+        padding: const EdgeInsets.only(left: 15, top: 20, right: 15),
         child: GestureDetector(
             onTap: () {
               FocusScope.of(context).unfocus();
@@ -105,12 +103,12 @@ class _ProfileEditState extends State<ProfileEdit> {
                         width: 130,
                         height: 130,
                         decoration: BoxDecoration(
-                            border: Border.all(width: 4, color: Colors.white),
+                            border: Border.all(width: 4, color: !BlocProvider.of<HomeCubit>(context).isDark? Colors.white : Colors.black),
                             boxShadow: [
                               BoxShadow(
                                   spreadRadius: 2,
                                   blurRadius: 10,
-                                  color: Colors.black.withOpacity(0.1))
+                                  color: !BlocProvider.of<HomeCubit>(context).isDark? Colors.black.withOpacity(0.5) : Colors.white.withOpacity(0.2))
                             ],
                             shape: BoxShape.circle,
                             image: DecorationImage(
@@ -143,7 +141,7 @@ class _ProfileEditState extends State<ProfileEdit> {
                               color: kAppBackgroundColor,
                             ),
                             child: IconButton(
-                              padding: EdgeInsets.all(0),
+                              padding: const EdgeInsets.all(0),
                               onPressed: ()async {
                                 await getImage(0);
                                 setState(() {
@@ -165,20 +163,20 @@ class _ProfileEditState extends State<ProfileEdit> {
                               color: kAppBackgroundColor,
                             ),
                             child: IconButton(
-                              padding: EdgeInsets.all(0),
+                              padding: const EdgeInsets.all(0),
                               onPressed: () async{
                                 await getImage(1);
                                 setState(() {
 
                                 });
                               },
-                              icon: Icon(Icons.camera, color: Colors.white),
+                              icon: const Icon(Icons.camera, color: Colors.white),
                             ),
                           ))
                     ],
                   ),
                 ),
-                SizedBox(height: 30),
+                const SizedBox(height: 30),
                 Form(
                   key: formKey,
                   child: Column(
@@ -191,12 +189,12 @@ class _ProfileEditState extends State<ProfileEdit> {
                             return validator.validateName(val!);
                           },
                         ),
-                        SizedBox(height: 10),
+                        const SizedBox(height: 10),
                         buildTextField('Edit Your Last Name', lNameController,
                             validator: (String? val) {
                               return validator.validateName(val!);
                             }),
-                        SizedBox(height: 10),
+                        const SizedBox(height: 10),
                         buildTextField(
                           'Edit Your Email',
                           emailController,
@@ -204,11 +202,11 @@ class _ProfileEditState extends State<ProfileEdit> {
                             return validator.validateEmail(val!);
                           },
                         ),
-                        SizedBox(height: 10),
+                        const SizedBox(height: 10),
                         buildTextField('Enter Your Current Password',
                             oldPasswordController,
                             isPassword: true),
-                        SizedBox(height: 10),
+                        const SizedBox(height: 10),
                         buildTextField(
                             'Edit Your Password', newPasswordController,
                             validator: (String? val) {
@@ -220,12 +218,12 @@ class _ProfileEditState extends State<ProfileEdit> {
                                 return null;
                               }
                             }, isPassword: true),
-                        SizedBox(height: 10),
+                        const SizedBox(height: 10),
                         buildTextField('Edit Your Address', addressController,
                             validator: (String? val) {
                               return validator.validateAddress(val!);
                             }),
-                        SizedBox(height: 10),
+                        const SizedBox(height: 10),
                         InternationalPhoneNumberInput(
                           spaceBetweenSelectorAndTextField: 0,
                           onInputValidated: (value) {},
@@ -235,21 +233,29 @@ class _ProfileEditState extends State<ProfileEdit> {
                           ),
                           ignoreBlank: false,
                           autoValidateMode: AutovalidateMode.onUserInteraction,
-                          selectorTextStyle:
-                          const TextStyle(color: Colors.black),
+                          selectorTextStyle: TextStyle(color: BlocProvider.of<HomeCubit>(context).isDark? Colors.white : Colors.black),
                           initialValue: number,
                           textFieldController: mobileNumberController,
+                          textStyle: TextStyle(
+                            color: BlocProvider.of<HomeCubit>(context).isDark? Colors.white : Colors.black,
+                          ),
                           formatInput: false,
                           keyboardType: const TextInputType.numberWithOptions(
                               signed: true, decimal: true),
-                          inputBorder: const OutlineInputBorder(
-                            borderRadius:
-                            BorderRadius.all(Radius.circular(20.0)),
+                          inputDecoration: InputDecoration(
+                            border: const OutlineInputBorder(borderRadius: BorderRadius.all(Radius.circular(20.0)),),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                color: !BlocProvider.of<HomeCubit>(context).isDark?kDarkModeTextField:kLightModeTextField,
+                                width: 2,
+                                style: BorderStyle.solid,),
+                                borderRadius: const BorderRadius.all(Radius.circular(20.0)),
+                            ),
                           ),
                         ),
                       ]),
                 ),
-                SizedBox(height: 30),
+                const SizedBox(height: 30),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -280,20 +286,20 @@ class _ProfileEditState extends State<ProfileEdit> {
                           }
                         }
                       },
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: kAppBackgroundColor,
+                          padding: const EdgeInsets.symmetric(horizontal: 50),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20))),
                       child: Text("SAVE",
                           style: TextStyle(
                               fontSize: 15,
                               letterSpacing: 2,
-                              color: Colors.white)),
-                      style: ElevatedButton.styleFrom(
-                          backgroundColor: kAppBackgroundColor,
-                          padding: EdgeInsets.symmetric(horizontal: 50),
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20))),
+                              color: !BlocProvider.of<HomeCubit>(context).isDark? Colors.white : Colors.black)),
                     ),
                   ],
                 ),
-                SizedBox(height: 30),
+                const SizedBox(height: 30),
               ],
             )),
       ),
@@ -309,18 +315,21 @@ class _ProfileEditState extends State<ProfileEdit> {
       decoration: InputDecoration(
         enabledBorder: UnderlineInputBorder(
             borderSide: BorderSide(
-                color: Color.fromRGBO(214, 189, 169, 1), width: 2.0)),
+                color: !BlocProvider.of<HomeCubit>(context).isDark?kDarkModeTextField:kLightModeTextField, width: 2.0)),
         focusedBorder: UnderlineInputBorder(
             borderSide: BorderSide(
-                color: Color.fromRGBO(157, 139, 124, 1), width: 5.0)),
+                color: !BlocProvider.of<HomeCubit>(context).isDark?kDarkModeTextField:kLightModeTextField, width: 5.0)),
         labelText: labelText,
         labelStyle: TextStyle(
-          color: Color.fromRGBO(124, 58, 40, 1),
+          color: !BlocProvider.of<HomeCubit>(context).isDark? kLightModeTextField:kDarkModeTextField,
           fontSize: 13,
         ),
         // hintText: "Edit Your Password"
       ),
-      cursorColor: Color.fromRGBO(124, 58, 40, 1),
+      cursorColor: kLightModeTextField,
+      style: TextStyle(
+        color: BlocProvider.of<HomeCubit>(context).isDark? Colors.white : Colors.black,
+      ),
     );
   }
 }
