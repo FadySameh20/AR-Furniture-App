@@ -1,10 +1,7 @@
 import 'package:ar_furniture_app/cubits/home_cubit.dart';
-import 'package:ar_furniture_app/models/furniture_model.dart';
 import 'package:ar_furniture_app/shared/constants/constants.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import 'order_details_screen.dart';
 
 class OrderScreen extends StatelessWidget {
@@ -13,14 +10,14 @@ class OrderScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: !BlocProvider.of<HomeCubit>(context).isDark?const Color.fromRGBO(242, 246, 249, 1):const Color.fromRGBO(30, 30, 30, 1),
+        backgroundColor: !BlocProvider.of<HomeCubit>(context).isDark? kLightModeBackgroundColor : kDarkModeBackgroundColor,
       appBar: AppBar(
         backgroundColor: kAppBackgroundColor  ,
         // leading: FlutterLogo(),
         centerTitle: true,
         title: Text(
           "My Orders",
-          style: TextStyle(color: BlocProvider.of<HomeCubit>(context).isDark?const Color.fromRGBO(242, 246, 249, 1):const Color.fromRGBO(30, 30, 30, 1)),
+          style: TextStyle(color: !BlocProvider.of<HomeCubit>(context).isDark? Colors.white :Colors.black),
         ),
       ),
       body: ListView.builder(

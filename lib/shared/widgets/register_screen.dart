@@ -1,10 +1,7 @@
 import 'dart:io';
-
 import 'package:ar_furniture_app/shared/widgets/auth_cubit.dart';
 import 'package:ar_furniture_app/shared/widgets/auth_states.dart';
 import 'package:ar_furniture_app/shared/widgets/validations.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
@@ -329,8 +326,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   }
                                 },
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor:
-                                      Color.fromRGBO(191, 122, 47, 1),
+                                  backgroundColor: kAppBackgroundColor,
                                 ),
                                 child: Text(
                                   "Register",
@@ -354,11 +350,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                     onTap: () {
                                       Navigator.pushNamed(context, '/login');
                                     },
-                                    child: Text(
+                                    child: const Text(
                                       'Login',
                                       style: TextStyle(
-                                          color:
-                                              Color.fromRGBO(191, 122, 47, 1),
+                                          color: kAppBackgroundColor,
                                           fontWeight: FontWeight.bold,
                                           decoration: TextDecoration.underline,
                                           fontSize: 18),
@@ -385,7 +380,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                                 Color.fromRGBO(239, 169, 93, 1.0),
 
-                                Color.fromRGBO(191, 122, 47, 1),
+                                kAppBackgroundColor,
                               ]),
                             ),
                           ),
