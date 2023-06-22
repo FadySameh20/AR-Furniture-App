@@ -116,8 +116,40 @@ class _CartScreenState extends State<CartScreen> {
 
   @override
   Widget build(BuildContext context) {
+  var appBar=AppBar(
+    backgroundColor: kAppBackgroundColor,
+    leading: IconButton(
+      onPressed: () {
+        Navigator.pop(context);
+      },
+      icon: Icon(
+        Icons.arrow_back_ios,
+        color: BlocProvider.of<HomeCubit>(context).isDark?Colors.black:Colors.white,
+      ),
+    ),
+    actions: [
 
+      Visibility(
+        visible: _isvisible,
+        child: IconButton(onPressed: () {
+          Navigator.push(context, MaterialPageRoute(
+              builder: (context) => ObjectGesturesWidget(furnModel)));
+        }, icon: Icon(Icons.camera,
+          color: BlocProvider.of<HomeCubit>(context).isDark?Colors.black:Colors.white,
+        )),
+      ),
+      // IconButton(onPressed: () {}, icon: Icon(Icons.shopping_cart,color: BlocProvider.of<HomeCubit>(context).isDark?Colors.black:Colors.white,)),
+
+    ],
+    centerTitle: true,
+
+    title: Text(
+      "Cart",
+      style: TextStyle(color: BlocProvider.of<HomeCubit>(context).isDark?Colors.black:Colors.white,),
+    ),
+  );
     return BlocConsumer<HomeCubit, HomeState>(
+
         listener: (context, state) {
           // if(state is ErrorInCheckout) {
           //   Alert(
@@ -157,45 +189,16 @@ class _CartScreenState extends State<CartScreen> {
           return Scaffold(
             backgroundColor: !BlocProvider.of<HomeCubit>(context).isDark? kLightModeBackgroundColor : kDarkModeBackgroundColor,
 
-            appBar: AppBar(
-              backgroundColor: kAppBackgroundColor,
-              leading: IconButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                icon: Icon(
-                  Icons.arrow_back_ios,
-                  color: BlocProvider.of<HomeCubit>(context).isDark?Colors.black:Colors.white,
-                ),
-              ),
-              actions: [
-
-                  Visibility(
-                    visible: _isvisible,
-                    child: IconButton(onPressed: () {
-                      Navigator.push(context, MaterialPageRoute(
-                          builder: (context) => ObjectGesturesWidget(furnModel)));
-                    }, icon: Icon(Icons.camera,
-                      color: BlocProvider.of<HomeCubit>(context).isDark?Colors.black:Colors.white,
-                    )),
-                  ),
-                  // IconButton(onPressed: () {}, icon: Icon(Icons.shopping_cart,color: BlocProvider.of<HomeCubit>(context).isDark?Colors.black:Colors.white,)),
-
-              ],
-              centerTitle: true,
-
-              title: Text(
-                "Cart",
-                style: TextStyle(color: BlocProvider.of<HomeCubit>(context).isDark?Colors.black:Colors.white,),
-              ),
-            ),
+            appBar: appBar,
 
             // height: MediaQuery.of(context).size.height * 0.6,
             // flex: 2,
             body: Stack(
               children: [
                 Container(
+                  height: MediaQuery.of(context).size.height-(MediaQuery.of(context).padding.bottom+MediaQuery.of(context).size.height*0.35+MediaQuery.of(context).viewPadding.top+appBar.preferredSize.height),
                   child: ListView.builder(
+                    physics: BouncingScrollPhysics(),
                     itemCount: furnitureNames.length,
                     itemBuilder: (context, index) {
                       return Dismissible(

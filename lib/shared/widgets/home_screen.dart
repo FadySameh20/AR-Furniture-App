@@ -148,7 +148,7 @@ class _HomePageState extends State<HomePage> {
 
           appBar: AppBar(
               backgroundColor: kAppBackgroundColor,
-              leading: const FlutterLogo(),
+              leading:  Image.asset("assets/logo.png"),
               actions: [
                 IconButton(
                     onPressed: () {
