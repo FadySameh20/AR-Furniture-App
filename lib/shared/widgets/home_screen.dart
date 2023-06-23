@@ -1,4 +1,3 @@
-
 import 'package:ar_furniture_app/cubits/home_cubit.dart';
 import 'package:ar_furniture_app/models/furniture_model.dart';
 import 'package:ar_furniture_app/shared/constants/constants.dart';
@@ -12,9 +11,7 @@ import 'package:circular_bottom_navigation/tab_item.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import '../../cubits/home_states.dart';
-import '../cache/sharedpreferences.dart';
 import 'cart_screen.dart';
 import 'categories_scroller.dart';
 import 'category_screen.dart';
@@ -68,7 +65,7 @@ class _HomePageState extends State<HomePage> {
       TabItem(
         Icons.home,
         "Home",
-        const Color.fromRGBO(191, 122, 47, 1),
+        kAppBackgroundColor,
         labelStyle:  TextStyle(color: !BlocProvider.of<HomeCubit>(context).isDark
             ? Colors.black
             : Colors.white,fontSize: 16),
@@ -76,7 +73,7 @@ class _HomePageState extends State<HomePage> {
       TabItem(
         Icons.favorite,
         "Favorite",
-        const Color.fromRGBO(191, 122, 47, 1),
+        kAppBackgroundColor,
         labelStyle:  TextStyle(color: !BlocProvider.of<HomeCubit>(context).isDark
             ? Colors.black
             : Colors.white,fontSize: 16),
@@ -84,7 +81,7 @@ class _HomePageState extends State<HomePage> {
       TabItem(
         Icons.search,
         "Search",
-        const Color.fromRGBO(191, 122, 47, 1),
+        kAppBackgroundColor,
         labelStyle:  TextStyle(color: !BlocProvider.of<HomeCubit>(context).isDark
             ? Colors.black
             : Colors.white,fontSize: 16),
@@ -92,7 +89,7 @@ class _HomePageState extends State<HomePage> {
       TabItem(
         Icons.category,
         "Categories",
-        const Color.fromRGBO(191, 122, 47, 1),
+        kAppBackgroundColor,
         labelStyle:  TextStyle(color: !BlocProvider.of<HomeCubit>(context).isDark
             ? Colors.black
             : Colors.white,fontSize: 16),
@@ -100,7 +97,7 @@ class _HomePageState extends State<HomePage> {
       TabItem(
         Icons.person,
         "Profile",
-        const Color.fromRGBO(191, 122, 47, 1),
+        kAppBackgroundColor,
         labelStyle:  TextStyle(color: !BlocProvider.of<HomeCubit>(context).isDark
             ? Colors.black
             : Colors.white,fontSize: 16),
@@ -147,11 +144,11 @@ class _HomePageState extends State<HomePage> {
         return Scaffold(
           // backgroundColor: Color(0xE9E89235),
           // backgroundColor: Colors.grey[300],
-          backgroundColor: !BlocProvider.of<HomeCubit>(context).isDark?const Color.fromRGBO(242, 246, 249, 1):const Color.fromRGBO(30, 30, 30, 1),
+          backgroundColor: !BlocProvider.of<HomeCubit>(context).isDark? kLightModeBackgroundColor : kDarkModeBackgroundColor,
 
           appBar: AppBar(
-              backgroundColor: const Color.fromRGBO(191, 122, 47, 1),
-              leading: const FlutterLogo(),
+              backgroundColor: kAppBackgroundColor,
+              leading:  Image.asset("assets/logo.png"),
               actions: [
                 IconButton(
                     onPressed: () {
@@ -168,7 +165,7 @@ class _HomePageState extends State<HomePage> {
                                       .cache
                                       .cartMap)));
                     },
-                    icon: Icon(Icons.shopping_cart,color:!BlocProvider.of<HomeCubit>(context).isDark?Color.fromRGBO(242, 246, 249, 1):Color.fromRGBO(30, 30, 30, 1)))
+                    icon: Icon(Icons.shopping_cart,color:!BlocProvider.of<HomeCubit>(context).isDark? kLightModeBackgroundColor : kDarkModeBackgroundColor))
               ],
               centerTitle: true,
               title: Text(screenTitles[selectedPos],style: Theme.of(context).textTheme.bodyLarge!.copyWith(fontSize: 25,fontWeight: FontWeight.bold,color: BlocProvider.of<HomeCubit>(context).isDark?Colors.black:Colors.white)) ,

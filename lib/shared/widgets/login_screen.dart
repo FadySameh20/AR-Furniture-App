@@ -3,11 +3,8 @@ import 'package:ar_furniture_app/shared/constants/constants.dart';
 import 'package:ar_furniture_app/shared/widgets/auth_cubit.dart';
 import 'package:ar_furniture_app/shared/widgets/auth_states.dart';
 import 'package:ar_furniture_app/shared/widgets/validations.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import 'input_text_field.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -134,37 +131,36 @@ class _LoginScreenState extends State<LoginScreen> {
                                   }
                                 },
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor:
-                                      Color.fromRGBO(191, 122, 47, 1),
+                                  backgroundColor: kAppBackgroundColor,
                                 ),
-                                child: Text(
+                                child: const Text(
                                   "Login",
                                   style: TextStyle(fontSize: 18),
                                 ),
                               ),
-                              SizedBox(
+                              const SizedBox(
                                 height: 20.0,
                               ),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: <Widget>[
-                                  Text(
+                                  const Text(
                                     'Create a new account ?',
                                     style: TextStyle(fontSize: 18),
                                   ),
-                                  SizedBox(width: 5.0),
+                                  const SizedBox(width: 5.0),
                                   InkWell(
                                     onTap: () {
                                       Navigator.pushNamed(context, '/register');
                                     },
-                                    child: Text(
+                                    child: const Text(
                                       'Register',
                                       style: TextStyle(
-                                          color:
-                                              Color.fromRGBO(191, 122, 47, 1),
+                                          color: kAppBackgroundColor,
                                           fontWeight: FontWeight.bold,
                                           decoration: TextDecoration.underline,
-                                          fontSize: 18),
+                                          fontSize: 18
+                                      ),
                                     ),
                                   ),
                                 ],
@@ -188,7 +184,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                                 Color.fromRGBO(239, 169, 93, 1.0),
 
-                                Color.fromRGBO(191, 122, 47, 1),
+                                kAppBackgroundColor,
                               ]),
                             ),
                           ),

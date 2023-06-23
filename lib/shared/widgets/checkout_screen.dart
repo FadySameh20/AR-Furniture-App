@@ -1,22 +1,13 @@
-import 'dart:convert';
-
 import 'package:ar_furniture_app/cubits/home_cubit.dart';
 import 'package:ar_furniture_app/cubits/home_states.dart';
-import 'package:ar_furniture_app/shared/cache/sharedpreferences.dart';
 import 'package:ar_furniture_app/shared/constants/constants.dart';
 import 'package:ar_furniture_app/shared/widgets/cart_screen.dart';
-import 'package:ar_furniture_app/shared/widgets/circle_avatar.dart';
 import 'package:ar_furniture_app/shared/widgets/validations.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
-
-import '../../models/furniture_model.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
-import 'input_text_field.dart';
 
 class CheckoutScreen extends StatefulWidget {
   // List<FurnitureModel> furnitureList;
@@ -74,12 +65,12 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
               .join('\n\n'),
           buttons: [
             DialogButton(
-              child: Text(
+              onPressed: () => Navigator.pop(context),
+              color: kAppBackgroundColor,
+              child: const Text(
                 "OK",
                 style: TextStyle(color: Colors.white, fontSize: 20),
               ),
-              onPressed: () => Navigator.pop(context),
-              color: kAppBackgroundColor,
             ),
           ],
           style: AlertStyle(
@@ -103,10 +94,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                 .join('\n\n'),
             buttons: [
               DialogButton(
-                child: Text(
-                  "Return to cart screen",
-                  style: TextStyle(color: Colors.white, fontSize: 20),
-                ),
                 onPressed: () {
                   Navigator.pop(context);
                   Navigator.pop(context);
@@ -114,6 +101,10 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                   Navigator.push(context,MaterialPageRoute(builder: (context)=>CartScreen(furnitureList: BlocProvider.of<HomeCubit>(context).furnitureList, cartMap: BlocProvider.of<HomeCubit>(context).cache.cartMap)));
                 },
                 color: kAppBackgroundColor,
+                child: Text(
+                  "Return to cart screen",
+                  style: TextStyle(color: Colors.white, fontSize: 20),
+                ),
               ),
             ],
             style: AlertStyle(
@@ -128,22 +119,23 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
             ),
           ).show();
       } else if (state is OrderMadeSuccessfully) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
           content: Text('Placed order successfully !'),
         ));
         Navigator.pushNamedAndRemoveUntil(context, '/home', (route) => false);
       }
     }, builder: (context, state) {
       return Scaffold(
-        backgroundColor: !BlocProvider.of<HomeCubit>(context).isDark?Colors.white:Colors.black,
+        backgroundColor: !BlocProvider.of<HomeCubit>(context).isDark? kLightModeBackgroundColor : kDarkModeBackgroundColor,
         appBar: AppBar(
-          backgroundColor: Color.fromRGBO(191, 122, 47, 1),
+          backgroundColor: kAppBackgroundColor,
           leading: IconButton(
             icon: Icon(Icons.arrow_back_ios,color: !BlocProvider.of<HomeCubit>(context).isDark?Colors.white:Colors.black),
             onPressed: () {
               Navigator.pop(context);
             },
           ),
+          centerTitle: true,
           title: Text(
             "Checkout",
             style: TextStyle(color: !BlocProvider.of<HomeCubit>(context).isDark?Colors.white:Colors.black),
@@ -170,12 +162,12 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                               return validator.validateText(val!);
                             },
                           ),
-                          SizedBox(height: 10),
+                          const SizedBox(height: 10),
                           buildTextField('Street Name', streetNameController,
                               validator: (String? val) {
                             return validator.validateText(val!);
                           }),
-                          SizedBox(height: 10),
+                          const SizedBox(height: 10),
                           buildTextField(
                             'building Number',
                             buildingNumberController,
@@ -183,13 +175,12 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                               return validator.validateNumber(val!);
                             },
                           ),
-                          SizedBox(height: 10),
+                          const SizedBox(height: 10),
                           buildTextField('Floor Number', floorNumberController,
                             validator: (String? val) {
                               return validator.validateNumber(val!);
                             },),
-
-                          SizedBox(height: 10),
+                          const SizedBox(height: 10),
                           buildTextField(
                             'Appartment Number',
                             appartmentNumberController,
@@ -197,9 +188,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                               return validator.validateNumber(val!);
                             },
                           ),
-                          SizedBox(height: 10),
+                          const SizedBox(height: 10),
                           InternationalPhoneNumberInput(
-
                             textStyle:TextStyle(color: BlocProvider.of<HomeCubit>(context).isDark?Colors.white:Colors.black),
                             spaceBetweenSelectorAndTextField: 0,
                             onInputValidated: (value) {},
@@ -209,17 +199,26 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                             ),
                             ignoreBlank: false,
                             autoValidateMode: AutovalidateMode.onUserInteraction,
-
-                            selectorTextStyle:
-                         TextStyle(color: BlocProvider.of<HomeCubit>(context).isDark?Colors.white:Colors.black),
+                            selectorTextStyle: TextStyle(color: BlocProvider.of<HomeCubit>(context).isDark?Colors.white:Colors.black),
                             initialValue: number,
                             textFieldController: mobileNumberController,
                             formatInput: false,
                             keyboardType: const TextInputType.numberWithOptions(
                                 signed: true, decimal: true),
-                            inputBorder: const OutlineInputBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(20.0)),
+                            inputDecoration: InputDecoration(
+                              hintText: 'Phone Number',
+                              hintStyle: TextStyle(
+                                  color: BlocProvider.of<HomeCubit>(context).isDark?kLightModeBackgroundColor.withOpacity(0.25):kDarkModeBackgroundColor.withOpacity(0.25),
+                              ),
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.all(Radius.circular(20.0)),),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: !BlocProvider.of<HomeCubit>(context).isDark?kDarkModeTextField:kLightModeTextField,
+                                  width: 2,
+                                  style: BorderStyle.solid,),
+                                borderRadius: const BorderRadius.all(Radius.circular(20.0)),
+                              ),
                             ),
                           ),
                         ]),
@@ -247,9 +246,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                           Text("\EGP ${widget.subTotal.toStringAsFixed(2)}",style:TextStyle(color: BlocProvider.of<HomeCubit>(context).isDark?Colors.white:Colors.black)),
                         ],
                       ),
-                      SizedBox(
-                        height: 10,
-                      ),
+                      const SizedBox(height: 10,),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -261,11 +258,9 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                         height: MediaQuery.of(context).size.height*0.05,
                       ),
                       Divider(
-                        color: Colors.black,
+                        color: BlocProvider.of<HomeCubit>(context).isDark?Colors.white:Colors.black,
                       ),
-                      SizedBox(
-                        height: 10,
-                      ),
+                      const SizedBox(height: 10,),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -281,10 +276,8 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                           Expanded(
                               child: state is LoadingMakeOrder?Center(child: CircularProgressIndicator(),): ElevatedButton(
                                   style: ElevatedButton.styleFrom(
-                                    padding:
-                                        EdgeInsets.symmetric(vertical: 10),
-                                    backgroundColor:
-                                        Color.fromRGBO(191, 122, 47, 1),
+                                    padding: const EdgeInsets.symmetric(vertical: 10),
+                                    backgroundColor: kAppBackgroundColor,
                                   ),
                                   onPressed: () async {
                                     if (formKey.currentState!.validate()) {
@@ -313,7 +306,7 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
                                     "Place Order",
                                     style: TextStyle(
                                         fontWeight: FontWeight.bold,
- color: !BlocProvider.of<HomeCubit>(context).isDark?Colors.white:Colors.black,
+                                        color: !BlocProvider.of<HomeCubit>(context).isDark?Colors.white:Colors.black,
                                         fontSize: 20),
                                   ))),
                         ],
@@ -338,19 +331,17 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
       decoration: InputDecoration(
         enabledBorder: UnderlineInputBorder(
             borderSide: BorderSide(
-                color: Color.fromRGBO(214, 189, 169, 1), width: 2.0)),
+                color: !BlocProvider.of<HomeCubit>(context).isDark?kDarkModeTextField:kLightModeTextField, width: 2.0)),
         focusedBorder: UnderlineInputBorder(
             borderSide: BorderSide(
-                color: Color.fromRGBO(157, 139, 124, 1), width: 5.0)),
+                color: !BlocProvider.of<HomeCubit>(context).isDark?kDarkModeTextField:kLightModeTextField, width: 5.0)),
         labelText: labelText,
         labelStyle: TextStyle(
-          color: Color.fromRGBO(124, 58, 40, 1),
+          color: !BlocProvider.of<HomeCubit>(context).isDark? kLightModeTextField:kDarkModeTextField,
           fontSize: 13,
         ),
-
-        // hintText: "Edit Your Password"
       ),
-      cursorColor: Color.fromRGBO(124, 58, 40, 1),
+      cursorColor: kLightModeTextField,
     );
   }
 }

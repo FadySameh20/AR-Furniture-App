@@ -1,22 +1,15 @@
-import 'dart:convert';
-
 import 'package:ar_furniture_app/cubits/home_cubit.dart';
 import 'package:ar_furniture_app/cubits/home_states.dart';
 import 'package:ar_furniture_app/models/furniture_model.dart';
-import 'package:ar_furniture_app/shared/cache/sharedpreferences.dart';
 import 'package:ar_furniture_app/shared/widgets/cart_screen.dart';
 import 'package:ar_furniture_app/shared/widgets/favorite_icon.dart';
 import 'package:ar_furniture_app/shared/widgets/objectgesturesexample.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
-
 import '../constants/constants.dart';
 import 'circle_avatar.dart';
 
@@ -88,9 +81,9 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
       listener: (context, state) {},
       builder: (context, state) {
         return Scaffold(
-          backgroundColor: !BlocProvider.of<HomeCubit>(context).isDark?Colors.white:Colors.black,
+          backgroundColor: !BlocProvider.of<HomeCubit>(context).isDark? kLightModeBackgroundColor : kDarkModeBackgroundColor,
           appBar: AppBar(
-            backgroundColor: const Color.fromRGBO(191, 122, 47, 1),
+            backgroundColor: kAppBackgroundColor,
             leading: IconButton(
               onPressed: () {
                 Navigator.pop(context);
@@ -870,7 +863,7 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                             .height > 700 ? 20.0 : 10.0,
                       ),
                        Text(
-                        'Recommendations',
+                        'Suggestions',
                         style:
                         TextStyle(fontSize: 16.0, fontWeight: FontWeight.w500,color: !BlocProvider.of<HomeCubit>(context).isDark?Colors.black:Colors.white,),
                       ),

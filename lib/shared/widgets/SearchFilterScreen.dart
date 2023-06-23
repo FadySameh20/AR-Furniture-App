@@ -1,11 +1,9 @@
 import 'package:ar_furniture_app/cubits/home_states.dart';
-import 'package:ar_furniture_app/shared/cache/sharedpreferences.dart';
 import 'package:ar_furniture_app/shared/constants/constants.dart';
 import 'package:ar_furniture_app/shared/widgets/circle_avatar.dart';
 import 'package:flutter/material.dart';
 import 'package:ar_furniture_app/models/name_model.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import '../../cubits/home_cubit.dart';
 
 
@@ -27,13 +25,13 @@ class _SearchFilterScreenState extends State<SearchFilterScreen> {
     return BlocConsumer<HomeCubit,HomeState>(
       listener: (context,state){},
       builder:(context,state){return Scaffold(
-        backgroundColor: !BlocProvider.of<HomeCubit>(context).isDark?Colors.white:Colors.black,
+        backgroundColor: !BlocProvider.of<HomeCubit>(context).isDark? kLightModeBackgroundColor : kDarkModeBackgroundColor,
         appBar: AppBar(
           title:  Text("Filter",style: TextStyle(color: !BlocProvider.of<HomeCubit>(context).isDark?Colors.white:Colors.black),),
           centerTitle: true,
           backgroundColor: kAppBackgroundColor,
           leading: IconButton(
-            icon: Icon(Icons.arrow_back_ios,color: CacheHelper.getData("darkMode")==false||CacheHelper.getData("darkMode")==null?Colors.white:Colors.black,),
+            icon: Icon(Icons.arrow_back_ios,color: !BlocProvider.of<HomeCubit>(context).isDark? Colors.white:Colors.black,),
             onPressed: () {
               Navigator.pop(context);
             },

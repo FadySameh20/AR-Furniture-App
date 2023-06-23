@@ -1,19 +1,13 @@
-
 import 'package:ar_furniture_app/cubits/home_cubit.dart';
 import 'package:ar_furniture_app/cubits/home_states.dart';
 import 'package:ar_furniture_app/models/shared_model.dart';
-import 'package:ar_furniture_app/shared/cache/sharedpreferences.dart';
 import 'package:ar_furniture_app/shared/constants/constants.dart';
 import 'package:ar_furniture_app/shared/widgets/checkout_screen.dart';
 import 'package:ar_furniture_app/shared/widgets/circle_avatar.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import '../../models/furniture_model.dart';
-import 'package:rflutter_alert/rflutter_alert.dart';
-
 import 'objectgesturesexample.dart';
 
 class CartScreen extends StatefulWidget {
@@ -69,14 +63,6 @@ class _CartScreenState extends State<CartScreen> {
     });
     super.initState();
   }
-
-
-
-
-
-
-
-
   // Future<void> setCache() async {
   //   cartMap = await json.decode(CacheHelper.getData('cart')) ?? {};
   //   print("Cart Map");
@@ -113,316 +99,6 @@ class _CartScreenState extends State<CartScreen> {
               .where((element) => element.furnitureId == key)
               .first
               .furnitureId);
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         }
       });
     });
@@ -440,8 +116,40 @@ class _CartScreenState extends State<CartScreen> {
 
   @override
   Widget build(BuildContext context) {
+  var appBar=AppBar(
+    backgroundColor: kAppBackgroundColor,
+    leading: IconButton(
+      onPressed: () {
+        Navigator.pop(context);
+      },
+      icon: Icon(
+        Icons.arrow_back_ios,
+        color: BlocProvider.of<HomeCubit>(context).isDark?Colors.black:Colors.white,
+      ),
+    ),
+    actions: [
 
+      Visibility(
+        visible: _isvisible,
+        child: IconButton(onPressed: () {
+          Navigator.push(context, MaterialPageRoute(
+              builder: (context) => ObjectGesturesWidget(furnModel)));
+        }, icon: Icon(Icons.camera,
+          color: BlocProvider.of<HomeCubit>(context).isDark?Colors.black:Colors.white,
+        )),
+      ),
+      // IconButton(onPressed: () {}, icon: Icon(Icons.shopping_cart,color: BlocProvider.of<HomeCubit>(context).isDark?Colors.black:Colors.white,)),
+
+    ],
+    centerTitle: true,
+
+    title: Text(
+      "Cart",
+      style: TextStyle(color: BlocProvider.of<HomeCubit>(context).isDark?Colors.black:Colors.white,),
+    ),
+  );
     return BlocConsumer<HomeCubit, HomeState>(
+
         listener: (context, state) {
           // if(state is ErrorInCheckout) {
           //   Alert(
@@ -479,46 +187,18 @@ class _CartScreenState extends State<CartScreen> {
         },
         builder: (context, state) {
           return Scaffold(
-            backgroundColor: !BlocProvider.of<HomeCubit>(context).isDark?Colors.white:Colors.black,
+            backgroundColor: !BlocProvider.of<HomeCubit>(context).isDark? kLightModeBackgroundColor : kDarkModeBackgroundColor,
 
-            appBar: AppBar(
-              backgroundColor: Color.fromRGBO(191, 122, 47, 1),
-              leading: IconButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                icon: Icon(
-
-                  Icons.arrow_back_ios,
-                  color: BlocProvider.of<HomeCubit>(context).isDark?Colors.black:Colors.white,
-                ),
-              ),
-              actions: [
-
-                  Visibility(
-                    visible: _isvisible,
-                    child: IconButton(onPressed: () {
-                      Navigator.push(context, MaterialPageRoute(
-                          builder: (context) => ObjectGesturesWidget(furnModel)));
-                    }, icon: Icon(Icons.camera)),
-                  ),
-                  // IconButton(onPressed: () {}, icon: Icon(Icons.shopping_cart,color: BlocProvider.of<HomeCubit>(context).isDark?Colors.black:Colors.white,)),
-
-              ],
-              centerTitle: true,
-
-              title: Text(
-                "Cart",
-                style: TextStyle(color: BlocProvider.of<HomeCubit>(context).isDark?Colors.black:Colors.white,),
-              ),
-            ),
+            appBar: appBar,
 
             // height: MediaQuery.of(context).size.height * 0.6,
             // flex: 2,
             body: Stack(
               children: [
                 Container(
+                  height: MediaQuery.of(context).size.height-(MediaQuery.of(context).padding.bottom+MediaQuery.of(context).size.height*0.35+MediaQuery.of(context).viewPadding.top+appBar.preferredSize.height),
                   child: ListView.builder(
+                    physics: BouncingScrollPhysics(),
                     itemCount: furnitureNames.length,
                     itemBuilder: (context, index) {
                       return Dismissible(
@@ -596,9 +276,7 @@ class _CartScreenState extends State<CartScreen> {
                                             style: TextStyle(fontSize: 15,
                                             color:BlocProvider.of<HomeCubit>(context).isDark?Colors.white:Colors.white),
                                           ),
-                                          SizedBox(
-                                            height: 10,
-                                          ),
+                                          const SizedBox(height: 10,),
                                           Row(
                                             children: [
                                               InkWell(
@@ -799,15 +477,11 @@ class _CartScreenState extends State<CartScreen> {
                                   Text("\EGP ${tax.toStringAsFixed(2)}",style:TextStyle(color: BlocProvider.of<HomeCubit>(context).isDark?Colors.white:Colors.black)),
                                 ],
                               ),
-                              SizedBox(
-                                height: 10,
-                              ),
+                              const SizedBox(height: 10,),
                               Divider(
-                                color: Colors.black,
+                                color: BlocProvider.of<HomeCubit>(context).isDark?Colors.white:Colors.black,
                               ),
-                              SizedBox(
-                                height: 10,
-                              ),
+                              const SizedBox(height: 10,),
                               Row(
                                 mainAxisAlignment:
                                 MainAxisAlignment.spaceBetween,
@@ -816,18 +490,14 @@ class _CartScreenState extends State<CartScreen> {
                                   Text("\EGP ${totalPrice.toStringAsFixed(2)}",style:TextStyle(color: BlocProvider.of<HomeCubit>(context).isDark?Colors.white:Colors.black)),
                                 ],
                               ),
-                              SizedBox(
-                                height: 20,
-                              ),
+                              const SizedBox(height: 20,),
                               Row(
                                 children: [
                                   Expanded(
                                       child: ElevatedButton(
                                           style: ElevatedButton.styleFrom(
-                                            padding: EdgeInsets.symmetric(
-                                                vertical: 10),
-                                            backgroundColor:
-                                            Color.fromRGBO(191, 122, 47, 1),
+                                            padding: const EdgeInsets.symmetric(vertical: 10),
+                                            backgroundColor: kAppBackgroundColor,
                                           ),
                                           onPressed: () async {
                                             // qawait BlocProvider.of<HomeCubit>(context).checkAvailableFurnitureQuantity(context);
