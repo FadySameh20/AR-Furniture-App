@@ -144,26 +144,29 @@ class _SearchFilterScreenState extends State<SearchFilterScreen> {
                     fontSize: 20,
                   ),
                 ),
-                GridView.count(
-                  shrinkWrap: true,
-                  crossAxisCount: 4,
-                  scrollDirection: Axis.vertical,
-                  mainAxisSpacing: 10.0,
-                  crossAxisSpacing: 5.0,
-                  reverse: false,
-                  children: List.generate(widget.availableColors.length, (index) {
-                    return Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [InkWell(
-                          onTap: (){
-                            setState(() {
-                              widget.availableColors.update(widget.availableColors.keys.elementAt(index), (value) => !widget.availableColors.values.elementAt(index));
-                            });
-                          },
-                          child: CustomCircleAvatar(radius: MediaQuery.of(context).size.height > 350 ? 25.0 : 20.0, CavatarColor: widget.availableColors.keys.elementAt(index), icon: widget.availableColors.values.elementAt(index) == true? const Icon(Icons.check, size: 30, color: Colors.white,):null),
-                      ),
-                    ]);
-                  }),
+                SingleChildScrollView(
+                  child: GridView.count(
+                    physics: NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    crossAxisCount: 4,
+                    scrollDirection: Axis.vertical,
+                    mainAxisSpacing: 10.0,
+                    crossAxisSpacing: 5.0,
+                    reverse: false,
+                    children: List.generate(widget.availableColors.length, (index) {
+                      return Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [InkWell(
+                            onTap: (){
+                              setState(() {
+                                widget.availableColors.update(widget.availableColors.keys.elementAt(index), (value) => !widget.availableColors.values.elementAt(index));
+                              });
+                            },
+                            child: CustomCircleAvatar(radius: MediaQuery.of(context).size.height > 350 ? 25.0 : 20.0, CavatarColor: widget.availableColors.keys.elementAt(index), icon: widget.availableColors.values.elementAt(index) == true? const Icon(Icons.check, size: 30, color: Colors.white,):null),
+                        ),
+                      ]);
+                    }),
+                  ),
                 ),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
