@@ -53,7 +53,7 @@ class _SearchFilterScreenState extends State<SearchFilterScreen> {
                 RangeSlider(
                     values: widget.rangeValues,
                     min: 0,
-                    max: 10000,
+                    max: 20000,
                     divisions: 10,
                     labels: RangeLabels(
                         widget.rangeValues.start.round().toString(),
@@ -97,7 +97,8 @@ class _SearchFilterScreenState extends State<SearchFilterScreen> {
                               height: 30,
                               width: 70,
                               decoration: BoxDecoration(
-                                  color: !BlocProvider.of<HomeCubit>(context).isDark?Colors.white:Color(0xff414147),
+                                  color: widget.categories.values.elementAt(index)? kAppBackgroundColor
+                                      : !BlocProvider.of<HomeCubit>(context).isDark?Colors.white:Color(0xff414147),
                                   borderRadius: BorderRadius.circular(50)),
                               child: Padding(
                                 padding: const EdgeInsets.all(8.0),

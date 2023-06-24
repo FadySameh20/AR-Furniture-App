@@ -109,7 +109,7 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
             ],
             centerTitle: true,
             title: Text(
-              widget.selectedFurniture.name,
+              BlocProvider.of<HomeCubit>(context).capitalizeFirstLettersInView(widget.selectedFurniture.name),
               style:  TextStyle(color: !BlocProvider.of<HomeCubit>(context).isDark?Colors.white:Colors.black),
             ),
           ),
@@ -243,7 +243,7 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                           title: Padding(
                             padding: const EdgeInsets.only(bottom: 5.0),
                             child: Text(
-                              widget.selectedFurniture.name,
+                              BlocProvider.of<HomeCubit>(context).capitalizeFirstLettersInView(widget.selectedFurniture.name),
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                               style:  TextStyle(
@@ -910,7 +910,7 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                                           ),
                                         ),
                                         SizedBox(height: 10,),
-                                        Text(BlocProvider.of<HomeCubit>(context).recommendedFurniture[index].name,style:TextStyle(color: !BlocProvider.of<HomeCubit>(context).isDark?Colors.black:Colors.white,)),
+                                        Text(BlocProvider.of<HomeCubit>(context).capitalizeFirstLettersInView(BlocProvider.of<HomeCubit>(context).recommendedFurniture[index].name),style:TextStyle(color: !BlocProvider.of<HomeCubit>(context).isDark?Colors.black:Colors.white,)),
                                       ],
                                     ),
                                   ),

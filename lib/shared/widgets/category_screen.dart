@@ -154,7 +154,7 @@ class _CategoriesScreenState extends State<CategoriesScreen> {
                                               padding:
                                               const EdgeInsets.only(bottom: 5.0),
                                               child: Text(
-                                                filteredFurniture[index].name,
+                                                BlocProvider.of<HomeCubit>(context).capitalizeFirstLettersInView(filteredFurniture[index].name),
                                                 maxLines: 2,
                                                 overflow: TextOverflow.ellipsis,
                                                 style: TextStyle(

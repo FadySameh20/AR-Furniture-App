@@ -104,7 +104,7 @@ class _FavoriteItemWidgetState extends State<FavoriteItemWidget> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          widget.myFavorite.name,
+                          BlocProvider.of<HomeCubit>(context).capitalizeFirstLettersInView(widget.myFavorite.name),
                           style: TextStyle(fontSize: 15,color:BlocProvider.of<HomeCubit>(context).isDark?Colors.white:Colors.black),
                         ),
                         SizedBox(

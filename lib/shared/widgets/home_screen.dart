@@ -68,7 +68,7 @@ class _HomePageState extends State<HomePage> {
         kAppBackgroundColor,
         labelStyle:  TextStyle(color: !BlocProvider.of<HomeCubit>(context).isDark
             ? Colors.black
-            : Colors.white,fontSize: 16),
+            : Colors.white,fontSize: 15),
       ),
       TabItem(
         Icons.favorite,
@@ -76,7 +76,7 @@ class _HomePageState extends State<HomePage> {
         kAppBackgroundColor,
         labelStyle:  TextStyle(color: !BlocProvider.of<HomeCubit>(context).isDark
             ? Colors.black
-            : Colors.white,fontSize: 16),
+            : Colors.white,fontSize: 15),
       ),
       TabItem(
         Icons.search,
@@ -84,7 +84,7 @@ class _HomePageState extends State<HomePage> {
         kAppBackgroundColor,
         labelStyle:  TextStyle(color: !BlocProvider.of<HomeCubit>(context).isDark
             ? Colors.black
-            : Colors.white,fontSize: 16),
+            : Colors.white,fontSize: 15),
       ),
       TabItem(
         Icons.category,
@@ -92,7 +92,7 @@ class _HomePageState extends State<HomePage> {
         kAppBackgroundColor,
         labelStyle:  TextStyle(color: !BlocProvider.of<HomeCubit>(context).isDark
             ? Colors.black
-            : Colors.white,fontSize: 16),
+            : Colors.white,fontSize: 15),
       ),
       TabItem(
         Icons.person,
@@ -100,7 +100,7 @@ class _HomePageState extends State<HomePage> {
         kAppBackgroundColor,
         labelStyle:  TextStyle(color: !BlocProvider.of<HomeCubit>(context).isDark
             ? Colors.black
-            : Colors.white,fontSize: 16),
+            : Colors.white,fontSize: 15),
       ),
     ]);
     const screenTitles=["Home","Favorite","Search","Categories","Profile"];
@@ -476,12 +476,7 @@ class _HomePageState extends State<HomePage> {
                                                           child: Row(
                                                             children: [
                                                               Text(
-                                                                BlocProvider.of<
-                                                                            HomeCubit>(
-                                                                        context)
-                                                                    .furnitureList[
-                                                                        index]
-                                                                    .name,
+                                                                BlocProvider.of<HomeCubit>(context).capitalizeFirstLettersInView(BlocProvider.of<HomeCubit>(context).furnitureList[index].name),
                                                                 style:  TextStyle(
                                                                     fontWeight:
                                                                         FontWeight

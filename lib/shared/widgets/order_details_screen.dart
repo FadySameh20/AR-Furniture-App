@@ -134,7 +134,7 @@ class OrderDetailsScreen extends StatelessWidget {
                                             .width / 2.3,
                                         // color:Colors.red,
                                         child: Text(
-                                          furniture[index]["name"],
+                                          BlocProvider.of<HomeCubit>(context).capitalizeFirstLettersInView(furniture[index]["name"]),
                                           overflow: TextOverflow.ellipsis,
                                           maxLines: 1,
                                           style: GoogleFonts.raleway(

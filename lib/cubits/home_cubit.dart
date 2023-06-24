@@ -205,6 +205,16 @@ class HomeCubit extends Cubit<HomeState> {
     }
   }
 
+  String capitalizeFirstLettersInView(String text) {
+    List<String> words = text.split(' ');
+    for (int i = 0; i < words.length; i++) {
+      if (words[i].isNotEmpty) {
+        words[i] = '${words[i][0].toUpperCase()}${words[i].substring(1)}';
+      }
+    }
+    return words.join(' ');
+  }
+
   getOffers() async {
     await FirebaseFirestore.instance.collection('offer').get().then((value) {
       print("aaaaaaaaaaaaaaaaaaa");
@@ -918,6 +928,7 @@ class HomeCubit extends Cubit<HomeState> {
     }
   }
   addToRecentlySearchedName (String searchName){
+    searchName = capitalizeFirstLettersInView(searchName);
     if(cache.cacheRecentlySearchedNames.length < 5) {
       if(!cache.cacheRecentlySearchedNames.contains(searchName)) {
         cache.cacheRecentlySearchedNames.add(searchName);

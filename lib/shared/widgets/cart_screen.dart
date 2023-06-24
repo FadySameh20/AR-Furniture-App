@@ -222,7 +222,7 @@ class _CartScreenState extends State<CartScreen> {
 
                           // Then show a snackbar.
                           ScaffoldMessenger.of(context)
-                              .showSnackBar(SnackBar(content: Text('${furnitureColorNames[index]} ${furnitureNames[index]} is dismissed !')));
+                              .showSnackBar(SnackBar(content: Text('${furnitureColorNames[index]} ${BlocProvider.of<HomeCubit>(context).capitalizeFirstLettersInView(furnitureNames[index])} is dismissed !')));
 
                           setState(() {
                             furnitureNames.removeAt(index);
@@ -272,7 +272,7 @@ class _CartScreenState extends State<CartScreen> {
                                         CrossAxisAlignment.start,
                                         children: [
                                           Text(
-                                            furnitureNames[index],
+                                            BlocProvider.of<HomeCubit>(context).capitalizeFirstLettersInView(furnitureNames[index]),
                                             style: TextStyle(fontSize: 15,
                                             color:BlocProvider.of<HomeCubit>(context).isDark?Colors.white:Colors.white),
                                           ),

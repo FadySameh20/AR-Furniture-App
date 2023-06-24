@@ -28,7 +28,7 @@ class _SearchState extends State<Search> {
   TextEditingController _searchController = TextEditingController();
 
   // filter
-  RangeValues currentRangeValues = const RangeValues(0, 10000);
+  RangeValues currentRangeValues = const RangeValues(0, 20000);
   Map<Color,bool> colors = {};
   Map<CategoryItem,bool> categories = {};
   var arguments;
@@ -249,8 +249,13 @@ class _SearchState extends State<Search> {
                   ),
                 ),
               if(viewSuggestions == true)
-              searchR.isEmpty? const Center(
-                child: Text("No Items To Show"),
+              searchR.isEmpty? Center(
+                child: Text("No Items To Show",
+                  style: TextStyle(
+                    fontSize: 20,
+                    color: BlocProvider.of<HomeCubit>(context).isDark?Colors.white:Colors.black,
+                  ),
+                ),
               ):LayoutBuilder(
                 builder: (context,constraints) {
                   return Container(
@@ -284,6 +289,7 @@ class _SearchState extends State<Search> {
                               BlocProvider.of<HomeCubit>(context).addToRecentlySearchedName(fur.name);
                               List<Color?> availableColors = [];
                               availableColors = BlocProvider.of<HomeCubit>(context).getAvailableColorsOfFurniture(searchR[index]);
+                              BlocProvider.of<HomeCubit>(context).getFurnitureRecommendation(searchR[index], 0);
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(builder: (context) => SelectedFurnitureScreen(selectedFurniture: searchR[index], availableColors: availableColors)),
@@ -326,7 +332,7 @@ class _SearchState extends State<Search> {
                                       child: Image.network(fur.shared[0].image)
                                   ),
                                   Text(
-                                    fur.name,
+                                    BlocProvider.of<HomeCubit>(context).capitalizeFirstLettersInView(fur.name),
                                     style:  TextStyle(
                                       color:BlocProvider.of<HomeCubit>(context).isDark?Colors.white:Colors.black,
                                       fontSize: 18,
@@ -514,7 +520,7 @@ class _SearchState extends State<Search> {
         requestColorFilter = false;
       });
     }
-    if(currentRangeValues.start.round() != 0 || currentRangeValues.end.round() != 500) {
+    if(currentRangeValues.start.round() != 0 || currentRangeValues.end.round() != 20000) {
       setState(() {
         requestPriceFilter = true;
       });
