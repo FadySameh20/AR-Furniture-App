@@ -14,6 +14,15 @@ class OrderScreen extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: kAppBackgroundColor  ,
         // leading: FlutterLogo(),
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon:  Icon(
+            Icons.arrow_back_ios,
+            color: !BlocProvider.of<HomeCubit>(context).isDark?Colors.white:Colors.black,
+          ),
+        ),
         centerTitle: true,
         title: Text(
           "My Orders",
