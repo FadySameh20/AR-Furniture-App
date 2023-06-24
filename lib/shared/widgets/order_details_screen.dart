@@ -159,14 +159,14 @@ class OrderDetailsScreen extends StatelessWidget {
                                             )).toStringAsFixed(2)+
                                                 ' L.E',
                                             style: TextStyle(
-                                              decoration: furniture[index]["discount"]!="0"?TextDecoration.lineThrough:null,
+                                              decoration: (double.parse(furniture[index]["discount"])).toInt()!=0?TextDecoration.lineThrough:null,
                                               fontSize: 15.0,
                                               fontWeight: FontWeight.w600,
                                               color: kAppBackgroundColor,
                                             ),
                                           ),
                                           SizedBox(width: 10,),
-                                          if(furniture[index]["discount"]!="0")
+                                          if((double.parse(furniture[index]["discount"])).toInt()!=0)
 
                                             Text(
 
