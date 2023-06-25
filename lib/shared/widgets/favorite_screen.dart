@@ -122,14 +122,14 @@ class _FavoriteItemWidgetState extends State<FavoriteItemWidget> {
                                   )).toStringAsFixed(2)+
                                       ' L.E',
                                   style: TextStyle(
-                                    decoration: widget.myFavorite.shared[currentColorIndex].discount!="0"?TextDecoration.lineThrough:null,
+                                    decoration: double.parse(widget.myFavorite.shared[currentColorIndex].discount).toInt()!=0?TextDecoration.lineThrough:null,
                                     fontSize: 15.0,
                                     fontWeight: FontWeight.w600,
                                     color: kAppBackgroundColor,
                                   ),
                                 ),
                                 SizedBox(width: 10,),
-                                if(widget.myFavorite.shared[currentColorIndex].discount!="0")
+                                if(double.parse(widget.myFavorite.shared[currentColorIndex].discount).toInt()!=0)
 
                                   Text(
 
