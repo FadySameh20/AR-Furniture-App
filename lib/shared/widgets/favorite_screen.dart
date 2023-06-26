@@ -25,6 +25,7 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
       List<FurnitureModel> myFavorites=BlocProvider.of<HomeCubit>(context).furnitureList.where((element) => element.isFavorite==true).toList();
       print("Mylist:${myFavorites.length}");
       return myFavorites.isEmpty?Center(child: Text("No Favorites Yet",style: Theme.of(context).textTheme.bodyText1?.copyWith(
+          color: BlocProvider.of<HomeCubit>(context).isDark?Colors.white:Colors.black,
           fontSize: 24
       ),),):Container(
         // height: MediaQuery.of(context).size.height * 0.6,

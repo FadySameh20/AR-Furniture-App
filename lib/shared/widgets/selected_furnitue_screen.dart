@@ -88,8 +88,18 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
       listener: (context, state) {},
       builder: (context, state) {
         return Scaffold(
+          backgroundColor: !BlocProvider.of<HomeCubit>(context).isDark?Colors.white:Colors.black,
           appBar: AppBar(
             backgroundColor: const Color.fromRGBO(191, 122, 47, 1),
+            leading: IconButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              icon:  Icon(
+                Icons.arrow_back_ios,
+                color: !BlocProvider.of<HomeCubit>(context).isDark?Colors.white:Colors.black,
+              ),
+            ),
             actions: [
               IconButton(onPressed: () {
                 print("ya rbbb");
@@ -102,12 +112,12 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                         .furnitureList, cartMap: BlocProvider
                         .of<HomeCubit>(context)
                         .cache.cartMap)));
-              }, icon: const Icon(Icons.shopping_cart))
+              }, icon:  Icon(Icons.shopping_cart,color: !BlocProvider.of<HomeCubit>(context).isDark?Colors.white:Colors.black))
             ],
             centerTitle: true,
             title: Text(
               widget.selectedFurniture.name,
-              style: const TextStyle(),
+              style:  TextStyle(color: !BlocProvider.of<HomeCubit>(context).isDark?Colors.white:Colors.black),
             ),
           ),
           body: Column(
@@ -206,7 +216,7 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                         left: 15.0,
                         child: GestureDetector(
                           onTap: () {
-                            Navigator.push(context,MaterialPageRoute(builder: (context)=>ObjectGesturesWidget(["https://firebasestorage.googleapis.com/v0/b/pharmacy-management-syst-17e25.appspot.com/o/couch.glb?alt=media&token=0eb2f7ca-a894-4c22-9510-f699980fe6ec"])));
+                            Navigator.push(context,MaterialPageRoute(builder: (context)=>ObjectGesturesWidget([widget.selectedFurniture.model])));
                           },
                           child: const Icon(Icons.camera, color: kAppBackgroundColor,)
                         ),
@@ -242,9 +252,10 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                               widget.selectedFurniture.name,
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
-                              style: const TextStyle(
+                              style:  TextStyle(
                                 fontSize: 16.0,
                                 fontWeight: FontWeight.w500,
+                                  color: !BlocProvider.of<HomeCubit>(context).isDark?Colors.black:Colors.white
                               ),
                             ),
                           ),
@@ -254,9 +265,10 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                             widget.selectedFurniture.description!,
                             maxLines: 2,
                             overflow: TextOverflow.ellipsis,
-                            style: const TextStyle(
+                            style:  TextStyle(
                                 fontSize: 14.0,
                                 fontWeight: FontWeight.w400,
+                                color: !BlocProvider.of<HomeCubit>(context).isDark?Colors.black:Colors.white,
                                 fontStyle: FontStyle.italic),
                           ),
                           trailing: Padding(
@@ -266,34 +278,50 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
-                                  Text(
-                                    (double.parse(widget.selectedFurniture
-                                        .shared[selectedColorIndex]
-                                        .price)).toStringAsFixed(2)+
-                                        ' L.E',
-                                    style: TextStyle(
-                                      decoration: widget.selectedFurniture.shared[selectedColorIndex].discount!="0" && widget.selectedFurniture.shared[selectedColorIndex].discount!="0.0" ? TextDecoration.lineThrough:null,
-                                      fontSize: 18.0,
-                                      fontWeight: FontWeight.w600,
-                                      color: kAppBackgroundColor,
+                                  Flexible(
+                                    child: double.parse(widget.selectedFurniture.shared[selectedColorIndex].discount).toInt()!=0 ? Text(
+                                      (double.parse(widget.selectedFurniture
+                                          .shared[selectedColorIndex]
+                                          .price)).toStringAsFixed(2),
+                                      style: TextStyle(
+                                        decoration: TextDecoration.lineThrough,
+                                        fontSize: double.parse(widget.selectedFurniture
+                                            .shared[selectedColorIndex]
+                                            .price) >= 10000 ? 16.5: 17.0,
+                                        fontWeight: FontWeight.w600,
+                                        color: kAppBackgroundColor,
+                                      ),
+                                    ) : Text(
+                                      (double.parse(widget.selectedFurniture
+                                          .shared[selectedColorIndex]
+                                          .price)).toStringAsFixed(2) + ' L.E',
+                                      style: TextStyle(
+                                        fontSize: 17.0,
+                                        fontWeight: FontWeight.w600,
+                                        color: kAppBackgroundColor,
+                                      ),
                                     ),
                                   ),
-                                  const SizedBox(width: 10,),
-                                  if(widget.selectedFurniture.shared[selectedColorIndex].discount!="0" && widget.selectedFurniture.shared[selectedColorIndex].discount!="0.0")
+                                  const SizedBox(width: 8,),
+                                  if(double.parse(widget.selectedFurniture.shared[selectedColorIndex].discount).toInt()!=0)
 
-                                    Text(
+                                    Flexible(
+                                      child: Text(
 
-                                      '${(double.parse(widget.selectedFurniture
-                                        .shared[selectedColorIndex]
-                                        .price) -( (double.parse(widget.selectedFurniture.shared[selectedColorIndex].discount)/100)*double.parse(widget.selectedFurniture
+                                        '${(double.parse(widget.selectedFurniture
                                           .shared[selectedColorIndex]
-                                          .price))).toStringAsFixed(2)} L.E',
-                                    style: const TextStyle(
-                                      fontSize: 18.0,
-                                      fontWeight: FontWeight.w600,
-                                      color: kAppBackgroundColor,
-                                    ),
-                                  )
+                                          .price) -( (double.parse(widget.selectedFurniture.shared[selectedColorIndex].discount)/100)*double.parse(widget.selectedFurniture
+                                            .shared[selectedColorIndex]
+                                            .price))).toStringAsFixed(2)} L.E',
+                                      style: TextStyle(
+                                        fontSize: double.parse(widget.selectedFurniture
+                                            .shared[selectedColorIndex]
+                                            .price) >= 10000 ? 16.5: 17.0,
+                                        fontWeight: FontWeight.w600,
+                                        color: kAppBackgroundColor,
+                                      ),
+                                  ),
+                                    )
                                 ],
                               ),
                             ),
@@ -345,6 +373,7 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                                   .toString() == "NaN" ? "No ratings yet": widget.selectedFurniture
                                   .calculateAverageRating()
                                   .toString(),
+                              style:TextStyle(color: !BlocProvider.of<HomeCubit>(context).isDark?Colors.black:Colors.white,)
                             ),
                             const Spacer(),
                             InkWell(
@@ -414,9 +443,10 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                                   ),
                                 ).show();
                               },
-                              child: const Text(
+                              child:  Text(
                                 'Add a review ?',
                                 style: TextStyle(
+                                  color: !BlocProvider.of<HomeCubit>(context).isDark?Colors.black:Colors.white,
                                   decoration: TextDecoration.underline,
                                 ),
                               ),
@@ -435,10 +465,10 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                         flex: 2,
                         child: Row(
                           children: [
-                            const Text(
+                             Text(
                               'Color',
                               style: TextStyle(
-                                  fontSize: 16.0, fontWeight: FontWeight.w500),
+                                  fontSize: 16.0, fontWeight: FontWeight.w500,color: !BlocProvider.of<HomeCubit>(context).isDark?Colors.black:Colors.white,),
                             ),
                             const SizedBox(
                               width: 54.5,
@@ -524,10 +554,11 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                         flex: 2,
                         child: Row(
                           children: [
-                            const Text(
+                             Text(
                               'Quantity',
                               style: TextStyle(
                                 fontSize: 16.0,
+                                color: !BlocProvider.of<HomeCubit>(context).isDark?Colors.black:Colors.white,
                                 fontWeight: FontWeight.w500,
                               ),
                             ),
@@ -582,6 +613,8 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                                 ? Text(
                                     quantity.toString(),
                                     style: TextStyle(
+                                      color :BlocProvider.of<HomeCubit>(context).isDark?Colors.white:Colors.black,
+
                                       fontSize:
                                           MediaQuery.of(context).size.height >
                                                   700
@@ -593,6 +626,8 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                                 : Text(
                                     "0",
                                     style: TextStyle(
+                                      color :BlocProvider.of<HomeCubit>(context).isDark?Colors.white:Colors.black,
+
                                       fontSize:
                                           MediaQuery.of(context).size.height >
                                                   700
@@ -655,6 +690,7 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                                             .quantity +
                                         ")",
                                     style: TextStyle(
+                                      color: !BlocProvider.of<HomeCubit>(context).isDark?Colors.black:Colors.white,
                                       fontSize: 14.0,
                                       fontWeight: FontWeight.w500,
                                     ),
@@ -781,6 +817,7 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                                   children: [
                                     Icon(
                                       Icons.add_shopping_cart,
+                                      color: BlocProvider.of<HomeCubit>(context).isDark?Colors.black:Colors.white,
                                       size: MediaQuery
                                           .of(context)
                                           .size
@@ -794,6 +831,7 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                                     Text(
                                       'Add to cart',
                                       style: TextStyle(
+                                        color: !BlocProvider.of<HomeCubit>(context).isDark?Colors.white:Colors.black,
                                         fontSize:
                                         MediaQuery
                                             .of(context)
@@ -830,10 +868,10 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                             .size
                             .height > 700 ? 20.0 : 10.0,
                       ),
-                      const Text(
+                       Text(
                         'Recommendations',
                         style:
-                        TextStyle(fontSize: 16.0, fontWeight: FontWeight.w500),
+                        TextStyle(fontSize: 16.0, fontWeight: FontWeight.w500,color: !BlocProvider.of<HomeCubit>(context).isDark?Colors.black:Colors.white,),
                       ),
                       Expanded(
                         flex: 9,
@@ -878,7 +916,7 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                                           ),
                                         ),
                                         SizedBox(height: 10,),
-                                        Text(BlocProvider.of<HomeCubit>(context).recommendedFurniture[index].name),
+                                        Text(BlocProvider.of<HomeCubit>(context).recommendedFurniture[index].name,style:TextStyle(color: !BlocProvider.of<HomeCubit>(context).isDark?Colors.black:Colors.white,)),
                                       ],
                                     ),
                                   ),
