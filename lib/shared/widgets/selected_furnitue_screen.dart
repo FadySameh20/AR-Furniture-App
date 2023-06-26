@@ -1,22 +1,15 @@
-import 'dart:convert';
-
 import 'package:ar_furniture_app/cubits/home_cubit.dart';
 import 'package:ar_furniture_app/cubits/home_states.dart';
 import 'package:ar_furniture_app/models/furniture_model.dart';
-import 'package:ar_furniture_app/shared/cache/sharedpreferences.dart';
 import 'package:ar_furniture_app/shared/widgets/cart_screen.dart';
 import 'package:ar_furniture_app/shared/widgets/favorite_icon.dart';
 import 'package:ar_furniture_app/shared/widgets/objectgesturesexample.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
-
 import '../constants/constants.dart';
 import 'circle_avatar.dart';
 
@@ -88,9 +81,9 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
       listener: (context, state) {},
       builder: (context, state) {
         return Scaffold(
-          backgroundColor: !BlocProvider.of<HomeCubit>(context).isDark?Colors.white:Colors.black,
+          backgroundColor: !BlocProvider.of<HomeCubit>(context).isDark? kLightModeBackgroundColor : kDarkModeBackgroundColor,
           appBar: AppBar(
-            backgroundColor: const Color.fromRGBO(191, 122, 47, 1),
+            backgroundColor: kAppBackgroundColor,
             leading: IconButton(
               onPressed: () {
                 Navigator.pop(context);
@@ -116,7 +109,7 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
             ],
             centerTitle: true,
             title: Text(
-              widget.selectedFurniture.name,
+              BlocProvider.of<HomeCubit>(context).capitalizeFirstLettersInView(widget.selectedFurniture.name),
               style:  TextStyle(color: !BlocProvider.of<HomeCubit>(context).isDark?Colors.white:Colors.black),
             ),
           ),
@@ -216,7 +209,8 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                         left: 15.0,
                         child: GestureDetector(
                           onTap: () {
-                            Navigator.push(context,MaterialPageRoute(builder: (context)=>ObjectGesturesWidget([widget.selectedFurniture.model])));
+                            Navigator.push(context,MaterialPageRoute(builder: (context)=>ObjectGesturesWidget([widget.selectedFurniture,...BlocProvider.of<HomeCubit>(context).recommendedFurniture], BlocProvider.of<HomeCubit>(context).getAvailableColorsOfFurniture(widget.selectedFurniture))));
+                            //Navigator.push(context,MaterialPageRoute(builder: (context)=>ObjectGesturesWidget([widget.selectedFurniture.model],[widget.selectedFurniture])));
                           },
                           child: const Icon(Icons.camera, color: kAppBackgroundColor,)
                         ),
@@ -249,7 +243,7 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                           title: Padding(
                             padding: const EdgeInsets.only(bottom: 5.0),
                             child: Text(
-                              widget.selectedFurniture.name,
+                              BlocProvider.of<HomeCubit>(context).capitalizeFirstLettersInView(widget.selectedFurniture.name),
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                               style:  TextStyle(
@@ -869,7 +863,7 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                             .height > 700 ? 20.0 : 10.0,
                       ),
                        Text(
-                        'Recommendations',
+                        'Suggestions',
                         style:
                         TextStyle(fontSize: 16.0, fontWeight: FontWeight.w500,color: !BlocProvider.of<HomeCubit>(context).isDark?Colors.black:Colors.white,),
                       ),
@@ -916,7 +910,7 @@ class _SelectedFurnitureScreenState extends State<SelectedFurnitureScreen> {
                                           ),
                                         ),
                                         SizedBox(height: 10,),
-                                        Text(BlocProvider.of<HomeCubit>(context).recommendedFurniture[index].name,style:TextStyle(color: !BlocProvider.of<HomeCubit>(context).isDark?Colors.black:Colors.white,)),
+                                        Text(BlocProvider.of<HomeCubit>(context).capitalizeFirstLettersInView(BlocProvider.of<HomeCubit>(context).recommendedFurniture[index].name),style:TextStyle(color: !BlocProvider.of<HomeCubit>(context).isDark?Colors.black:Colors.white,)),
                                       ],
                                     ),
                                   ),

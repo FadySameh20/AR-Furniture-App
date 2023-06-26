@@ -205,6 +205,16 @@ class HomeCubit extends Cubit<HomeState> {
     }
   }
 
+  String capitalizeFirstLettersInView(String text) {
+    List<String> words = text.split(' ');
+    for (int i = 0; i < words.length; i++) {
+      if (words[i].isNotEmpty) {
+        words[i] = '${words[i][0].toUpperCase()}${words[i].substring(1)}';
+      }
+    }
+    return words.join(' ');
+  }
+
   getOffers() async {
     await FirebaseFirestore.instance.collection('offer').get().then((value) {
       print("aaaaaaaaaaaaaaaaaaa");
@@ -352,12 +362,21 @@ class HomeCubit extends Cubit<HomeState> {
     return null;
   }
 
-  List<Color?> getAvailableColorsOfFurniture(FurnitureModel selectedFurniture) {
-    availableColors.clear();
-    for (int i = 0; i < selectedFurniture.shared.length; i++) {
-      availableColors.add(getColorFromHex(selectedFurniture.shared[i].color));
+  List<Color?> getAvailableColorsOfFurniture(FurnitureModel selectedFurniture, [bool flag = false]) {
+    if(!flag) {
+      availableColors.clear();
+      for (int i = 0; i < selectedFurniture.shared.length; i++) {
+        availableColors.add(getColorFromHex(selectedFurniture.shared[i].color));
+      }
+      return availableColors;
+    } else {
+      List<Color?> tempColors = [];
+      for (int i = 0; i < selectedFurniture.shared.length; i++) {
+        tempColors.add(getColorFromHex(selectedFurniture.shared[i].color));
+      }
+      return tempColors;
     }
-    return availableColors;
+
   }
 
   logout(context) async {
@@ -521,7 +540,7 @@ class HomeCubit extends Cubit<HomeState> {
     //SharedModel chosenFurnitureColor = furnitureList[index].shared.where((element) => element.color == selectedColor).first;
     int selectedIndex = furnitureList[index]
         .shared
-        .indexWhere((element) => element.color == selectedColor);
+        .indexWhere((element) => element.color.toLowerCase() == selectedColor.toLowerCase());
     print("Selected Index = " + selectedIndex.toString());
     // chosenFurnitureColor.quantityCart = cartQuantity.toString();
     furnitureList[index].shared[selectedIndex].quantityCart =
@@ -909,6 +928,7 @@ class HomeCubit extends Cubit<HomeState> {
     }
   }
   addToRecentlySearchedName (String searchName){
+    searchName = capitalizeFirstLettersInView(searchName);
     if(cache.cacheRecentlySearchedNames.length < 5) {
       if(!cache.cacheRecentlySearchedNames.contains(searchName)) {
         cache.cacheRecentlySearchedNames.add(searchName);
@@ -1138,7 +1158,7 @@ createOrder(String appartmentNumber, String area, String buildingNumber,
         break;
       }
     }
-    print(recommendedFurniture[0].name);
+    // print(recommendedFurniture[0].name);
   }
 }
 

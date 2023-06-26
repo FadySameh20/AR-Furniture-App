@@ -58,7 +58,8 @@ class _CategoriesScrollerState extends State<CategoriesScroller> {
                   decoration: BoxDecoration(
                       color: index == CategoriesScroller.selectedCategoryIndex
                           ? kAppBackgroundColor
-                          : Colors.white,
+                          : !BlocProvider.of<HomeCubit>(context).isDark?Colors.white:Color(0xff414147),
+
                       borderRadius: BorderRadius.circular(50)),
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
@@ -68,7 +69,8 @@ class _CategoriesScrollerState extends State<CategoriesScroller> {
                         Expanded(
                             child: CircleAvatar(
                               radius: 25,
-                              backgroundColor: Colors.grey[300],
+                              backgroundColor:!BlocProvider.of<HomeCubit>(context).isDark?Colors.white:Color(
+                                  0xffb1b1b5),
                               // radius: 10,
                               child: Padding(
                                 padding: const EdgeInsets.all(7.0),
@@ -86,7 +88,7 @@ class _CategoriesScrollerState extends State<CategoriesScroller> {
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
                               color:
-                              index == CategoriesScroller.selectedCategoryIndex ? Colors.white : Colors.black),
+                              BlocProvider.of<HomeCubit>(context).isDark?Colors.white : Colors.black),
                         ),
                       ],
                     ),

@@ -2,9 +2,9 @@
     package="com.example.ar_furniture_app">
 
    <application
-        android:label="ar_furniture_app"
+        android:label="ARtful Home"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/launcher_icon">
         <activity
             android:name=".MainActivity"
             android:exported="true"

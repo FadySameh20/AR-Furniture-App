@@ -1,11 +1,9 @@
 import 'package:ar_furniture_app/cubits/home_states.dart';
-import 'package:ar_furniture_app/shared/cache/sharedpreferences.dart';
 import 'package:ar_furniture_app/shared/constants/constants.dart';
 import 'package:ar_furniture_app/shared/widgets/circle_avatar.dart';
 import 'package:flutter/material.dart';
 import 'package:ar_furniture_app/models/name_model.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import '../../cubits/home_cubit.dart';
 
 
@@ -27,13 +25,13 @@ class _SearchFilterScreenState extends State<SearchFilterScreen> {
     return BlocConsumer<HomeCubit,HomeState>(
       listener: (context,state){},
       builder:(context,state){return Scaffold(
-        backgroundColor: !BlocProvider.of<HomeCubit>(context).isDark?Colors.white:Colors.black,
+        backgroundColor: !BlocProvider.of<HomeCubit>(context).isDark? kLightModeBackgroundColor : kDarkModeBackgroundColor,
         appBar: AppBar(
           title:  Text("Filter",style: TextStyle(color: !BlocProvider.of<HomeCubit>(context).isDark?Colors.white:Colors.black),),
           centerTitle: true,
           backgroundColor: kAppBackgroundColor,
           leading: IconButton(
-            icon: Icon(Icons.arrow_back_ios,color: CacheHelper.getData("darkMode")==false||CacheHelper.getData("darkMode")==null?Colors.white:Colors.black,),
+            icon: Icon(Icons.arrow_back_ios,color: !BlocProvider.of<HomeCubit>(context).isDark? Colors.white:Colors.black,),
             onPressed: () {
               Navigator.pop(context);
             },
@@ -55,7 +53,7 @@ class _SearchFilterScreenState extends State<SearchFilterScreen> {
                 RangeSlider(
                     values: widget.rangeValues,
                     min: 0,
-                    max: 10000,
+                    max: 20000,
                     divisions: 10,
                     labels: RangeLabels(
                         widget.rangeValues.start.round().toString(),
@@ -100,7 +98,7 @@ class _SearchFilterScreenState extends State<SearchFilterScreen> {
                               width: 70,
                               decoration: BoxDecoration(
                                   color: widget.categories.values.elementAt(index)? kAppBackgroundColor
-                                      : Colors.white,
+                                      : !BlocProvider.of<HomeCubit>(context).isDark?Colors.white:Color(0xff414147),
                                   borderRadius: BorderRadius.circular(50)),
                               child: Padding(
                                 padding: const EdgeInsets.all(8.0),
@@ -110,7 +108,8 @@ class _SearchFilterScreenState extends State<SearchFilterScreen> {
                                     Expanded(
                                         child: CircleAvatar(
                                           radius: 25,
-                                          backgroundColor: Colors.grey[300],
+                                          backgroundColor: !BlocProvider.of<HomeCubit>(context).isDark?Colors.white:Color(
+                                              0xffb1b1b5),
                                           // radius: 10,
                                           child: Padding(
                                             padding: const EdgeInsets.all(7.0),
@@ -128,7 +127,7 @@ class _SearchFilterScreenState extends State<SearchFilterScreen> {
                                       overflow: TextOverflow.ellipsis,
                                       style: TextStyle(
                                           color:
-                                          widget.categories.values.elementAt(index) ? Colors.white : Colors.black),
+                                          BlocProvider.of<HomeCubit>(context).isDark?Colors.white:Colors.black,),
                                     ),
                                   ],
                                 ),
@@ -146,26 +145,29 @@ class _SearchFilterScreenState extends State<SearchFilterScreen> {
                     fontSize: 20,
                   ),
                 ),
-                GridView.count(
-                  shrinkWrap: true,
-                  crossAxisCount: 4,
-                  scrollDirection: Axis.vertical,
-                  mainAxisSpacing: 10.0,
-                  crossAxisSpacing: 5.0,
-                  reverse: false,
-                  children: List.generate(widget.availableColors.length, (index) {
-                    return Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [InkWell(
-                          onTap: (){
-                            setState(() {
-                              widget.availableColors.update(widget.availableColors.keys.elementAt(index), (value) => !widget.availableColors.values.elementAt(index));
-                            });
-                          },
-                          child: CustomCircleAvatar(radius: MediaQuery.of(context).size.height > 350 ? 25.0 : 20.0, CavatarColor: widget.availableColors.keys.elementAt(index), icon: widget.availableColors.values.elementAt(index) == true? const Icon(Icons.check, size: 30, color: Colors.white,):null),
-                      ),
-                    ]);
-                  }),
+                SingleChildScrollView(
+                  child: GridView.count(
+                    physics: NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    crossAxisCount: 4,
+                    scrollDirection: Axis.vertical,
+                    mainAxisSpacing: 10.0,
+                    crossAxisSpacing: 5.0,
+                    reverse: false,
+                    children: List.generate(widget.availableColors.length, (index) {
+                      return Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [InkWell(
+                            onTap: (){
+                              setState(() {
+                                widget.availableColors.update(widget.availableColors.keys.elementAt(index), (value) => !widget.availableColors.values.elementAt(index));
+                              });
+                            },
+                            child: CustomCircleAvatar(radius: MediaQuery.of(context).size.height > 350 ? 25.0 : 20.0, CavatarColor: widget.availableColors.keys.elementAt(index), icon: widget.availableColors.values.elementAt(index) == true? const Icon(Icons.check, size: 30, color: Colors.white,):null),
+                        ),
+                      ]);
+                    }),
+                  ),
                 ),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(

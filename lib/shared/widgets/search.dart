@@ -28,7 +28,7 @@ class _SearchState extends State<Search> {
   TextEditingController _searchController = TextEditingController();
 
   // filter
-  RangeValues currentRangeValues = const RangeValues(0, 10000);
+  RangeValues currentRangeValues = const RangeValues(0, 20000);
   Map<Color,bool> colors = {};
   Map<CategoryItem,bool> categories = {};
   var arguments;
@@ -124,7 +124,7 @@ class _SearchState extends State<Search> {
                       color: kAppBackgroundColor,
                     ),
                     child: IconButton(
-                      icon: const Icon(Icons.filter_list, color: Colors.white, size: 25,),
+                      icon: Icon(Icons.filter_list, color: !BlocProvider.of<HomeCubit>(context).isDark? kLightModeBackgroundColor : kDarkModeBackgroundColor, size: 25,),
                       onPressed: () async{
                         if(colorFlag == 0) {
                           getAvailableColors(0);
@@ -188,6 +188,7 @@ class _SearchState extends State<Search> {
                         padding: const EdgeInsets.all(6.0),
                         child: ClipOval(
                           child: Container(
+
                             color: Colors.grey.shade400,
                             child: Padding(
                               padding: EdgeInsets.all(8.0),
@@ -248,13 +249,18 @@ class _SearchState extends State<Search> {
                   ),
                 ),
               if(viewSuggestions == true)
-              searchR.isEmpty? const Center(
-                child: Text("No Items To Show"),
+              searchR.isEmpty? Center(
+                child: Text("No Items To Show",
+                  style: TextStyle(
+                    fontSize: 20,
+                    color: BlocProvider.of<HomeCubit>(context).isDark?Colors.white:Colors.black,
+                  ),
+                ),
               ):LayoutBuilder(
                 builder: (context,constraints) {
                   return Container(
                     height: MediaQuery.of(context).size.height-(160+ MediaQuery.of(context).padding.top+AppBar(
-                        backgroundColor: const Color.fromRGBO(191, 122, 47, 1),
+                        backgroundColor: kAppBackgroundColor,
                         leading: const FlutterLogo(),
                         actions: [
                           IconButton(onPressed: () {context.read<HomeCubit>().logout(context);}, icon: Icon(Icons.shopping_cart))
@@ -283,6 +289,7 @@ class _SearchState extends State<Search> {
                               BlocProvider.of<HomeCubit>(context).addToRecentlySearchedName(fur.name);
                               List<Color?> availableColors = [];
                               availableColors = BlocProvider.of<HomeCubit>(context).getAvailableColorsOfFurniture(searchR[index]);
+                              BlocProvider.of<HomeCubit>(context).getFurnitureRecommendation(searchR[index], 0);
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(builder: (context) => SelectedFurnitureScreen(selectedFurniture: searchR[index], availableColors: availableColors)),
@@ -296,7 +303,7 @@ class _SearchState extends State<Search> {
                               height: 300,
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(12),
-                                color: Colors.white,
+                                color: !BlocProvider.of<HomeCubit>(context).isDark?Colors.white:Color(0xff414147),
                               ),
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
@@ -325,8 +332,9 @@ class _SearchState extends State<Search> {
                                       child: Image.network(fur.shared[0].image)
                                   ),
                                   Text(
-                                    fur.name,
-                                    style: const TextStyle(
+                                    BlocProvider.of<HomeCubit>(context).capitalizeFirstLettersInView(fur.name),
+                                    style:  TextStyle(
+                                      color:BlocProvider.of<HomeCubit>(context).isDark?Colors.white:Colors.black,
                                       fontSize: 18,
                                       fontWeight: FontWeight.bold,
                                     ),
@@ -380,17 +388,19 @@ class _SearchState extends State<Search> {
               if(viewSuggestions == false)
                  Text(
                   "Categories",
-                  style:  Theme.of(context).textTheme.bodyLarge!.copyWith(
+                  style:  TextStyle(
+                    color: BlocProvider.of<HomeCubit>(context).isDark? kLightModeBackgroundColor : kDarkModeBackgroundColor,
                     fontWeight: FontWeight.bold,
                     fontSize: 20,
                   ),
                 ),
               if(viewSuggestions == false)
                 CategoriesScroller(),
-              if(viewSuggestions == false)
+              if(viewSuggestions == false && recentlyViewed.isNotEmpty)
                  Text(
                   "Recently Viewed",
-                  style:  Theme.of(context).textTheme.bodyLarge!.copyWith(
+                  style:  TextStyle(
+                    color: BlocProvider.of<HomeCubit>(context).isDark? kLightModeBackgroundColor : kDarkModeBackgroundColor,
                     fontWeight: FontWeight.bold,
                     fontSize: 20,
                   ),
@@ -510,7 +520,7 @@ class _SearchState extends State<Search> {
         requestColorFilter = false;
       });
     }
-    if(currentRangeValues.start.round() != 0 || currentRangeValues.end.round() != 500) {
+    if(currentRangeValues.start.round() != 0 || currentRangeValues.end.round() != 20000) {
       setState(() {
         requestPriceFilter = true;
       });
