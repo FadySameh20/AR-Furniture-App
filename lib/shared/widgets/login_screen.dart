@@ -53,6 +53,7 @@ class _LoginScreenState extends State<LoginScreen> {
         },
         builder: (context, state) {
           return Scaffold(
+            backgroundColor: Colors.white,
             body: isLoading
                 ? Center(
                     child: CircularProgressIndicator(

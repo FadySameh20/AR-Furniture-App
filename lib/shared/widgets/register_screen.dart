@@ -88,6 +88,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         },
         builder: (context, state) {
           return Scaffold(
+            backgroundColor: Colors.white,
             body: isLoading
                 ? Center(
                     child: CircularProgressIndicator(
