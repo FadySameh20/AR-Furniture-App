@@ -94,3 +94,6 @@ ARtful Home is a mobile application that uses Augmented Reality (AR) to help use
 ```yaml
 sdk: '>=2.18.0 <3.0.0'
 ```
+
+### Customer Demo
+   - https://github.com/user-attachments/assets/130c124e-6efc-4b81-a111-14aeeb96dc86
