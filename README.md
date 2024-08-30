@@ -21,6 +21,42 @@ ARtful Home is a mobile application that uses Augmented Reality (AR) to help use
 - **Notifications**: Receive important updates and alerts.
 - **Caching**: Improve performance and offline access with cached data.
 
+### Feature Descriptions
+
+- **Introduction and Onboarding:** Provides a brief introductory guide when the app is first installed, helping users get started with the application.
+
+- **Account Management:**
+  - **Login:** Securely log in using email and password.
+  - **Register:** Create a new account by providing necessary details such as name, email, and address.
+  - **Profile Editing:** Update personal information including name, password, and contact details.
+
+- **Product Discovery:**
+  - **Browse Categories:** Explore different furniture categories to find products of interest.
+  - **Search and Filter:** Use search functionality and filters to find specific furniture items based on criteria like category, price range, and color.
+
+- **Product Details:**
+  - **View Furniture Details:** Access detailed information about products including images, descriptions, prices, and available colors.
+  - **Augmented Reality (AR) Visualization:** Visualize how furniture items will look in your space using AR technology. Scan your environment, place furniture items, and adjust their positioning.
+
+- **Favorites Management:**
+  - **Add to Favorites:** Save preferred items to a favorites list for easy access later.
+  - **View Favorites:** Access and manage your list of favorite items.
+
+- **Shopping Cart:**
+  - **Add to Cart:** Add desired furniture items to your shopping cart.
+  - **Modify Cart:** Change quantities or remove items from the cart.
+  - **View Cart Summary:** Review all items in the cart and see the total order value.
+
+- **Checkout Process:**
+  - **Enter Personal Information:** Provide necessary details for order fulfillment, including name, phone number, and address.
+  - **Order Confirmation:** Review order details and complete the purchase.
+
+- **Order Tracking:**
+  - **Track Orders:** Monitor the status of your orders from purchase to delivery.
+   
+- **Notifications:**
+  - **Receive Updates:** Get notified about new offers, discounts, and order status changes.
+
 ## Setup Instructions
 
 ### Prerequisites
