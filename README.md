@@ -97,3 +97,6 @@ sdk: '>=2.18.0 <3.0.0'
 
 ### Customer Demo
 https://github.com/user-attachments/assets/130c124e-6efc-4b81-a111-14aeeb96dc86
+
+### AR Demo
+https://github.com/user-attachments/assets/633d8bfb-c17e-4094-9564-67674ae4a4be
