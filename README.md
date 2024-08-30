@@ -99,5 +99,6 @@ sdk: '>=2.18.0 <3.0.0'
 https://github.com/user-attachments/assets/130c124e-6efc-4b81-a111-14aeeb96dc86
 
 ### AR Demo
-Note: You can decrease the video speed from video's settings
 https://github.com/user-attachments/assets/633d8bfb-c17e-4094-9564-67674ae4a4be
+
+Note: You can decrease the video speed from video's settings
